@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
+import 'package:manage_outlets/NextScreen.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
