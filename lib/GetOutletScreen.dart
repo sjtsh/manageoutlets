@@ -10,9 +10,8 @@ import 'backend/OutletService.dart';
 import 'package:latlng/latlng.dart';
 
 class GetOutletScreen extends StatelessWidget {
-  final double redRadius = 1000000;
-
-  const GetOutletScreen({Key? key}) : super(key: key);
+  final double redRadius;
+  GetOutletScreen(this.redRadius);
 
   @override
   Widget build(BuildContext context) {

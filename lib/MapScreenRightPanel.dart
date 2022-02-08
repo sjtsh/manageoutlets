@@ -2,15 +2,24 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/backend/DistributorService.dart';
 
+import 'backend/Distributor.dart';
+
 
 class MapScreenRightPanel extends StatefulWidget {
-  const MapScreenRightPanel({Key? key}) : super(key: key);
+
+  final List<Distributor> distributors;
+  MapScreenRightPanel(this.distributors);
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
 }
 
+
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
+  String selectedDropDownItem = "Select Distributor";
+  void _changeDropDownValue(String newValue) {
+    selectedDropDownItem = newValue;
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,19 +37,15 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           ),
           Container(
             color: Colors.white,
-            child: DropdownSearch<String>(
+            child: DropdownSearch<dynamic>(
                 showSearchBox: true,
                 mode: Mode.MENU,
-                items: const [
-                  "Brazil",
-                  "Italia (Disabled)",
-                  "Tunisia",
-                  'Canada'
-                ],
-                hint: "Select Distibutor",
-                popupItemDisabled: (String s) => s.startsWith('I'),
-                onChanged: print,
-                selectedItem: "Brazil"),
+                items: widget.distributors,
+                hint: selectedDropDownItem,
+                onChanged: (selected){
+                  _changeDropDownValue(selectedDropDownItem);
+                },
+                selectedItem: selectedDropDownItem),
           ),
           const SizedBox(
             height: 12,

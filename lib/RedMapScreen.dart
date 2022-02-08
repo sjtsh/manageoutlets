@@ -79,6 +79,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
         redDistance,
         setTempRedRadius,
         center,
-        changeCenter);
+        changeCenter,
+    widget.distributors);
   }
 }

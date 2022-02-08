@@ -9,6 +9,7 @@ import 'package:manage_outlets/NextScreen.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
+import 'backend/Distributor.dart';
 import 'backend/Outlet.dart';
 import 'backend/Outlet.dart';
 import 'merge/OutletMergeScreen.dart';
@@ -25,6 +26,7 @@ class MapScreen extends StatefulWidget {
   final List<Outlet> bluegreyIndexes;
   final double redDistance;
   final Function changeCenter;
+  final List<Distributor> distributors;
 
   MapScreen(
       this.outletLatLng,
@@ -34,7 +36,8 @@ class MapScreen extends StatefulWidget {
       this.redDistance,
       this.setTempRedRadius,
       this.center,
-      this.changeCenter);
+      this.changeCenter,
+      this.distributors);
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -280,7 +283,6 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(
                   height: 12,
                 ),
-
                 Row(
                   children: [
                     Expanded(
@@ -297,7 +299,7 @@ class _MapScreenState extends State<MapScreen> {
                           color: Colors.red,
                           height: 60,
                           child: const Center(
-                            child: const Text(
+                            child: Text(
                               "CLEAR",
                               style: TextStyle(color: Colors.white),
                             ),
@@ -334,13 +336,7 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-          const Expanded(
-            flex: 1,
-
-            child: MapScreenRightPanel()
-
-          ),
-
+           Expanded(flex: 1, child: MapScreenRightPanel(widget.distributors)),
         ],
       ),
     );
