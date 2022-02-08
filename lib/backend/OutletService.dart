@@ -8,22 +8,24 @@ import 'Outlet.dart';
 import 'database.dart';
 
 class OutletService {
-  Future<List<Outlet>> getNearbyOutlets(double distance, double lat, double lng) async {
-    Response res = await http.post(
-      Uri.parse("$localhost/outlet"),
-      body: <String, String>{
-        'lat': lat.toString(),
-        'lng': lng.toString(),
-        'distance': distance.toString(),
-      },
-    );
-    print(res.body);
-    if (res.statusCode == 200) {
-      List<dynamic> a = jsonDecode(res.body);
-      List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
-      return outlets;
-    } else {
-      return [];
-    }
+  Future<List<Outlet>> getNearbyOutlets(
+      double distance, double lat, double lng) async {
+    //   Response res = await http.post(
+    //     Uri.parse("$localhost/outlet"),
+    //     body: <String, String>{
+    //       'lat': lat.toString(),
+    //       'lng': lng.toString(),
+    //       'distance': distance.toString(),
+    //     },
+    //   );
+    //   print(res.body);
+    //   if (res.statusCode == 200) {
+    //     List<dynamic> a = jsonDecode(res.body);
+    //     List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
+    //     return outlets;
+    //   } else {
+    //     return [];
+    //   }
+    return Future.value([]);
   }
 }
