@@ -45,67 +45,89 @@ class _NextScreenState extends State<NextScreen> {
           ),
         ),
       ),
-      body: GridView.builder(
-        itemCount: widget.beat.outlet.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.5,
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-        ),
-        padding: const EdgeInsets.all(12),
-        itemBuilder: (_, i) {
-          return Stack(
-            children: [
-              Container(
-                  height: height / 2,
-                  width: width / 2,
-                  child: Image.asset("assets/hilife.jpg")),
-              Align(
-                alignment: Alignment.topRight,
-                child: Container(
-                  // clipBehavior: Clip.hardEdge,
-                  margin: const EdgeInsets.all(8),
-                  width: 200,
-                  height: 50,
-                  child: DropdownSearch<String>(
-                    showSearchBox: true,
-                    mode: Mode.MENU,
-                    items: const [
-                      "Brazil",
-                      "Italia (Disabled)",
-                      "Tunisia",
-                      'Canada'
-                    ],
-                    hint: "Select Distibutor",
-                    popupItemDisabled: (String s) => s.startsWith('I'),
-                    onChanged: print,
-                    selectedItem: "Brazil",
-                    dropdownSearchDecoration: const InputDecoration(
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: InputBorder.none,
+      body: Column(
+        children: [
+          Expanded(
+            child: Builder(builder: (context) {
+              size = MediaQuery.of(context).size;
+              height = size.height;
+              width = size.width;
+              return GridView.builder(
+                itemCount: widget.beat.outlet.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 2.125,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                ),
+                padding: const EdgeInsets.all(12),
+                itemBuilder: (_, i) {
+                  return Container(
+                    height: height / 4,
+                    width: width / 4,
+                    child: Stack(
+                      children: [
+                        Container(
+                            height: height / 2,
+                            width: width / 2,
+                            child: Image.asset("assets/hilife.jpg")),
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Container(
+                            // clipBehavior: Clip.hardEdge,
+                            margin: const EdgeInsets.all(8),
+                            width: 200,
+                            height: 50,
+                            child: DropdownSearch<String>(
+                              showSearchBox: true,
+                              mode: Mode.MENU,
+                              items: const [
+                                "Brazil",
+                                "Italia (Disabled)",
+                                "Tunisia",
+                                'Canada'
+                              ],
+                              hint: "Select Distibutor",
+                              popupItemDisabled: (String s) =>
+                                  s.startsWith('I'),
+                              onChanged: print,
+                              selectedItem: "Brazil",
+                              dropdownSearchDecoration: const InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomLeft,
+                          child: Checkbox(
+                            // activeColor: Colors.blue,
+                            value:
+                                selectedOutlet.contains(widget.beat.outlet[i]),
+                            onChanged: (newValue) => setState(() {
+                              if (selectedOutlet
+                                  .contains(widget.beat.outlet[i])) {
+                                selectedOutlet.remove(widget.beat.outlet[i]);
+                              } else {
+                                selectedOutlet.add(widget.beat.outlet[i]);
+                              }
+                            }),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Checkbox(
-                  // activeColor: Colors.blue,
-                  value: selectedOutlet.contains(widget.beat.outlet[i]),
-                  onChanged: (newValue) => setState(() {
-                    if (selectedOutlet.contains(widget.beat.outlet[i])) {
-                      selectedOutlet.remove(widget.beat.outlet[i]);
-                    } else {
-                      selectedOutlet.add(widget.beat.outlet[i]);
-                    }
-                  }),
-                ),
-              ),
-            ],
-          );
-        },
+                  );
+                },
+              );
+            }),
+          ),
+          Container(
+            height: 50,
+            color: Colors.black,
+          ),
+        ],
       ),
     );
   }

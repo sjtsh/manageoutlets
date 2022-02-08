@@ -32,7 +32,6 @@ class _RedMapScreenState extends State<RedMapScreen> {
       redDistance = a;
     });
     if(center!=null){
-
       myOutlets = widget.outletLatLng.where((element) {
         return GeolocatorPlatform.instance.distanceBetween(
             element.lat,
