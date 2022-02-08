@@ -4,8 +4,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 
-import 'Outlet.dart';
-import 'database.dart';
+import '../Entities/Outlet.dart';
+import '../database.dart';
 
 class OutletService {
 

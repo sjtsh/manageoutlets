@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: const GetOutletScreen(),
+      home: GetOutletScreen(1000000),
     );
   }
 }

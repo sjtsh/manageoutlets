@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'Entity/OutletsListEntity.dart';
-import 'backend/Outlet.dart';
+import 'backend/Entities/Outlet.dart';
 
 class NextScreen extends StatefulWidget {
   final Beat beat;

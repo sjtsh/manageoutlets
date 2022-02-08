@@ -3,8 +3,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_static_maps_controller/google_static_maps_controller.dart';
 import 'package:latlng/latlng.dart';
 
-import 'backend/Distributor.dart';
-import 'backend/Outlet.dart';
+import 'backend/Entities/Distributor.dart';
+import 'backend/Entities/Outlet.dart';
 import 'mapscreen.dart';
 
 class RedMapScreen extends StatefulWidget {
@@ -78,6 +78,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
         redDistance,
         setTempRedRadius,
         center,
-        changeCenter);
+        changeCenter,
+    widget.distributors);
   }
 }

@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:manage_outlets/backend/Distributor.dart';
-import 'package:manage_outlets/backend/DistributorService.dart';
+import 'package:manage_outlets/backend/Entities/Distributor.dart';
+import 'package:manage_outlets/backend/Services/DistributorService.dart';
 import 'package:map/map.dart';
 
 import 'RedMapScreen.dart';
-import 'backend/Outlet.dart';
-import 'backend/OutletService.dart';
+import 'backend/Entities/Outlet.dart';
+import 'backend/Services/OutletService.dart';
 import 'package:latlng/latlng.dart';
 
 class GetOutletScreen extends StatelessWidget {
-  final double redRadius = 1000000;
-
-  const GetOutletScreen({Key? key}) : super(key: key);
+  final double redRadius;
+  GetOutletScreen(this.redRadius);
 
   @override
   Widget build(BuildContext context) {

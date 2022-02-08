@@ -9,8 +9,9 @@ import 'package:manage_outlets/NextScreen.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
-import 'backend/Outlet.dart';
-import 'backend/Outlet.dart';
+import 'backend/Entities/Distributor.dart';
+import 'backend/Entities/Outlet.dart';
+import 'backend/Entities/Outlet.dart';
 import 'merge/OutletMergeScreen.dart';
 import 'merge/mergescreen.dart';
 
@@ -25,6 +26,7 @@ class MapScreen extends StatefulWidget {
   final List<Outlet> bluegreyIndexes;
   final double redDistance;
   final Function changeCenter;
+  final List<Distributor> distributors;
 
   MapScreen(
       this.outletLatLng,
@@ -34,7 +36,8 @@ class MapScreen extends StatefulWidget {
       this.redDistance,
       this.setTempRedRadius,
       this.center,
-      this.changeCenter);
+      this.changeCenter,
+      this.distributors);
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -343,10 +346,61 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(
                   height: 12,
                 ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            blueIndexes = [];
+
+                            rangeIndexes = [];
+                          });
+                        },
+                        child: Container(
+                          color: Colors.red,
+                          height: 60,
+                          child: const Center(
+                            child: Text(
+                              "CLEAR",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (_) {
+                          //       return MergeScreen(blueIndexes);
+                          //     },
+                          //   ),
+                          // );
+                        },
+                        child: Container(
+                          color: Colors.green,
+                          height: 60,
+                          child: const Center(
+                            child: const Text(
+                              "Next",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
-          Expanded(flex: 1, child: MapScreenRightPanel(blueIndexes, removeBeat)),
+
+           Expanded(flex: 1, child: MapScreenRightPanel(widget.distributors,blueIndexes,removeBeat)),
+
         ],
       ),
     );

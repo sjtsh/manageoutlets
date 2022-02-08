@@ -1,21 +1,30 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/NextScreen.dart';
-import 'package:manage_outlets/backend/DistributorService.dart';
+import 'package:manage_outlets/backend/Services/DistributorService.dart';
+
+import 'backend/Entities/Distributor.dart';
 
 import 'Entity/OutletsListEntity.dart';
 
+
 class MapScreenRightPanel extends StatefulWidget {
+
   final List<Beat> beats;
   final Function removeBeat;
-
-  MapScreenRightPanel(this.beats, this.removeBeat);
+  final List<Distributor> distributors;
+  MapScreenRightPanel(this.distributors,this.beats, this.removeBeat);
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
 }
 
+
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
+  Distributor selectedDropDownItem = Distributor("Select Distributor", 1);
+  void _changeDropDownValue(Distributor newValue) {
+    selectedDropDownItem = newValue;
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -32,19 +41,14 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           ),
           Container(
             color: Colors.white,
-            child: DropdownSearch<String>(
+            child: DropdownSearch<Distributor>(
                 showSearchBox: true,
                 mode: Mode.MENU,
-                items: const [
-                  "Brazil",
-                  "Italia (Disabled)",
-                  "Tunisia",
-                  'Canada'
-                ],
-                hint: "Select Distibutor",
-                popupItemDisabled: (String s) => s.startsWith('I'),
-                onChanged: print,
-                selectedItem: "Brazil"),
+                items: widget.distributors,
+                onChanged: (selected){
+                  _changeDropDownValue(selectedDropDownItem);
+                },
+                selectedItem: selectedDropDownItem),
           ),
           const SizedBox(
             height: 12,
@@ -56,6 +60,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           const SizedBox(
             height: 12,
           ),
+
           Expanded(
             child: ListView.builder(
               itemCount: widget.beats.length,
