@@ -284,31 +284,6 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) {
-                                // return MergeScreen(blueIndexes);
-                                return NextScreen();
-                              },
-                            ),
-                          );
-                        },
-                        child: Container(
-                          color: Colors.green,
-                          height: 60,
-                          child: Center(
-                            child: Text(
-                              "Next",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ],

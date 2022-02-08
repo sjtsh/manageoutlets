@@ -1,24 +1,34 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import 'Entity/OutletsListEntity.dart';
+import 'backend/Outlet.dart';
+
 class NextScreen extends StatefulWidget {
-  static const int _count = 4;
+  final Beat beat;
+
+  NextScreen(this.beat);
 
   @override
   State<NextScreen> createState() => _NextScreenState();
 }
 
 class _NextScreenState extends State<NextScreen> {
-  final List<bool> _checks = List.generate(NextScreen._count, (_) => false);
-  String value = 'A';
+  List<Outlet> selectedOutlet = [];
+  var size, height, width;
 
   @override
   Widget build(BuildContext context) {
+    size = MediaQuery.of(context).size;
+    height = size.height;
+    width = size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: Center(
           child: Text(
-            "Select Photo",
+            "Select Photo for ${widget.beat.beatName} Beat",
             style: TextStyle(color: Colors.black),
           ),
         ),
@@ -36,7 +46,7 @@ class _NextScreenState extends State<NextScreen> {
         ),
       ),
       body: GridView.builder(
-        itemCount: NextScreen._count,
+        itemCount: widget.beat.outlet.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           childAspectRatio: 1.5,
@@ -47,55 +57,50 @@ class _NextScreenState extends State<NextScreen> {
         itemBuilder: (_, i) {
           return Stack(
             children: [
-              Image.asset("assets/hilife.jpg"),
+              Container(
+                  height: height / 2,
+                  width: width / 2,
+                  child: Image.asset("assets/hilife.jpg")),
               Align(
                 alignment: Alignment.topRight,
                 child: Container(
-                  margin: EdgeInsets.all(8),
-                  width: 150,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border: Border.all(color: Colors.white, width: 2),
-                  ),
-                  child: DropdownButton<String>(
-                    focusColor: Colors.white,
-                    // value: value,
-                    isExpanded: true,
-                    hint: value == null
-                        ? Text(
-                            " Category",
-                            style: TextStyle(color: Colors.white),
-                          )
-                        : Text(
-                            value,
-                            style: TextStyle(color: Colors.white),
-                          ),
-                    iconEnabledColor: Colors.white,
-                    underline: Container(),
-                    items: <String>['A', 'B', 'C', 'D'].map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(
-                          value,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      setState(() {
-                        value = newValue!;
-                      });
-                    },
-                    // onChanged: (_){},
+                  // clipBehavior: Clip.hardEdge,
+                  margin: const EdgeInsets.all(8),
+                  width: 200,
+                  height: 50,
+                  child: DropdownSearch<String>(
+                    showSearchBox: true,
+                    mode: Mode.MENU,
+                    items: const [
+                      "Brazil",
+                      "Italia (Disabled)",
+                      "Tunisia",
+                      'Canada'
+                    ],
+                    hint: "Select Distibutor",
+                    popupItemDisabled: (String s) => s.startsWith('I'),
+                    onChanged: print,
+                    selectedItem: "Brazil",
+                    dropdownSearchDecoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: InputBorder.none,
+                    ),
                   ),
                 ),
               ),
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Checkbox(
-                  activeColor: Colors.blue,
-                  value: _checks[i],
-                  onChanged: (newValue) =>
-                      setState(() => _checks[i] = newValue!),
+                  // activeColor: Colors.blue,
+                  value: selectedOutlet.contains(widget.beat.outlet[i]),
+                  onChanged: (newValue) => setState(() {
+                    if (selectedOutlet.contains(widget.beat.outlet[i])) {
+                      selectedOutlet.remove(widget.beat.outlet[i]);
+                    } else {
+                      selectedOutlet.add(widget.beat.outlet[i]);
+                    }
+                  }),
                 ),
               ),
             ],
