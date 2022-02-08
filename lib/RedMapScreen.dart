@@ -7,10 +7,10 @@ import 'backend/Outlet.dart';
 import 'mapscreen.dart';
 
 class RedMapScreen extends StatefulWidget {
-  final List<Outlet> outletLatLng;
-  final double redRadius;
+  final List<Outlet> outletLatLng;  //this is the all of the outlets including invisible ones
+  final double redRadius; //this is the max red radius for the slider
   final controller;
-  final LatLng myPosition;
+  final LatLng myPosition;  //this is the position of the user
 
   RedMapScreen(this.outletLatLng, this.redRadius,
       this.controller, this.myPosition);
