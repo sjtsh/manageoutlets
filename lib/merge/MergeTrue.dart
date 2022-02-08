@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/Entity/OutletsListEntity.dart';
 
-import '../backend/Outlet.dart';
+import '../backend/Entities/Outlet.dart';
 
 class MergeTrue extends StatefulWidget {
   final List<Beat> beat1;

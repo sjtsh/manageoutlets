@@ -7,4 +7,11 @@ class Distributor {
   factory Distributor.fromJson(Map<String, dynamic> json) {
     return Distributor(json["distributorName"], int.parse(json["id"]));
   }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return distributorName.toString();
+
+  }
 }

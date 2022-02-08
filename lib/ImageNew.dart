@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'backend/Outlet.dart';
+import 'backend/Entities/Outlet.dart';
 
 class ImageNew extends StatefulWidget {
   final List<Outlet> outlets;

@@ -7,7 +7,7 @@ import 'package:map/map.dart';
 import 'package:latlng/latlng.dart';
 
 import 'GetOutletScreen.dart';
-import 'backend/Outlet.dart';
+import 'backend/Entities/Outlet.dart';
 
 class MergeMap extends StatefulWidget {
   final List<Outlet> visibleOutlets;

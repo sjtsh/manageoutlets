@@ -1,4 +1,4 @@
-import 'package:manage_outlets/backend/Outlet.dart';
+import 'package:manage_outlets/backend/Entities/Outlet.dart';
 
 class Beat {
   String beatName;

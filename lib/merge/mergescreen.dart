@@ -4,7 +4,7 @@ import 'package:manage_outlets/merge/MergeTrue.dart';
 import 'package:manage_outlets/merge/OutletMergeMap.dart';
 import 'package:manage_outlets/merge/OutletMergeScreen.dart';
 
-import '../backend/Outlet.dart';
+import '../backend/Entities/Outlet.dart';
 import 'MergeFalse.dart';
 
 class MergeScreen extends StatefulWidget {
