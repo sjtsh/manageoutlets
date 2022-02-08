@@ -12,7 +12,8 @@ import 'merge/OutletMergeScreen.dart';
 import 'merge/mergescreen.dart';
 
 class MapScreen extends StatefulWidget {
-  final List<Outlet> outletLatLng;  //this is the all of the outlets that is visible
+  final List<Outlet>
+      outletLatLng; //this is the all of the outlets that is visible
   final double redRadius; //this radius is the max point of the slider
   final LatLng?
       center; // this the point from which the latlng will be calculated
@@ -263,14 +264,13 @@ class _MapScreenState extends State<MapScreen> {
                           setState(() {
                             blueDistance = 0;
                             blueIndexes = [];
-
                             rangeIndexes = [];
                           });
                         },
                         child: Container(
                           color: Colors.red,
                           height: 60,
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               "CLEAR",
                               style: TextStyle(color: Colors.white),

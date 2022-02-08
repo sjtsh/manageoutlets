@@ -146,10 +146,8 @@ class _ChooseLocationScreenState extends State<ChooseLocationScreen> {
                         label:
                             Text("Enter the max distance for slider in double"),
                       ),
-                      onChanged: (input){
-                        setState(() {
-
-                        });
+                      onChanged: (input) {
+                        setState(() {});
                       },
                     ),
                   ),
@@ -166,8 +164,11 @@ class _ChooseLocationScreenState extends State<ChooseLocationScreen> {
                             }),
                           );
                         } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("Please enter a parsable double")));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Please enter a parsable double"),
+                            ),
+                          );
                         }
                       }
                     },
