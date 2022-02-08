@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:manage_outlets/backend/Distributor.dart';
+import 'package:manage_outlets/backend/DistributorService.dart';
 import 'package:map/map.dart';
 
 import 'RedMapScreen.dart';
@@ -21,7 +23,10 @@ class GetOutletScreen extends StatelessWidget {
           .then((value) async {
         List<Outlet> outlets = await OutletService()
             .getNearbyOutlets(redRadius, latLng.latitude, latLng.longitude);
-        return [outlets, value];
+        List<Distributor> distributors = await DistributorService().getDistributor();
+
+        return [outlets,distributors, value];
+
       }),
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
