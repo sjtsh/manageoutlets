@@ -124,6 +124,7 @@ class _MapScreenState extends State<MapScreen> {
                                         pos, Colors.blueGrey, false),
                                   ));
                             } else {
+                              redPositions.add(element.value);
                               markerWidgets.addAll([
                                 LatLng(element.value.lat, element.value.lng)
                               ]
@@ -231,7 +232,7 @@ class _MapScreenState extends State<MapScreen> {
                 Column(
                   children: [
                     Text(
-                      "${widget.outletLatLng.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
+                      "${redPositions.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
                       style: const TextStyle(fontSize: 20),
                     ),
                     Row(
@@ -239,7 +240,7 @@ class _MapScreenState extends State<MapScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              blueIndexes = [];
+                              bluePositions = [];
                               rangeIndexes = [];
                               widget.setTempRedRadius(0.0);
                             });
