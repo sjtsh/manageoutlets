@@ -1,16 +1,10 @@
-import 'dart:convert';
 
-import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
-import 'package:manage_outlets/backend/Distributor.dart';
+import 'package:manage_outlets/backend/Entities/Distributor.dart';
+import 'package:manage_outlets/backend/Entities/OutletCatagoryEntity.dart';
 
-import 'Outlet.dart';
-import 'database.dart';
+class OutletCategoryService {
 
-class DistributorService {
-
-  Future<List<Distributor>> getDistributor() async {
+  Future<List<OutletCategory>> getDistributor() async {
     // Response res = await http.post(
     //   Uri.parse("$localhost/outlet"),
     //   body: <String, String>{

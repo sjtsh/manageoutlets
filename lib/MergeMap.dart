@@ -7,13 +7,14 @@ import 'package:map/map.dart';
 import 'package:latlng/latlng.dart';
 
 import 'GetOutletScreen.dart';
-import 'backend/Outlet.dart';
+import 'backend/Entities/Outlet.dart';
 
 class MergeMap extends StatefulWidget {
   final List<Outlet> visibleOutlets;
   final List<Outlet> focusedOutlets;
+  final bool isMerge;
 
-  MergeMap(this.visibleOutlets, this.focusedOutlets);
+  MergeMap(this.visibleOutlets, this.focusedOutlets, this.isMerge);
 
   @override
   State<MergeMap> createState() => _MergeMapState();
@@ -84,6 +85,7 @@ class _MergeMapState extends State<MergeMap> {
                   location: centerOutlet == null
                       ? LatLng(0, 0)
                       : LatLng(centerOutlet.lat, centerOutlet.lng),
+                  zoom: widget.isMerge ? 19 : 22,
                 ),
                 builder: (context, x, y, z) {
                   final url =

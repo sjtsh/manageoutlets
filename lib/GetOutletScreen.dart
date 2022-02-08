@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:manage_outlets/backend/Distributor.dart';
-import 'package:manage_outlets/backend/DistributorService.dart';
+import 'package:manage_outlets/backend/Entities/Distributor.dart';
+import 'package:manage_outlets/backend/Services/DistributorService.dart';
 import 'package:map/map.dart';
 
 import 'RedMapScreen.dart';
-import 'backend/Outlet.dart';
-import 'backend/OutletService.dart';
+import 'backend/Entities/Outlet.dart';
+import 'backend/Services/OutletService.dart';
 import 'package:latlng/latlng.dart';
 
 class GetOutletScreen extends StatelessWidget {
@@ -32,6 +32,7 @@ class GetOutletScreen extends StatelessWidget {
           Position position = snapshot.data[2];
           final controller = MapController(
             location: LatLng(position.latitude, position.longitude),
+            zoom: 17,
           );
           return RedMapScreen(outletLatLng, redRadius, controller,
               LatLng(position.latitude, position.longitude), distributors);

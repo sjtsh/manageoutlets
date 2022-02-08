@@ -1,14 +1,19 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:manage_outlets/backend/DistributorService.dart';
+import 'package:manage_outlets/NextScreen.dart';
+import 'package:manage_outlets/backend/Services/DistributorService.dart';
 
-import 'backend/Distributor.dart';
+import 'backend/Entities/Distributor.dart';
+
+import 'Entity/OutletsListEntity.dart';
 
 
 class MapScreenRightPanel extends StatefulWidget {
 
+  final List<Beat> beats;
   final List<Distributor> distributors;
-  MapScreenRightPanel(this.distributors);
+  MapScreenRightPanel(this.distributors,this.beats);
+
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
@@ -16,8 +21,8 @@ class MapScreenRightPanel extends StatefulWidget {
 
 
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
-  String selectedDropDownItem = "Select Distributor";
-  void _changeDropDownValue(String newValue) {
+  Distributor selectedDropDownItem = Distributor("Select Distributor", 1);
+  void _changeDropDownValue(Distributor newValue) {
     selectedDropDownItem = newValue;
   }
   @override
@@ -29,19 +34,17 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
         children: [
           const Text(
             "Distributor",
-            style:
-            TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             height: 12,
           ),
           Container(
             color: Colors.white,
-            child: DropdownSearch<dynamic>(
+            child: DropdownSearch<Distributor>(
                 showSearchBox: true,
                 mode: Mode.MENU,
                 items: widget.distributors,
-                hint: selectedDropDownItem,
                 onChanged: (selected){
                   _changeDropDownValue(selectedDropDownItem);
                 },
@@ -52,25 +55,27 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           ),
           const Text(
             "Beats",
-            style:
-            TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
           const SizedBox(
             height: 12,
           ),
+
           Expanded(
             child: ListView.builder(
-              itemCount: 5,
+              itemCount: widget.beats.length,
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       //single tap funtion
                     },
-                    onDoubleTap: (){
+                    onDoubleTap: () {
                       // double tap function
-
+                      Navigator.push(context, MaterialPageRoute(builder: (_) {
+                        return NextScreen(widget.beats[index]);
+                      }));
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -88,19 +93,24 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         child: Row(
                           children: [
                             Column(
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
-                                Text("Name of beat:",style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                Text("Name of beat:",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
                                 SizedBox(
                                   height: 4,
                                 ),
-                                Text("Number of outlets:", style: TextStyle(color: Colors.grey),)
+                                Text(
+                                  "Number of outlets:",
+                                  style: TextStyle(color: Colors.grey),
+                                )
                               ],
                             ),
                             Expanded(child: Container()),
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 /// remove from list
                               },
                               child: Container(
@@ -140,11 +150,15 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         blurRadius: 2,
                         color: Colors.black.withOpacity(0.1))
                   ]),
-              child: const Center(child: Text("Confirm", style: TextStyle(color: Colors.white),)),
+              child: const Center(
+                  child: Text(
+                    "Confirm",
+                    style: TextStyle(color: Colors.white),
+                  )),
             ),
           )
         ],
       ),
-    ) ;
+    );
   }
 }
