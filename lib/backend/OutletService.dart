@@ -17,10 +17,10 @@ class OutletService {
         'distance': distance.toString(),
       },
     );
-    print(res.body);
     if (res.statusCode == 200) {
       List<dynamic> a = jsonDecode(res.body);
       List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
+      print(outlets.length);
       return outlets;
     } else {
       return [];

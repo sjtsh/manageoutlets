@@ -75,32 +75,6 @@ class _MapScreenState extends State<MapScreen> {
             flex: 3,
             child: Column(
               children: [
-                Container(
-                  height: 60,
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: Icon(Icons.arrow_back_rounded)),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            "${blueIndexes.length.toString()} Added",
-                            style: TextStyle(fontSize: 50),
-                          ),
-                        ),
-                      ),
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.arrow_back_rounded,
-                            color: Colors.transparent,
-                          )),
-                    ],
-                  ),
-                ),
                 Expanded(
                   child: MapLayoutBuilder(
                     controller: widget.controller,
@@ -252,7 +226,7 @@ class _MapScreenState extends State<MapScreen> {
                 Column(
                   children: [
                     Text(
-                      "${rangeIndexes.length} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
+                      "${widget.outletLatLng.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
                       style: TextStyle(fontSize: 20),
                     ),
                     Row(
@@ -277,51 +251,6 @@ class _MapScreenState extends State<MapScreen> {
                         Text("${widget.redRadius} m"),
                         SizedBox(
                           width: 12,
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 12,
-                        ),
-                        Text("0 m"),
-                        Expanded(
-                          child: Slider(
-                              activeColor: Colors.blue,
-                              inactiveColor: Colors.blue.withOpacity(0.5),
-                              thumbColor: Colors.blue,
-                              value: blueDistance,
-                              max: widget.redDistance,
-                              min: 0,
-                              label: "$blueDistance",
-                              onChanged: (double a) {
-                                setState(() {
-                                  blueDistance = a;
-                                });
-                              }),
-                        ),
-                        Text("${widget.redDistance.toStringAsFixed(2)} m"),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              blueIndexes.addAll(rangeIndexes);
-                            });
-                          },
-                          child: Container(
-                            width: 100,
-                            color: Colors.green,
-                            height: 60,
-                            child: Center(
-                              child: Text(
-                                "Add",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
                         ),
                       ],
                     ),
