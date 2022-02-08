@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
+import 'MapScreenRightPanel.dart';
 import 'backend/Outlet.dart';
 import 'backend/Outlet.dart';
 import 'merge/OutletMergeScreen.dart';
@@ -40,10 +42,12 @@ class _MapScreenState extends State<MapScreen> {
   double blueDistance = 0;
   List<Outlet> markerPositions1 = [];
   List<Outlet> markerPositions2 = [];
+
   //List<Outlet> blueIndexes = []; //permanent indexes, this one will be cleared
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
-  List<Beat> blueIndexes =[];
+  List<Beat> blueIndexes = [];
+
   void _onDoubleTap() {
     widget.controller.zoom += 0.5;
     setState(() {});
@@ -308,9 +312,8 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-
                             setState(() {
-                            //  blueIndexes.add(Beat(Name, rangeIndexes));
+                              //  blueIndexes.add(Beat(Name, rangeIndexes));
                             });
                           },
                           child: Container(
@@ -385,10 +388,9 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-
           Expanded(
             flex: 1,
-            child: Container(color: Colors.green,),
+            child: MapScreenRightPanel()
           ),
         ],
       ),
