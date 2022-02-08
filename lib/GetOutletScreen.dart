@@ -33,6 +33,7 @@ class GetOutletScreen extends StatelessWidget {
           Position position = snapshot.data[2];
           final controller = MapController(
             location: LatLng(position.latitude, position.longitude),
+            zoom: 17,
           );
           return RedMapScreen(outletLatLng, redRadius, controller,
               LatLng(position.latitude, position.longitude), distributors);

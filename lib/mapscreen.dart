@@ -232,6 +232,26 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Row(
                       children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              blueDistance = 0;
+                              blueIndexes = [];
+                              rangeIndexes = [];
+                            });
+                          },
+                          child: Container(
+                            color: Colors.red,
+                            height: 60,
+                            width: 200,
+                            child: const Center(
+                              child: Text(
+                                "CLEAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
                         const SizedBox(
                           width: 12,
                         ),
@@ -256,9 +276,7 @@ class _MapScreenState extends State<MapScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              blueDistance = 0;
-                              blueIndexes = [];
-                              rangeIndexes = [];
+                            blueIndexes.add(Beat("beatName", redPositions));
                             });
                           },
                           child: Container(
@@ -267,7 +285,7 @@ class _MapScreenState extends State<MapScreen> {
                             width: 200,
                             child: const Center(
                               child: Text(
-                                "CLEAR",
+                                "ADD",
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),
@@ -280,67 +298,10 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(
                   height: 12,
                 ),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            blueDistance = 0;
-                            blueIndexes = [];
-
-                            rangeIndexes = [];
-                          });
-                        },
-                        child: Container(
-                          color: Colors.red,
-                          height: 60,
-                          child: const Center(
-                            child: const Text(
-                              "CLEAR",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) {
-                          //       return MergeScreen(blueIndexes);
-                          //     },
-                          //   ),
-                          // );
-                        },
-                        child: Container(
-                          color: Colors.green,
-                          height: 60,
-                          child: const Center(
-                            child: const Text(
-                              "Next",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
-          const Expanded(
-            flex: 1,
-
-            child: MapScreenRightPanel()
-
-          ),
-
+          const Expanded(flex: 1, child: MapScreenRightPanel()),
         ],
       ),
     );
