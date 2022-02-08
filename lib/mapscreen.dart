@@ -50,7 +50,7 @@ class _MapScreenState extends State<MapScreen> {
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
 
-  removeBeat(Beat beat){
+  removeBeat(Beat beat) {
     setState(() {
       blueIndexes.remove(beat);
     });
@@ -237,29 +237,6 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Row(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              bluePositions = [];
-                              rangeIndexes = [];
-                              widget.setTempRedRadius(0.0);
-                            });
-                          },
-                          child: Container(
-                            color: Colors.red,
-                            height: 60,
-                            width: 200,
-                            child: const Center(
-                              child: Text(
-                                "CLEAR",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
                         const Text("0 m"),
                         Expanded(
                           child: Slider(
@@ -271,7 +248,9 @@ class _MapScreenState extends State<MapScreen> {
                               min: 0,
                               label: "${widget.redDistance.toStringAsFixed(2)}",
                               onChanged: (double a) {
-                                widget.setTempRedRadius(a);
+                                setState(() {
+                                  widget.setTempRedRadius(a);
+                                });
                               }),
                         ),
                         const Text("2000 m"),
@@ -317,7 +296,6 @@ class _MapScreenState extends State<MapScreen> {
                                                 icon: Icon(
                                                   Icons.send,
                                                 ),
-
                                               ),
                                             ],
                                           ),
@@ -346,61 +324,13 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(
                   height: 12,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            blueIndexes = [];
-
-                            rangeIndexes = [];
-                          });
-                        },
-                        child: Container(
-                          color: Colors.red,
-                          height: 60,
-                          child: const Center(
-                            child: Text(
-                              "CLEAR",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) {
-                          //       return MergeScreen(blueIndexes);
-                          //     },
-                          //   ),
-                          // );
-                        },
-                        child: Container(
-                          color: Colors.green,
-                          height: 60,
-                          child: const Center(
-                            child: const Text(
-                              "Next",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
-
-           Expanded(flex: 1, child: MapScreenRightPanel(widget.distributors,blueIndexes,removeBeat)),
-
+          Expanded(
+              flex: 1,
+              child: MapScreenRightPanel(
+                  widget.distributors, blueIndexes, removeBeat)),
         ],
       ),
     );
