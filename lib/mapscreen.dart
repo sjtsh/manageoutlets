@@ -15,7 +15,8 @@ import 'merge/OutletMergeScreen.dart';
 import 'merge/mergescreen.dart';
 
 class MapScreen extends StatefulWidget {
-  final List<Outlet> outletLatLng;  //this is the all of the outlets that is visible
+  final List<Outlet>
+      outletLatLng; //this is the all of the outlets that is visible
   final double redRadius; //this radius is the max point of the slider
   final LatLng?
       center; // this the point from which the latlng will be calculated
@@ -73,7 +74,7 @@ class _MapScreenState extends State<MapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xfff2f2f2),
+      backgroundColor: const Color(0xfff2f2f2),
       body: Row(
         children: [
           Expanded(
@@ -227,39 +228,59 @@ class _MapScreenState extends State<MapScreen> {
                   children: [
                     Text(
                       "${widget.outletLatLng.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
-                      style: TextStyle(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                     Row(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 12,
                         ),
-                        Text("0 m"),
+                        const Text("0 m"),
                         Expanded(
                           child: Slider(
                               activeColor: Colors.red,
                               inactiveColor: Colors.red.withOpacity(0.5),
                               thumbColor: Colors.red,
                               value: widget.redDistance,
-                              max: widget.redRadius,
+                              max: 2000,
                               min: 0,
                               label: "${widget.redDistance.toStringAsFixed(2)}",
                               onChanged: (double a) {
                                 widget.setTempRedRadius(a);
                               }),
                         ),
-                        Text("${widget.redRadius} m"),
-                        SizedBox(
+                        const Text("2000 m"),
+                        const SizedBox(
                           width: 12,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              blueDistance = 0;
+                              blueIndexes = [];
+                              rangeIndexes = [];
+                            });
+                          },
+                          child: Container(
+                            color: Colors.red,
+                            height: 60,
+                            width: 200,
+                            child: const Center(
+                              child: Text(
+                                "CLEAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
+
                 Row(
                   children: [
                     Expanded(
@@ -275,9 +296,33 @@ class _MapScreenState extends State<MapScreen> {
                         child: Container(
                           color: Colors.red,
                           height: 60,
-                          child: Center(
-                            child: Text(
+                          child: const Center(
+                            child: const Text(
                               "CLEAR",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (_) {
+                          //       return MergeScreen(blueIndexes);
+                          //     },
+                          //   ),
+                          // );
+                        },
+                        child: Container(
+                          color: Colors.green,
+                          height: 60,
+                          child: const Center(
+                            child: const Text(
+                              "Next",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -289,12 +334,13 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-          Expanded(
+          const Expanded(
             flex: 1,
 
             child: MapScreenRightPanel()
 
           ),
+
         ],
       ),
     );
