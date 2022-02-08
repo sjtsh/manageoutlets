@@ -301,7 +301,7 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-          const Expanded(flex: 1, child: MapScreenRightPanel()),
+          Expanded(flex: 1, child: MapScreenRightPanel(blueIndexes)),
         ],
       ),
     );
