@@ -8,6 +8,7 @@ import 'Outlet.dart';
 import 'database.dart';
 
 class OutletService {
+
   Future<List<Outlet>> getNearbyOutlets(double distance, double lat, double lng) async {
     // Response res = await http.post(
     //   Uri.parse("$localhost/outlet"),

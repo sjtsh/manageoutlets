@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
+import 'MapScreenRightPanel.dart';
 import 'backend/Outlet.dart';
 import 'backend/Outlet.dart';
 import 'merge/OutletMergeScreen.dart';
@@ -39,6 +41,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   double blueDistance = 0;
+
   List<Outlet> redPositions = [];
   List<Outlet> bluePositions = [];
   List<Outlet> rangeIndexes =
@@ -251,6 +254,7 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                       ],
                     ),
+
                   ],
                 ),
                 SizedBox(
@@ -310,9 +314,9 @@ class _MapScreenState extends State<MapScreen> {
           ),
           Expanded(
             flex: 1,
-            child: Container(
-              color: Colors.green,
-            ),
+
+            child: MapScreenRightPanel()
+
           ),
         ],
       ),
