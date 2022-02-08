@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_static_maps_controller/google_static_maps_controller.dart';
 import 'package:latlng/latlng.dart';
 
+import 'backend/Distributor.dart';
 import 'backend/Outlet.dart';
 import 'mapscreen.dart';
 
@@ -11,9 +12,10 @@ class RedMapScreen extends StatefulWidget {
   final double redRadius; //this is the max red radius for the slider
   final controller;
   final LatLng myPosition;  //this is the position of the user
+  final List<Distributor> distributors;
 
   RedMapScreen(this.outletLatLng, this.redRadius,
-      this.controller, this.myPosition);
+      this.controller, this.myPosition, this.distributors);
 
   @override
   State<RedMapScreen> createState() => _RedMapScreenState();
