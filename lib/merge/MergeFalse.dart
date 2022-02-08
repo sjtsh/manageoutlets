@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:manage_outlets/Entity/OutletsListEntity.dart';
 
 import '../ImageNew.dart';
 import '../backend/Outlet.dart';
 
 class MergeFalse extends StatefulWidget {
-  final List<Outlet> outlets1;
+  final List<Beat> beat1;
   final Function setMerge;
   final List<Outlet> outlets;
   final List flexMap;
@@ -19,7 +20,7 @@ class MergeFalse extends StatefulWidget {
   final TextEditingController distributorController;
 
   MergeFalse(
-      this.outlets1,
+      this.beat1,
       this.setMerge,
       this.outlets,
       this.flexMap,

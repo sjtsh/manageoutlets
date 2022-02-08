@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
+import 'Entity/OutletsListEntity.dart';
 import 'backend/Outlet.dart';
 import 'backend/Outlet.dart';
 import 'merge/OutletMergeScreen.dart';
@@ -39,10 +40,10 @@ class _MapScreenState extends State<MapScreen> {
   double blueDistance = 0;
   List<Outlet> markerPositions1 = [];
   List<Outlet> markerPositions2 = [];
-  List<Outlet> blueIndexes = []; //permanent indexes, this one will be cleared
+  //List<Outlet> blueIndexes = []; //permanent indexes, this one will be cleared
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
-
+  List<Beat> blueIndexes =[];
   void _onDoubleTap() {
     widget.controller.zoom += 0.5;
     setState(() {});
@@ -307,8 +308,9 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
+
                             setState(() {
-                              blueIndexes.addAll(rangeIndexes);
+                            //  blueIndexes.add(Beat(Name, rangeIndexes));
                             });
                           },
                           child: Container(
@@ -357,14 +359,14 @@ class _MapScreenState extends State<MapScreen> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) {
-                                return MergeScreen(blueIndexes);
-                              },
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (_) {
+                          //       return MergeScreen(blueIndexes);
+                          //     },
+                          //   ),
+                          // );
                         },
                         child: Container(
                           color: Colors.green,

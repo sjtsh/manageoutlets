@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:manage_outlets/Entity/OutletsListEntity.dart';
 import 'package:manage_outlets/merge/MergeTrue.dart';
 import 'package:manage_outlets/merge/OutletMergeMap.dart';
 import 'package:manage_outlets/merge/OutletMergeScreen.dart';
@@ -7,9 +8,9 @@ import '../backend/Outlet.dart';
 import 'MergeFalse.dart';
 
 class MergeScreen extends StatefulWidget {
-  final List<Outlet> outlets1;
+  final List<Beat> beat1;
 
-  MergeScreen(this.outlets1);
+  MergeScreen(this.beat1);
 
   @override
   State<MergeScreen> createState() => _MergeScreenState();
@@ -35,7 +36,7 @@ class _MergeScreenState extends State<MergeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    outlets = widget.outlets1;
+    //outlets = widget.outlets1;
   }
 
   select(int index) {
@@ -80,7 +81,7 @@ class _MergeScreenState extends State<MergeScreen> {
               children: [
                 Expanded(
                   child: MergeTrue(
-                    widget.outlets1,
+                    widget.beat1,
                     setMerge,
                     outlets,
                     flexMap,
@@ -94,7 +95,7 @@ class _MergeScreenState extends State<MergeScreen> {
             )
           : Expanded(
               child: MergeFalse(
-                  widget.outlets1,
+                  widget.beat1,
                   setMerge,
                   outlets,
                   flexMap,
