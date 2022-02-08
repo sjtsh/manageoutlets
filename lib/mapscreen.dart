@@ -252,72 +252,37 @@ class _MapScreenState extends State<MapScreen> {
                         SizedBox(
                           width: 12,
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              blueDistance = 0;
+                              blueIndexes = [];
+                              rangeIndexes = [];
+                            });
+                          },
+                          child: Container(
+                            color: Colors.red,
+                            height: 60,
+                            width: 200,
+                            child: const Center(
+                              child: Text(
+                                "CLEAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-
                   ],
                 ),
                 SizedBox(
                   height: 12,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            blueDistance = 0;
-                            blueIndexes = [];
-                            rangeIndexes = [];
-                          });
-                        },
-                        child: Container(
-                          color: Colors.red,
-                          height: 60,
-                          child: const Center(
-                            child: Text(
-                              "CLEAR",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) {
-                          //       return MergeScreen(blueIndexes);
-                          //     },
-                          //   ),
-                          // );
-                        },
-                        child: Container(
-                          color: Colors.green,
-                          height: 60,
-                          child: Center(
-                            child: Text(
-                              "Next",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
-          Expanded(
-            flex: 1,
-
-            child: MapScreenRightPanel()
-
-          ),
+          Expanded(flex: 1, child: MapScreenRightPanel()),
         ],
       ),
     );

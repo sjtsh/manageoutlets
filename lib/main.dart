@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'ChooseLocationScreen.dart';
+import 'MergeMap.dart';
+import 'GetOutletScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,7 +21,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: const ChooseLocationScreen(),
+      home: const GetOutletScreen(),
     );
   }
 }
