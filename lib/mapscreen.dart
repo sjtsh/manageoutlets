@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
+import 'package:manage_outlets/NextScreen.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
@@ -14,7 +15,8 @@ import 'merge/OutletMergeScreen.dart';
 import 'merge/mergescreen.dart';
 
 class MapScreen extends StatefulWidget {
-  final List<Outlet> outletLatLng;  //this is the all of the outlets that is visible
+  final List<Outlet>
+      outletLatLng; //this is the all of the outlets that is visible
   final double redRadius; //this radius is the max point of the slider
   final LatLng?
       center; // this the point from which the latlng will be calculated
@@ -251,14 +253,34 @@ class _MapScreenState extends State<MapScreen> {
                         const SizedBox(
                           width: 12,
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              blueDistance = 0;
+                              blueIndexes = [];
+                              rangeIndexes = [];
+                            });
+                          },
+                          child: Container(
+                            color: Colors.red,
+                            height: 60,
+                            width: 200,
+                            child: const Center(
+                              child: Text(
+                                "CLEAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-
                   ],
                 ),
                 const SizedBox(
                   height: 12,
                 ),
+
                 Row(
                   children: [
                     Expanded(
@@ -318,6 +340,7 @@ class _MapScreenState extends State<MapScreen> {
             child: MapScreenRightPanel()
 
           ),
+
         ],
       ),
     );
