@@ -5,14 +5,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
+import 'Entity/OutletsListEntity.dart';
 import 'backend/Outlet.dart';
 import 'backend/Outlet.dart';
 import 'merge/OutletMergeScreen.dart';
 import 'merge/mergescreen.dart';
 
 class MapScreen extends StatefulWidget {
-  final List<Outlet> outletLatLng;
-  final double redRadius;
+  final List<Outlet> outletLatLng;  //this is the all of the outlets that is visible
+  final double redRadius; //this radius is the max point of the slider
   final LatLng?
       center; // this the point from which the latlng will be calculated
   final Function setTempRedRadius;
@@ -37,11 +38,11 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   double blueDistance = 0;
-  List<Outlet> markerPositions1 = [];
-  List<Outlet> markerPositions2 = [];
-  List<Outlet> blueIndexes = []; //permanent indexes, this one will be cleared
+  List<Outlet> redPositions = [];
+  List<Outlet> bluePositions = [];
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
+  List<Beat> blueIndexes = [];
 
   void _onDoubleTap() {
     widget.controller.zoom += 0.5;
@@ -79,24 +80,19 @@ class _MapScreenState extends State<MapScreen> {
                   child: MapLayoutBuilder(
                     controller: widget.controller,
                     builder: (context, transformer) {
-                      markerPositions1 = [];
-                      markerPositions2 = widget.outletLatLng;
+                      redPositions = widget.outletLatLng;
                       final markerWidgets = [];
                       if (widget.center != null) {
-                        markerPositions2 = [];
+                        List<Outlet> selectedOutlets = [];
+                        for (Beat beat in blueIndexes) {
+                          selectedOutlets.addAll(beat.outlet);
+                        }
+
+                        redPositions = [];
                         rangeIndexes = [];
                         widget.outletLatLng.asMap().entries.forEach((element) {
-                          if (blueIndexes.contains(element.value)) {
-                            markerPositions1.add(element.value);
-                          } else if (GeolocatorPlatform.instance
-                                  .distanceBetween(
-                                      element.value.lat,
-                                      element.value.lng,
-                                      widget.center!.latitude,
-                                      widget.center!.longitude) <
-                              blueDistance) {
-                            rangeIndexes.add(element.value);
-                            markerPositions1.add(element.value);
+                          if (selectedOutlets.contains(element.value)) {
+                            bluePositions.add(element.value);
                           } else if (GeolocatorPlatform.instance
                                   .distanceBetween(
                                       element.value.lat,
@@ -131,9 +127,9 @@ class _MapScreenState extends State<MapScreen> {
                       }
                       markerWidgets.addAll(
                         List.generate(
-                                markerPositions1.length,
-                                (e) => LatLng(markerPositions1[e].lat,
-                                    markerPositions1[e].lng))
+                                bluePositions.length,
+                                (e) => LatLng(
+                                    bluePositions[e].lat, bluePositions[e].lng))
                             .map(transformer.fromLatLngToXYCoords)
                             .toList()
                             .map(
@@ -286,14 +282,14 @@ class _MapScreenState extends State<MapScreen> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) {
-                                return MergeScreen(blueIndexes);
-                              },
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (_) {
+                          //       return MergeScreen(blueIndexes);
+                          //     },
+                          //   ),
+                          // );
                         },
                         child: Container(
                           color: Colors.green,
@@ -312,10 +308,11 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-
           Expanded(
             flex: 1,
-            child: Container(color: Colors.green,),
+            child: Container(
+              color: Colors.green,
+            ),
           ),
         ],
       ),

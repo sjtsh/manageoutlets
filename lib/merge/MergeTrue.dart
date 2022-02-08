@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:manage_outlets/Entity/OutletsListEntity.dart';
 
 import '../backend/Outlet.dart';
 
 class MergeTrue extends StatefulWidget {
-  final List<Outlet> outlets1;
+  final List<Beat> beat1;
   final Function setMerge;
   final List<Outlet> outlets;
   final List flexMap;
@@ -12,7 +13,7 @@ class MergeTrue extends StatefulWidget {
   final Function confirmMerge;
 
   MergeTrue(
-    this.outlets1,
+    this.beat1,
     this.setMerge,
     this.outlets,
     this.flexMap,
