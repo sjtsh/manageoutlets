@@ -11,9 +11,9 @@ import 'Entity/OutletsListEntity.dart';
 class MapScreenRightPanel extends StatefulWidget {
 
   final List<Beat> beats;
+  final Function removeBeat;
   final List<Distributor> distributors;
-  MapScreenRightPanel(this.distributors,this.beats);
-
+  MapScreenRightPanel(this.distributors,this.beats, this.removeBeat);
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
@@ -94,8 +94,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                           children: [
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text("Name of beat:",
+                              children: [
+                                Text(widget.beats[index].beatName,
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold)),
@@ -103,7 +103,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                   height: 4,
                                 ),
                                 Text(
-                                  "Number of outlets:",
+                                  "${widget.beats[index].outlet.length} Outlets",
                                   style: TextStyle(color: Colors.grey),
                                 )
                               ],
@@ -112,6 +112,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                             GestureDetector(
                               onTap: () {
                                 /// remove from list
+                                widget.removeBeat(widget.beats[index]);
                               },
                               child: Container(
                                 decoration: const BoxDecoration(
