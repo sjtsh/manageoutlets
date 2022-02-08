@@ -346,55 +346,6 @@ class _MapScreenState extends State<MapScreen> {
                 const SizedBox(
                   height: 12,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            blueIndexes = [];
-
-                            rangeIndexes = [];
-                          });
-                        },
-                        child: Container(
-                          color: Colors.red,
-                          height: 60,
-                          child: const Center(
-                            child: Text(
-                              "CLEAR",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) {
-                          //       return MergeScreen(blueIndexes);
-                          //     },
-                          //   ),
-                          // );
-                        },
-                        child: Container(
-                          color: Colors.green,
-                          height: 60,
-                          child: const Center(
-                            child: const Text(
-                              "Next",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
