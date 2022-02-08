@@ -20,23 +20,22 @@ class GetOutletScreen extends StatelessWidget {
       future:
           GeolocatorPlatform.instance.getCurrentPosition().then((value) async {
         List<Outlet> outlets = await OutletService()
-
             .getNearbyOutlets(redRadius, value.latitude, value.longitude);
-        List<Distributor> distributors = await DistributorService().getDistributor();
+        List<Distributor> distributors =
+            await DistributorService().getDistributor();
 
-        return [outlets,distributors, value];
-
-
+        return [outlets, distributors, value];
       }),
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           List<Outlet> outletLatLng = snapshot.data[0];
-          Position position = snapshot.data[1];
+          List<Distributor> distributors = snapshot.data[1];
+          Position position = snapshot.data[2];
           final controller = MapController(
             location: LatLng(position.latitude, position.longitude),
           );
           return RedMapScreen(outletLatLng, redRadius, controller,
-              LatLng(position.latitude, position.longitude));
+              LatLng(position.latitude, position.longitude), distributors);
         }
         return const Scaffold(
           body: Center(
