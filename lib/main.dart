@@ -21,13 +21,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  double redRadius = 10000;
-
-  setRedRadius(double newRadius) {
-    setState(() {
-      redRadius = newRadius;
-    });
-  }
+  double redRadius = 30000;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +46,7 @@ class _MyAppState extends State<MyApp> {
             final controller = MapController(
               location: LatLng(position.latitude, position.longitude),
             );
-            return RedMapScreen(outletLatLng, redRadius, setRedRadius,
+            return RedMapScreen(outletLatLng, redRadius,
                 controller, LatLng(position.latitude, position.longitude));
           }
           return const Scaffold(

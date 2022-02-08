@@ -9,11 +9,10 @@ import 'mapscreen.dart';
 class RedMapScreen extends StatefulWidget {
   final List<Outlet> outletLatLng;
   final double redRadius;
-  final Function setRedRadius;
   final controller;
   final LatLng myPosition;
 
-  RedMapScreen(this.outletLatLng, this.redRadius, this.setRedRadius,
+  RedMapScreen(this.outletLatLng, this.redRadius,
       this.controller, this.myPosition);
 
   @override
@@ -29,10 +28,18 @@ class _RedMapScreenState extends State<RedMapScreen> {
   setTempRedRadius(double a) {
     setState(() {
       redDistance = a;
-      if (redDistance == widget.redRadius) {
-        widget.setRedRadius(widget.redRadius * 2);
-      }
     });
+    if(center!=null){
+
+      myOutlets = widget.outletLatLng.where((element) {
+        return GeolocatorPlatform.instance.distanceBetween(
+            element.lat,
+            element.lng,
+            center!.latitude,
+            center!.longitude) <
+            redDistance;
+      }).toList();
+    }
   }
 
   changeCenter(LatLng location) {
@@ -42,8 +49,8 @@ class _RedMapScreenState extends State<RedMapScreen> {
         return GeolocatorPlatform.instance.distanceBetween(
             element.lat,
             element.lng,
-            widget.myPosition.latitude,
-            widget.myPosition.longitude) <
+            center!.latitude,
+            center!.longitude) <
             redDistance;
       }).toList();
     });
