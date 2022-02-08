@@ -41,13 +41,17 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  double blueDistance = 0;
-
   List<Outlet> redPositions = [];
   List<Outlet> bluePositions = [];
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
+
+  removeBeat(Beat beat){
+    setState(() {
+      blueIndexes.remove(beat);
+    });
+  }
 
   void _onDoubleTap() {
     widget.controller.zoom += 0.5;
@@ -182,9 +186,6 @@ class _MapScreenState extends State<MapScreen> {
                           Offset clicked =
                               transformer.fromLatLngToXYCoords(location);
                           widget.changeCenter(location);
-                          setState(() {
-                            blueDistance = 0;
-                          });
                           print('${location.latitude}, ${location.longitude}');
                           print('${clicked.dx}, ${clicked.dy}');
                           print(
@@ -235,9 +236,9 @@ class _MapScreenState extends State<MapScreen> {
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              blueDistance = 0;
                               blueIndexes = [];
                               rangeIndexes = [];
+                              widget.setTempRedRadius(0.0);
                             });
                           },
                           child: Container(
@@ -275,12 +276,55 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            setState(() {
-                            blueIndexes.add(Beat("beatName", redPositions));
-                            });
+                            TextEditingController textController =
+                                TextEditingController();
+                            showDialog(
+                                context: context,
+                                builder: (_) {
+                                  return Center(
+                                    child: Material(
+                                      color: Colors.white,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: SizedBox(
+                                          height: 60,
+                                          width: 300,
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: textController,
+                                                  decoration: InputDecoration(
+                                                    label: Text("beat name"),
+                                                  ),
+                                                ),
+                                              ),
+                                              IconButton(
+                                                onPressed: () {
+                                                  rangeIndexes = [];
+                                                  blueIndexes.add(
+                                                    Beat(textController.text,
+                                                        redPositions),
+                                                  );
+                                                  widget.setTempRedRadius(0.0);
+                                                  Navigator.pop(context);
+                                                },
+                                                color: Colors.blue,
+                                                icon: Icon(
+                                                  Icons.send,
+                                                ),
+
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                });
                           },
                           child: Container(
-                            color: Colors.red,
+                            color: Colors.green,
                             height: 60,
                             width: 200,
                             child: const Center(
@@ -301,7 +345,7 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-          Expanded(flex: 1, child: MapScreenRightPanel(blueIndexes)),
+          Expanded(flex: 1, child: MapScreenRightPanel(blueIndexes, removeBeat)),
         ],
       ),
     );
