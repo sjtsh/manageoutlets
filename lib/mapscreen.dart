@@ -283,7 +283,10 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-          Expanded(flex: 1, child: MapScreenRightPanel(blueIndexes)),
+          Expanded(
+            flex: 1,
+            child: MapScreenRightPanel(blueIndexes),
+          ),
         ],
       ),
     );
