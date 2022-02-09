@@ -50,7 +50,7 @@ class _MapScreenState extends State<MapScreen> {
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
 
-  removeBeat(Beat beat){
+  removeBeat(Beat beat) {
     setState(() {
       blueIndexes.remove(beat);
     });
@@ -318,7 +318,6 @@ class _MapScreenState extends State<MapScreen> {
                                                 icon: Icon(
                                                   Icons.send,
                                                 ),
-
                                               ),
                                             ],
                                           ),
@@ -350,9 +349,10 @@ class _MapScreenState extends State<MapScreen> {
               ],
             ),
           ),
-
-           Expanded(flex: 1, child: MapScreenRightPanel(widget.distributors,blueIndexes,removeBeat)),
-
+          Expanded(
+              flex: 1,
+              child: MapScreenRightPanel(
+                  widget.distributors, blueIndexes, removeBeat)),
         ],
       ),
     );

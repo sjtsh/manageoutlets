@@ -9,3 +9,7 @@ List<Color> colorIndex = [
   Colors.blueGrey,
   Colors.brown,
 ];
+
+
+ String logo = "assets/logo.svg";
+String logo1= "assets/logo.png";

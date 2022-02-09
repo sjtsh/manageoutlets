@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:manage_outlets/backend/Entities/Distributor.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
@@ -8,6 +9,8 @@ import 'RedMapScreen.dart';
 import 'backend/Entities/Outlet.dart';
 import 'backend/Services/OutletService.dart';
 import 'package:latlng/latlng.dart';
+
+import 'backend/database.dart';
 
 class GetOutletScreen extends StatelessWidget {
   final double redRadius;
@@ -37,9 +40,9 @@ class GetOutletScreen extends StatelessWidget {
           return RedMapScreen(outletLatLng, redRadius, controller,
               LatLng(position.latitude, position.longitude), distributors);
         }
-        return const Scaffold(
+        return  Scaffold(
           body: Center(
-            child: CircularProgressIndicator(),
+            child: Image.asset(logo1,width: 300, height: 320,)
           ),
         );
       },
