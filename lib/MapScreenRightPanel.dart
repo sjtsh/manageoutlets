@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/NextScreen.dart';
+import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
 
 import 'backend/Entities/Distributor.dart';
@@ -9,11 +10,11 @@ import 'Entity/OutletsListEntity.dart';
 
 
 class MapScreenRightPanel extends StatefulWidget {
-
+  final List<Category> categories;
   final List<Beat> beats;
   final Function removeBeat;
   final List<Distributor> distributors;
-  MapScreenRightPanel(this.distributors,this.beats, this.removeBeat);
+  MapScreenRightPanel(this.categories,this.distributors,this.beats, this.removeBeat);
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
@@ -21,7 +22,7 @@ class MapScreenRightPanel extends StatefulWidget {
 
 
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
-  Distributor selectedDropDownItem = Distributor("Select Distributor", 1);
+  Distributor selectedDropDownItem = Distributor("Select Distributor", [], );
   void _changeDropDownValue(Distributor newValue) {
     selectedDropDownItem = newValue;
   }
@@ -74,7 +75,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                     onDoubleTap: () {
                       // double tap function
                       Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return NextScreen(widget.beats[index]);
+                        return NextScreen(widget.beats[index],widget.categories);
                       }));
                     },
                     child: Container(

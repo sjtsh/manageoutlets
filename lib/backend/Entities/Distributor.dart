@@ -1,17 +1,15 @@
+import 'package:manage_outlets/Entity/OutletsListEntity.dart';
+
 class Distributor {
-  int id;
+  int? id;
   String distributorName;
+  List<Beat> beats;
 
-  Distributor(this.distributorName, this.id);
-
-  factory Distributor.fromJson(Map<String, dynamic> json) {
-    return Distributor(json["distributorName"], int.parse(json["id"]));
-  }
+  Distributor(this.distributorName, this.beats, {this.id});
 
   @override
   String toString() {
     // TODO: implement toString
     return distributorName.toString();
-
   }
 }

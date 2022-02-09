@@ -1,11 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
-import 'package:manage_outlets/NextScreen.dart';
+import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
@@ -27,6 +28,7 @@ class MapScreen extends StatefulWidget {
   final double redDistance;
   final Function changeCenter;
   final List<Distributor> distributors;
+  final List<Category> categories;
 
   MapScreen(
       this.outletLatLng,
@@ -37,7 +39,7 @@ class MapScreen extends StatefulWidget {
       this.setTempRedRadius,
       this.center,
       this.changeCenter,
-      this.distributors);
+      this.distributors, this.categories);
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -237,26 +239,8 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Row(
                       children: [
-                        SizedBox(width: 12,),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              bluePositions = [];
-                              rangeIndexes = [];
-                              widget.setTempRedRadius(0.0);
-                            });
-                          },
-                          child: Container(
-                            color: Colors.red,
-                            height: 60,
-                            width: 200,
-                            child: const Center(
-                              child: Text(
-                                "CLEAR",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
+                        SizedBox(
+                          width: 12,
                         ),
                         const SizedBox(
                           width: 12,
@@ -288,7 +272,6 @@ class _MapScreenState extends State<MapScreen> {
                             });
                           },
                           child: Container(
-
                             height: 50,
                             width: 100,
                             decoration: BoxDecoration(
@@ -309,7 +292,9 @@ class _MapScreenState extends State<MapScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 12,),
+                        SizedBox(
+                          width: 12,
+                        ),
                         GestureDetector(
                           onTap: () {
                             TextEditingController textController =
@@ -359,7 +344,6 @@ class _MapScreenState extends State<MapScreen> {
                                 });
                           },
                           child: Container(
-
                             height: 50,
                             width: 100,
                             decoration: BoxDecoration(
@@ -393,6 +377,7 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
               flex: 1,
               child: MapScreenRightPanel(
+                widget.categories,
                   widget.distributors, blueIndexes, removeBeat)),
         ],
       ),
