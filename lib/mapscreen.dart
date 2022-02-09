@@ -237,6 +237,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Row(
                       children: [
+                        SizedBox(width: 12,),
                         GestureDetector(
                           onTap: () {
                             setState(() {
