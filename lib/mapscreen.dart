@@ -1,8 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
+import 'package:manage_outlets/backend/Entities/Category.dart';
+import 'package:manage_outlets/backend/database.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
@@ -21,6 +25,7 @@ class MapScreen extends StatefulWidget {
   final double redDistance;
   final Function changeCenter;
   final List<Distributor> distributors;
+  final List<Category> categories;
 
   MapScreen(
       this.outletLatLng,
@@ -31,7 +36,8 @@ class MapScreen extends StatefulWidget {
       this.setTempRedRadius,
       this.center,
       this.changeCenter,
-      this.distributors);
+      this.distributors,
+      this.categories);
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -43,6 +49,18 @@ class _MapScreenState extends State<MapScreen> {
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
+
+  Distributor selectedDropDownItem = Distributor(
+    "Select Distributor",
+    [],
+  );
+
+  void _changeDropDownValue(Distributor newValue) {
+    setState(() {
+      selectedDropDownItem = newValue;
+      print(selectedDropDownItem.beats);
+    });
+  }
 
   removeBeat(Beat beat) {
     setState(() {
@@ -98,7 +116,7 @@ class _MapScreenState extends State<MapScreen> {
                         rangeIndexes = [];
                         widget.outletLatLng.asMap().entries.forEach((element) {
                           if (selectedOutlets.contains(element.value)) {
-                            bluePositions.add(element.value);
+                            // bluePositions.add(element.value);
                           } else if (GeolocatorPlatform.instance
                                   .distanceBetween(
                                       element.value.lat,
@@ -132,18 +150,23 @@ class _MapScreenState extends State<MapScreen> {
                           }
                         });
                       }
-                      markerWidgets.addAll(
-                        List.generate(
-                                bluePositions.length,
-                                (e) => LatLng(
-                                    bluePositions[e].lat, bluePositions[e].lng))
-                            .map(transformer.fromLatLngToXYCoords)
-                            .toList()
-                            .map(
-                              (pos) =>
-                                  _buildMarkerWidget(pos, Colors.blue, false),
-                            ),
-                      );
+                      for (int i = 0; i < blueIndexes.length; i++) {
+                        markerWidgets.addAll(
+                          List.generate(
+                                  blueIndexes[i].outlet.length,
+                                  (e) => LatLng(blueIndexes[i].outlet[e].lat,
+                                      blueIndexes[i].outlet[e].lng))
+                              .map(transformer.fromLatLngToXYCoords)
+                              .toList()
+                              .map(
+                                (pos) => _buildMarkerWidget(
+                                    pos,
+                                    colorIndex[
+                                        selectedDropDownItem.beats.length + i],
+                                    false),
+                              ),
+                        );
+                      }
                       Widget? homeMarkerWidget;
                       if (widget.center != null) {
                         final homeLocation =
@@ -263,7 +286,6 @@ class _MapScreenState extends State<MapScreen> {
                             });
                           },
                           child: Container(
-
                             height: 50,
                             width: 100,
                             decoration: BoxDecoration(
@@ -284,7 +306,9 @@ class _MapScreenState extends State<MapScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 12,),
+                        SizedBox(
+                          width: 12,
+                        ),
                         GestureDetector(
                           onTap: () {
                             TextEditingController textController =
@@ -334,7 +358,6 @@ class _MapScreenState extends State<MapScreen> {
                                 });
                           },
                           child: Container(
-
                             height: 50,
                             width: 100,
                             decoration: BoxDecoration(
@@ -368,7 +391,12 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
               flex: 1,
               child: MapScreenRightPanel(
-                  widget.distributors, blueIndexes, removeBeat)),
+                  widget.categories,
+                  widget.distributors,
+                  blueIndexes,
+                  removeBeat,
+                  selectedDropDownItem,
+                  _changeDropDownValue)),
         ],
       ),
     );
