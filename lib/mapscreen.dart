@@ -237,7 +237,27 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Row(
                       children: [
-
+                        SizedBox(width: 12,),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bluePositions = [];
+                              rangeIndexes = [];
+                              widget.setTempRedRadius(0.0);
+                            });
+                          },
+                          child: Container(
+                            color: Colors.red,
+                            height: 60,
+                            width: 200,
+                            child: const Center(
+                              child: Text(
+                                "CLEAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
                         const SizedBox(
                           width: 12,
                         ),
