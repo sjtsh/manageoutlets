@@ -59,71 +59,116 @@ class _NextScreenState extends State<NextScreen> {
                 double width = MediaQuery.of(context).size.width;
                 return GridView.count(
                   crossAxisCount: 3,
-                  childAspectRatio: width / (height * 1.18),
+                  childAspectRatio: width / (height * 3.4),
                   children: List.generate(widget.beat.outlet.length, (i) {
                     return Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Container(
-                        height: height * 60,
-                        width: width,
-                        color: Colors.black.withOpacity(0.1),
-                        child: Stack(
-                          children: [
-                            Image.network(
-                              localhost + widget.beat.outlet[i].imageURL,
-                              fit: BoxFit.cover,
-                              width: width,
-                              height: height,
+                      child: Column(
+                        children: [
+                          Container(
+                            color: Colors.white,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Text("Outlet Name"),
+                                Expanded(child: Container()),
+                                Container(
+                                  margin: const EdgeInsets.all(8),
+                                  width: 200,
+                                  height: 50,
+                                  decoration: BoxDecoration(color: Color(0xffF2F2F2f),),
+                                  child: Builder(builder: (context) {
+                                    print(
+                                        " hello categories dropdown ${widget.categories}");
+                                    return DropdownSearch<Category>(
+                                      showSearchBox: true,
+                                      mode: Mode.MENU,
+                                      items: widget.categories,
+                                      onChanged: (selected) {
+                                        _changeDropDownValue(
+                                            selectedCategories);
+                                      },
+                                      selectedItem: selectedCategories,
+                                      dropdownSearchDecoration:
+                                          const InputDecoration(
+                                        fillColor: Color(0xff2f2f2),
+                                        filled: true,
+                                        border: InputBorder.none,
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              ],
                             ),
-                            Positioned(
-                              top: 0,
-                              right: 0,
-                              child: Container(
-                                // clipBehavior: Clip.hardEdge,
-                                margin: const EdgeInsets.all(8),
-                                width: 200,
-                                height: 50,
-                                child: Builder(builder: (context) {
-                                  print(
-                                      " hello categories dropdown ${widget.categories}");
-                                  return DropdownSearch<Category>(
-                                    showSearchBox: true,
-                                    mode: Mode.MENU,
-                                    items: widget.categories,
-                                    onChanged: (selected) {
-                                      _changeDropDownValue(selectedCategories);
-                                    },
-                                    selectedItem: selectedCategories,
-                                    dropdownSearchDecoration:
-                                        const InputDecoration(
-                                      fillColor: Colors.white,
-                                      filled: true,
-                                      border: InputBorder.none,
-                                    ),
-                                  );
-                                }),
-                              ),
+                          ),
+                          Container(
+                            height: height,
+                            width: width,
+                            color: Colors.black.withOpacity(0.1),
+                            child: Stack(
+                              children: [
+                                Image.network(
+                                  widget.beat.outlet[i].videoName == null
+                                      ? widget.beat.outlet[i].imageURL
+                                      : localhost +
+                                          widget.beat.outlet[i].imageURL,
+                                  fit: BoxFit.cover,
+                                  width: width,
+                                  height: height / 2,
+                                ),
+                                // Positioned(
+                                //   top: 0,
+                                //   right: 0,
+                                //   child: Container(
+                                //     margin: const EdgeInsets.all(8),
+                                //     width: 200,
+                                //     height: 50,
+                                //     child: Builder(builder: (context) {
+                                //       print(
+                                //           " hello categories dropdown ${widget.categories}");
+                                //       return DropdownSearch<Category>(
+                                //         showSearchBox: true,
+                                //         mode: Mode.MENU,
+                                //         items: widget.categories,
+                                //         onChanged: (selected) {
+                                //           _changeDropDownValue(selectedCategories);
+                                //         },
+                                //         selectedItem: selectedCategories,
+                                //         dropdownSearchDecoration:
+                                //             const InputDecoration(
+                                //           fillColor: Colors.white,
+                                //           filled: true,
+                                //           border: InputBorder.none,
+                                //         ),
+                                //       );
+                                //     }),
+                                //   ),
+                                // ),
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  child: Checkbox(
+                                    // activeColor: Colors.blue,
+                                    value: selectedOutlet
+                                        .contains(widget.beat.outlet[i]),
+                                    onChanged: (newValue) => setState(() {
+                                      if (selectedOutlet
+                                          .contains(widget.beat.outlet[i])) {
+                                        selectedOutlet
+                                            .remove(widget.beat.outlet[i]);
+                                      } else {
+                                        selectedOutlet
+                                            .add(widget.beat.outlet[i]);
+                                      }
+                                    }),
+                                  ),
+                                ),
+                              ],
                             ),
-                            Positioned(
-                              bottom: 0,
-                              left: 0,
-                              child: Checkbox(
-                                // activeColor: Colors.blue,
-                                value: selectedOutlet
-                                    .contains(widget.beat.outlet[i]),
-                                onChanged: (newValue) => setState(() {
-                                  if (selectedOutlet
-                                      .contains(widget.beat.outlet[i])) {
-                                    selectedOutlet
-                                        .remove(widget.beat.outlet[i]);
-                                  } else {
-                                    selectedOutlet.add(widget.beat.outlet[i]);
-                                  }
-                                }),
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   }),
