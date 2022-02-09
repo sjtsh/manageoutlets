@@ -8,19 +8,21 @@ import '../database.dart';
 
 class CategoryService{
 
+
   Future <List<Category>> getCatagory() async {
     Response res = await http.get(
       Uri.parse("$localhost/category"),
     );
+    print(res.body);
     if (res.statusCode == 200) {
       Map<String, dynamic> a = jsonDecode(res.body);
-      List<Category> categoryToJson(Map<String, String> data) {
+
         List<Category> categories = [];
-        for (String i in data.keys){
-          categories.add(Category(data[i]!, int.parse(i)));
+        for (String i in a.keys){
+          categories.add(Category(a[i]!, int.parse(i)));
         }
         return categories;
-      }
+
     }
     return[];
   }

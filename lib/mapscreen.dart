@@ -254,9 +254,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Row(
                       children: [
-                        const SizedBox(
-                          width: 12,
-                        ),
+                        SizedBox(width: 12,),
                         const Text("0 m"),
                         Expanded(
                           child: Slider(
