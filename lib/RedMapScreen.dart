@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_static_maps_controller/google_static_maps_controller.dart';
 import 'package:latlng/latlng.dart';
+import 'package:manage_outlets/backend/Entities/Category.dart';
 
 import 'backend/Entities/Distributor.dart';
 import 'backend/Entities/Outlet.dart';
@@ -13,9 +14,10 @@ class RedMapScreen extends StatefulWidget {
   final controller;
   final LatLng myPosition;  //this is the position of the user
   final List<Distributor> distributors;
+  final List<Category> categories;
 
   RedMapScreen(this.outletLatLng, this.redRadius,
-      this.controller, this.myPosition, this.distributors);
+      this.controller, this.myPosition, this.distributors, this.categories);
 
   @override
   State<RedMapScreen> createState() => _RedMapScreenState();
@@ -79,6 +81,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
         setTempRedRadius,
         center,
         changeCenter,
-    widget.distributors);
+    widget.distributors,
+    widget.categories);
   }
 }
