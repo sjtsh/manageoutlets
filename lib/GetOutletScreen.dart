@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:manage_outlets/SplashScreen.dart';
 import 'package:manage_outlets/backend/Entities/Distributor.dart';
 import 'package:manage_outlets/backend/Services/CategoryService.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
@@ -16,6 +17,7 @@ import 'backend/database.dart';
 
 class GetOutletScreen extends StatelessWidget {
   final double redRadius;
+
   GetOutletScreen(this.redRadius);
 
   @override
@@ -45,11 +47,7 @@ class GetOutletScreen extends StatelessWidget {
           return RedMapScreen(outletLatLng, redRadius, controller,
               LatLng(position.latitude, position.longitude), distributors, categories);
         }
-        return  Scaffold(
-          body: Center(
-            child: Image.asset(logo1,width: 300, height: 320,)
-          ),
-        );
+        return const SplashScreen();
       },
     );
   }

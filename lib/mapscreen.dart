@@ -3,18 +3,15 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
+import 'package:manage_outlets/backend/database.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
 import 'backend/Entities/Distributor.dart';
 import 'backend/Entities/Outlet.dart';
-import 'backend/Entities/Outlet.dart';
-import 'merge/OutletMergeScreen.dart';
-import 'merge/mergescreen.dart';
 
 class MapScreen extends StatefulWidget {
   final List<Outlet>
@@ -39,7 +36,8 @@ class MapScreen extends StatefulWidget {
       this.setTempRedRadius,
       this.center,
       this.changeCenter,
-      this.distributors, this.categories);
+      this.distributors,
+      this.categories);
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -51,6 +49,18 @@ class _MapScreenState extends State<MapScreen> {
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
+
+  Distributor selectedDropDownItem = Distributor(
+    "Select Distributor",
+    [],
+  );
+
+  void _changeDropDownValue(Distributor newValue) {
+    setState(() {
+      selectedDropDownItem = newValue;
+      print(selectedDropDownItem.beats);
+    });
+  }
 
   removeBeat(Beat beat) {
     setState(() {
@@ -106,7 +116,7 @@ class _MapScreenState extends State<MapScreen> {
                         rangeIndexes = [];
                         widget.outletLatLng.asMap().entries.forEach((element) {
                           if (selectedOutlets.contains(element.value)) {
-                            bluePositions.add(element.value);
+                            // bluePositions.add(element.value);
                           } else if (GeolocatorPlatform.instance
                                   .distanceBetween(
                                       element.value.lat,
@@ -140,18 +150,23 @@ class _MapScreenState extends State<MapScreen> {
                           }
                         });
                       }
-                      markerWidgets.addAll(
-                        List.generate(
-                                bluePositions.length,
-                                (e) => LatLng(
-                                    bluePositions[e].lat, bluePositions[e].lng))
-                            .map(transformer.fromLatLngToXYCoords)
-                            .toList()
-                            .map(
-                              (pos) =>
-                                  _buildMarkerWidget(pos, Colors.blue, false),
-                            ),
-                      );
+                      for (int i = 0; i < blueIndexes.length; i++) {
+                        markerWidgets.addAll(
+                          List.generate(
+                                  blueIndexes[i].outlet.length,
+                                  (e) => LatLng(blueIndexes[i].outlet[e].lat,
+                                      blueIndexes[i].outlet[e].lng))
+                              .map(transformer.fromLatLngToXYCoords)
+                              .toList()
+                              .map(
+                                (pos) => _buildMarkerWidget(
+                                    pos,
+                                    colorIndex[
+                                        selectedDropDownItem.beats.length + i],
+                                    false),
+                              ),
+                        );
+                      }
                       Widget? homeMarkerWidget;
                       if (widget.center != null) {
                         final homeLocation =
@@ -251,7 +266,9 @@ class _MapScreenState extends State<MapScreen> {
                               min: 0,
                               label: "${widget.redDistance.toStringAsFixed(2)}",
                               onChanged: (double a) {
-                                widget.setTempRedRadius(a);
+                                setState(() {
+                                  widget.setTempRedRadius(a);
+                                });
                               }),
                         ),
                         const Text("2000 m"),
@@ -372,8 +389,12 @@ class _MapScreenState extends State<MapScreen> {
           Expanded(
               flex: 1,
               child: MapScreenRightPanel(
-                widget.categories,
-                  widget.distributors, blueIndexes, removeBeat)),
+                  widget.categories,
+                  widget.distributors,
+                  blueIndexes,
+                  removeBeat,
+                  selectedDropDownItem,
+                  _changeDropDownValue)),
         ],
       ),
     );

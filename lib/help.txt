@@ -1,0 +1,4 @@
+when you select a marker the outlets from its beats to be visible
+when you select a distributor its beats must be visible
+when you select a beat once its beats to be visible
+when you select a marker you can add or remove from the beat
