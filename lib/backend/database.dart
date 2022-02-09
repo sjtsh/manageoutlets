@@ -23,6 +23,5 @@ List<Color> colorIndex = [
 
 ];
 
-
- String logo = "assets/logo.svg";
-String logo1= "assets/logo.png";
+String logo = "assets/logo.svg";
+String logo1 = "assets/logo.png";
