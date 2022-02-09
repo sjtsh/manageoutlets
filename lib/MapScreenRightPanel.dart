@@ -153,11 +153,12 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                   ]),
               child: const Center(
                   child: Text(
-                    "Confirm",
+                    "CONFIRM",
                     style: TextStyle(color: Colors.white),
                   )),
             ),
-          )
+          ),
+          //SizedBox(height: 0,)
         ],
       ),
     );

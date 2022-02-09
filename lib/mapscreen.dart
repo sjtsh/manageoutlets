@@ -237,26 +237,7 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Row(
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              bluePositions = [];
-                              rangeIndexes = [];
-                              widget.setTempRedRadius(0.0);
-                            });
-                          },
-                          child: Container(
-                            color: Colors.red,
-                            height: 60,
-                            width: 200,
-                            child: const Center(
-                              child: Text(
-                                "CLEAR",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
+
                         const SizedBox(
                           width: 12,
                         ),
@@ -278,6 +259,37 @@ class _MapScreenState extends State<MapScreen> {
                         const SizedBox(
                           width: 12,
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bluePositions = [];
+                              rangeIndexes = [];
+                              widget.setTempRedRadius(0.0);
+                            });
+                          },
+                          child: Container(
+
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: const Offset(0, 2),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      color: Colors.black.withOpacity(0.1))
+                                ]),
+                            child: const Center(
+                              child: Text(
+                                "CLEAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12,),
                         GestureDetector(
                           onTap: () {
                             TextEditingController textController =
@@ -327,9 +339,19 @@ class _MapScreenState extends State<MapScreen> {
                                 });
                           },
                           child: Container(
-                            color: Colors.green,
-                            height: 60,
-                            width: 200,
+
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: const Offset(0, 2),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      color: Colors.black.withOpacity(0.1))
+                                ]),
                             child: const Center(
                               child: Text(
                                 "ADD",

@@ -60,8 +60,8 @@ class _NextScreenState extends State<NextScreen> {
                           Container(
                             height: height / 2 - 24,
                             width: width / 2 - 24,
-                            child: Image.asset(
-                              "assets/hilife.jpg",
+                            child: Image.network(
+                              widget.beat.outlet[i].imageURL,
                               fit: BoxFit.cover,
                             ),
                           ),
