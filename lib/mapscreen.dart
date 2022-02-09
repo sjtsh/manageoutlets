@@ -1,19 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
-import 'package:manage_outlets/NextScreen.dart';
 import 'package:map/map.dart';
 import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
 import 'backend/Entities/Distributor.dart';
 import 'backend/Entities/Outlet.dart';
-import 'backend/Entities/Outlet.dart';
-import 'merge/OutletMergeScreen.dart';
-import 'merge/mergescreen.dart';
 
 class MapScreen extends StatefulWidget {
   final List<Outlet>
@@ -237,6 +231,9 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     Row(
                       children: [
+                        const SizedBox(
+                          width: 12,
+                        ),
                         const Text("0 m"),
                         Expanded(
                           child: Slider(
@@ -257,6 +254,37 @@ class _MapScreenState extends State<MapScreen> {
                         const SizedBox(
                           width: 12,
                         ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              bluePositions = [];
+                              rangeIndexes = [];
+                              widget.setTempRedRadius(0.0);
+                            });
+                          },
+                          child: Container(
+
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: const Offset(0, 2),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      color: Colors.black.withOpacity(0.1))
+                                ]),
+                            child: const Center(
+                              child: Text(
+                                "CLEAR",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12,),
                         GestureDetector(
                           onTap: () {
                             TextEditingController textController =
@@ -306,9 +334,19 @@ class _MapScreenState extends State<MapScreen> {
                                 });
                           },
                           child: Container(
-                            color: Colors.green,
-                            height: 60,
-                            width: 200,
+
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: const Offset(0, 2),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      color: Colors.black.withOpacity(0.1))
+                                ]),
                             child: const Center(
                               child: Text(
                                 "ADD",
