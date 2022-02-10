@@ -70,33 +70,55 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset(
-                logo1,
-                width: 300,
-                height: 320,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              logo1,
+              width: 300,
+              height: 320,
+            ),
+            Stack(
+              children: [
+                Container(
+                  color: Colors.blueGrey,
+                  height: 5,
+                  width: total + 0.0,
+                ),
+                Container(
+                  color: Color(0xff00929E),
+                  height: 5,
+                  width: total * (percentage / 100),
+                ),
+                Stack(
+                  children: [
+                    Container(
+                      color: Colors.blueGrey,
+                      height: 5,
+                      width: total + 0.0,
+                    ),
+                    Container(
+                      color: Colors.blue,
+                      height: 5,
+                      width: total * (percentage / 100),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Text(
+              "Powered by Hilife",
+              style: TextStyle(
+                color: Colors.red,
               ),
-              Stack(
-                children: [
-                  Container(
-                    color: Colors.blueGrey,
-                    height: 5,
-                    width: total + 0.0,
-                  ),
-                  Container(
-                    color: Colors.blue,
-                    height: 5,
-                    width: total * (percentage / 100),
-                  ),
-                ],
-              ),
-              SizedBox(height: 30,),
-              Text("Powered by Hilife", style:TextStyle(color: Colors.red,),),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

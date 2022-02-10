@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   geolocator_windows
+  window_utils
 )
 
 set(PLUGIN_BUNDLED_LIBRARIES)

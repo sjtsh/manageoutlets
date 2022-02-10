@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:manage_outlets/NextScreen.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
+import 'package:manage_outlets/backend/shortestPath.dart';
 
 import 'backend/Entities/Distributor.dart';
 
@@ -167,7 +168,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                           // double tap function
                           Navigator.push(context,
                               MaterialPageRoute(builder: (_) {
-                            return NextScreen(widget.selectedDropDownItem.beats[index],
+                            return NextScreen(
+                                widget.selectedDropDownItem.beats[index],
                                 widget.categories);
                           }));
                         },
@@ -190,8 +192,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                        widget.selectedDropDownItem
-                                            .beats[index].beatName,
+                                        widget.selectedDropDownItem.beats[index]
+                                            .beatName,
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.white,

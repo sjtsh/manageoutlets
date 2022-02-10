@@ -534,11 +534,12 @@ class _MapScreenState extends State<MapScreen> {
                                                     IconButton(
                                                       onPressed: () {
                                                         rangeIndexes = [];
+
                                                         blueIndexes.add(
                                                           Beat(
                                                               textController
                                                                   .text,
-                                                              redPositions),
+                                                              shortestPath(redPositions)),
                                                         );
                                                         widget.setTempRedRadius(
                                                             0.0);
