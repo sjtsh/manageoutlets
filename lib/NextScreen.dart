@@ -35,7 +35,7 @@ class _NextScreenState extends State<NextScreen> {
             title: Center(
               child: Text(
                 "Select Photo for ${widget.beat.beatName} Beat",
-                style: TextStyle(color: Colors.black),
+                style: const TextStyle(color: Colors.black),
               ),
             ),
             backgroundColor: Colors.transparent,
@@ -59,26 +59,49 @@ class _NextScreenState extends State<NextScreen> {
                 double width = MediaQuery.of(context).size.width;
                 return GridView.count(
                   crossAxisCount: 3,
-                  childAspectRatio: width / (height * 3.4),
+                  childAspectRatio: width / (height * 1.175),
                   children: List.generate(widget.beat.outlet.length, (i) {
                     return Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        children: [
-                          Container(
-                            color: Colors.white,
-                            child: Row(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                                offset: const Offset(0, -2),
+                                spreadRadius: 2,
+                                blurRadius: 2,
+                                color: Colors.black.withOpacity(0.1))
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
-                                SizedBox(
+                                const SizedBox(
                                   width: 12,
                                 ),
-                                Text("Outlet Name"),
+                                Checkbox(
+                                  // activeColor: Colors.blue,
+                                  value: selectedOutlet
+                                      .contains(widget.beat.outlet[i]),
+                                  onChanged: (newValue) => setState(() {
+                                    if (selectedOutlet
+                                        .contains(widget.beat.outlet[i])) {
+                                      selectedOutlet
+                                          .remove(widget.beat.outlet[i]);
+                                    } else {
+                                      selectedOutlet.add(widget.beat.outlet[i]);
+                                    }
+                                  }),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                const Text("Outlet Name"),
                                 Expanded(child: Container()),
                                 Container(
-                                  margin: const EdgeInsets.all(8),
                                   width: 200,
-                                  height: 50,
-                                  decoration: BoxDecoration(color: Color(0xffF2F2F2f),),
                                   child: Builder(builder: (context) {
                                     print(
                                         " hello categories dropdown ${widget.categories}");
@@ -92,83 +115,43 @@ class _NextScreenState extends State<NextScreen> {
                                       },
                                       selectedItem: selectedCategories,
                                       dropdownSearchDecoration:
-                                          const InputDecoration(
-                                        fillColor: Color(0xff2f2f2),
-                                        filled: true,
-                                        border: InputBorder.none,
+                                      const InputDecoration(
+                                        // filled: true,
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: Color(0xFF01689A),
+                                          ),
+                                        ),
                                       ),
                                     );
                                   }),
                                 ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                const Icon(
+                                  Icons.clear,
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
                               ],
                             ),
-                          ),
-                          Container(
-                            height: height,
-                            width: width,
-                            color: Colors.black.withOpacity(0.1),
-                            child: Stack(
-                              children: [
-                                Image.network(
+                            Expanded(
+                              child: Container(
+                                color: Colors.black.withOpacity(0.1),
+                                child: Image.network(
                                   widget.beat.outlet[i].videoName == null
                                       ? widget.beat.outlet[i].imageURL
                                       : localhost +
                                           widget.beat.outlet[i].imageURL,
                                   fit: BoxFit.cover,
-                                  width: width,
-                                  height: height / 2,
+                                  width: double.infinity,
                                 ),
-                                // Positioned(
-                                //   top: 0,
-                                //   right: 0,
-                                //   child: Container(
-                                //     margin: const EdgeInsets.all(8),
-                                //     width: 200,
-                                //     height: 50,
-                                //     child: Builder(builder: (context) {
-                                //       print(
-                                //           " hello categories dropdown ${widget.categories}");
-                                //       return DropdownSearch<Category>(
-                                //         showSearchBox: true,
-                                //         mode: Mode.MENU,
-                                //         items: widget.categories,
-                                //         onChanged: (selected) {
-                                //           _changeDropDownValue(selectedCategories);
-                                //         },
-                                //         selectedItem: selectedCategories,
-                                //         dropdownSearchDecoration:
-                                //             const InputDecoration(
-                                //           fillColor: Colors.white,
-                                //           filled: true,
-                                //           border: InputBorder.none,
-                                //         ),
-                                //       );
-                                //     }),
-                                //   ),
-                                // ),
-                                Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  child: Checkbox(
-                                    // activeColor: Colors.blue,
-                                    value: selectedOutlet
-                                        .contains(widget.beat.outlet[i]),
-                                    onChanged: (newValue) => setState(() {
-                                      if (selectedOutlet
-                                          .contains(widget.beat.outlet[i])) {
-                                        selectedOutlet
-                                            .remove(widget.beat.outlet[i]);
-                                      } else {
-                                        selectedOutlet
-                                            .add(widget.beat.outlet[i]);
-                                      }
-                                    }),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   }),
@@ -178,7 +161,41 @@ class _NextScreenState extends State<NextScreen> {
           ),
           Container(
             height: 120,
-            color: Colors.black,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    offset: const Offset(0, -2),
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    color: Colors.black.withOpacity(0.1))
+              ],
+            ),
+            child: Row(
+              children: ["", "", ""]
+                  .map(
+                    (e) => Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(12),
+                          width: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                  offset: const Offset(0, -2),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  color: Colors.black.withOpacity(0.1))
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ],
       ),

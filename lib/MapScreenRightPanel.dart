@@ -167,7 +167,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                           // double tap function
                           Navigator.push(context,
                               MaterialPageRoute(builder: (_) {
-                            return NextScreen(widget.selectedDropDownItem.beats[index],
+                            return NextScreen(
+                                widget.selectedDropDownItem.beats[index],
                                 widget.categories);
                           }));
                         },
@@ -190,8 +191,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                        widget.selectedDropDownItem
-                                            .beats[index].beatName,
+                                        widget.selectedDropDownItem.beats[index]
+                                            .beatName,
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.white,
