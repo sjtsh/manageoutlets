@@ -81,7 +81,6 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               Stack(
                 children: [
-
                   Container(
                     color: Colors.blueGrey,
                     height: 5,
@@ -93,7 +92,9 @@ class _SplashScreenState extends State<SplashScreen> {
                     width: total * (percentage / 100),
                   ),
                 ],
-              )
+              ),
+              SizedBox(height: 30,),
+              Text("Powered by Hilife", style:TextStyle(color: Colors.red,),),
             ],
           )),
     );

@@ -26,7 +26,7 @@ class GetOutletScreen extends StatelessWidget {
       future:
           GeolocatorPlatform.instance.getCurrentPosition().then((value) async {
         List<Outlet> outlets = await OutletService()
-            .getNearbyOutlets(redRadius, value.latitude, value.longitude);
+            .getNearbyOutlets(redRadius, value.latitude, value.longitude, context);
         List<Distributor> distributors =
             await DistributorService().getDistributor();
         List<Category> categories =

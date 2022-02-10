@@ -12,6 +12,7 @@ import 'Entity/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
 import 'backend/Entities/Distributor.dart';
 import 'backend/Entities/Outlet.dart';
+import 'backend/shortestPath.dart';
 
 class MapScreen extends StatefulWidget {
   final List<Outlet>
@@ -26,29 +27,66 @@ class MapScreen extends StatefulWidget {
   final Function changeCenter;
   final List<Distributor> distributors;
   final List<Category> categories;
+  final List<Outlet> removePermPositions;
+  final Function setRemovePermPositions;
 
   MapScreen(
-      this.outletLatLng,
-      this.redRadius,
-      this.controller,
-      this.bluegreyIndexes,
-      this.redDistance,
-      this.setTempRedRadius,
-      this.center,
-      this.changeCenter,
-      this.distributors,
-      this.categories);
+    this.outletLatLng,
+    this.redRadius,
+    this.controller,
+    this.bluegreyIndexes,
+    this.redDistance,
+    this.setTempRedRadius,
+    this.center,
+    this.changeCenter,
+    this.distributors,
+    this.categories,
+    this.removePermPositions,
+    this.setRemovePermPositions,
+  );
 
   @override
   _MapScreenState createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
+  LatLng?
+      removeCenter; // this the point from which the latlng will be calculated
+
+  double redRemoveDistance = 0;
+
+  setRemoveRedRadius(double a) {
+    setState(() {
+      redRemoveDistance = a;
+    });
+    // if (removeCenter != null) {
+    //   removeOutlets = widget.outletLatLng.where((element) {
+    //     return GeolocatorPlatform.instance.distanceBetween(element.lat,
+    //         element.lng, removeCenter!.latitude, removeCenter!.longitude) <
+    //         redRemoveDistance;
+    //   }).toList();
+    // }
+  }
+
+  changeRemoveCenter(LatLng location) {
+    setState(() {
+      removeCenter = LatLng(location.latitude, location.longitude);
+      // removeOutlets = widget.outletLatLng.where((element) {
+      //   return GeolocatorPlatform.instance.distanceBetween(element.lat,
+      //       element.lng, removeCenter!.latitude, removeCenter!.longitude) <
+      //       redRemoveDistance;
+      // }).toList();
+    });
+  }
+
   List<Outlet> redPositions = [];
   List<Outlet> bluePositions = [];
+  List<Outlet> removePositions = [];
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
+
+  bool removeActive = false;
 
   Distributor selectedDropDownItem = Distributor(
     "Select Distributor",
@@ -90,6 +128,20 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  Widget _buildMarkerWidgetClear(Offset pos, Color color, bool isLarge) {
+    return Positioned(
+      left: pos.dx - 16,
+      top: pos.dy - 16,
+      width: isLarge ? 50 : 24,
+      height: isLarge ? 50 : 24,
+      child: Icon(
+        Icons.clear,
+        color: color,
+        size: 30,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,9 +166,23 @@ class _MapScreenState extends State<MapScreen> {
 
                         redPositions = [];
                         rangeIndexes = [];
+                        removePositions = [];
+
                         widget.outletLatLng.asMap().entries.forEach((element) {
-                          if (selectedOutlets.contains(element.value)) {
+                          if (selectedOutlets.contains(element.value) ||
+                              widget.removePermPositions
+                                  .contains(element.value)) {
                             // bluePositions.add(element.value);
+                          } else if (GeolocatorPlatform.instance
+                                  .distanceBetween(
+                                      element.value.lat,
+                                      element.value.lng,
+                                      (removeCenter?.latitude ?? 0),
+                                      (removeCenter?.longitude ?? 0)) <
+                              redRemoveDistance) {
+                            if (!removePositions.contains(element.value)) {
+                              removePositions.add(element.value);
+                            }
                           } else if (GeolocatorPlatform.instance
                                   .distanceBetween(
                                       element.value.lat,
@@ -150,6 +216,18 @@ class _MapScreenState extends State<MapScreen> {
                           }
                         });
                       }
+                      markerWidgets.addAll(
+                        List.generate(
+                                removePositions.length,
+                                (e) => LatLng(removePositions[e].lat,
+                                    removePositions[e].lng))
+                            .map(transformer.fromLatLngToXYCoords)
+                            .toList()
+                            .map(
+                              (pos) =>
+                                  _buildMarkerWidget(pos, Colors.blue, false),
+                            ),
+                      );
                       for (int i = 0; i < blueIndexes.length; i++) {
                         markerWidgets.addAll(
                           List.generate(
@@ -168,11 +246,20 @@ class _MapScreenState extends State<MapScreen> {
                         );
                       }
                       Widget? homeMarkerWidget;
+                      Widget? removeMarkerWidget;
                       if (widget.center != null) {
                         final homeLocation =
                             transformer.fromLatLngToXYCoords(widget.center!);
 
                         homeMarkerWidget = _buildMarkerWidget(
+                            homeLocation, Colors.black, true);
+                      }
+
+                      if (removeCenter != null) {
+                        final homeLocation =
+                            transformer.fromLatLngToXYCoords(removeCenter!);
+
+                        removeMarkerWidget = _buildMarkerWidgetClear(
                             homeLocation, Colors.black, true);
                       }
                       return GestureDetector(
@@ -206,7 +293,12 @@ class _MapScreenState extends State<MapScreen> {
 
                           Offset clicked =
                               transformer.fromLatLngToXYCoords(location);
-                          widget.changeCenter(location);
+                          if (!removeActive) {
+                            widget.changeCenter(location);
+                          } else {
+                            changeRemoveCenter(location);
+                            print("remove marker here");
+                          }
                           print('${location.latitude}, ${location.longitude}');
                           print('${clicked.dx}, ${clicked.dy}');
                           print(
@@ -238,7 +330,36 @@ class _MapScreenState extends State<MapScreen> {
                               (homeMarkerWidget != null)
                                   ? homeMarkerWidget
                                   : Container(),
+                              (removeMarkerWidget != null)
+                                  ? removeMarkerWidget
+                                  : Container(),
                               ...markerWidgets,
+                              Positioned(
+                                bottom: 20,
+                                right: 20,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      removeActive = !removeActive;
+                                      removeCenter = null;
+                                      setRemoveRedRadius(0.0);
+                                    });
+                                  },
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                        color: removeActive
+                                            ? Colors.green
+                                            : Colors.red,
+                                        shape: BoxShape.circle),
+                                    child: Icon(
+                                      Icons.remove,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -246,140 +367,222 @@ class _MapScreenState extends State<MapScreen> {
                     },
                   ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      "${redPositions.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(width: 12,),
-                        const Text("0 m"),
-                        Expanded(
-                          child: Slider(
-                              activeColor: Colors.red,
-                              inactiveColor: Colors.red.withOpacity(0.5),
-                              thumbColor: Colors.red,
-                              value: widget.redDistance,
-                              max: 2000,
-                              min: 0,
-                              label: "${widget.redDistance.toStringAsFixed(2)}",
-                              onChanged: (double a) {
-                                setState(() {
-                                  widget.setTempRedRadius(a);
-                                });
-                              }),
-                        ),
-                        const Text("2000 m"),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              bluePositions = [];
-                              rangeIndexes = [];
-                              widget.setTempRedRadius(0.0);
-                            });
-                          },
-                          child: Container(
-                            height: 50,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                      offset: const Offset(0, 2),
-                                      spreadRadius: 2,
-                                      blurRadius: 2,
-                                      color: Colors.black.withOpacity(0.1))
-                                ]),
-                            child: const Center(
-                              child: Text(
-                                "CLEAR",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                removeActive
+                    ? Column(
+                        children: [
+                          Text(
+                            "${removePositions.length.toString()} outlets found in ${redRemoveDistance.toStringAsFixed(2)}m",
+                            style: const TextStyle(fontSize: 20),
                           ),
-                        ),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            TextEditingController textController =
-                                TextEditingController();
-                            showDialog(
-                                context: context,
-                                builder: (_) {
-                                  return Center(
-                                    child: Material(
-                                      color: Colors.white,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: SizedBox(
-                                          height: 60,
-                                          width: 300,
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: TextField(
-                                                  controller: textController,
-                                                  decoration: InputDecoration(
-                                                    label: Text("beat name"),
-                                                  ),
-                                                ),
-                                              ),
-                                              IconButton(
-                                                onPressed: () {
-                                                  rangeIndexes = [];
-                                                  blueIndexes.add(
-                                                    Beat(textController.text,
-                                                        redPositions),
-                                                  );
-                                                  widget.setTempRedRadius(0.0);
-                                                  Navigator.pop(context);
-                                                },
-                                                color: Colors.blue,
-                                                icon: Icon(
-                                                  Icons.send,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 12,
+                              ),
+                              const Text("0 m"),
+                              Expanded(
+                                child: Slider(
+                                    activeColor: Colors.green,
+                                    inactiveColor:
+                                        Colors.green.withOpacity(0.5),
+                                    thumbColor: Colors.green,
+                                    value: redRemoveDistance,
+                                    max: 1000,
+                                    min: 0,
+                                    label:
+                                        "${redRemoveDistance.toStringAsFixed(2)}",
+                                    onChanged: (double a) {
+                                      setState(() {
+                                        setRemoveRedRadius(a);
+                                      });
+                                    }),
+                              ),
+                              const Text("1000 m"),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  widget.setRemovePermPositions([
+                                    ...widget.removePermPositions,
+                                    ...removePositions
+                                  ]);
+                                },
+                                child: Container(
+                                  height: 50,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            offset: const Offset(0, 2),
+                                            spreadRadius: 2,
+                                            blurRadius: 2,
+                                            color:
+                                                Colors.black.withOpacity(0.1))
+                                      ]),
+                                  child: const Center(
+                                    child: Text(
+                                      "Remove",
+                                      style: TextStyle(color: Colors.white),
                                     ),
-                                  );
-                                });
-                          },
-                          child: Container(
-                            height: 50,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                      offset: const Offset(0, 2),
-                                      spreadRadius: 2,
-                                      blurRadius: 2,
-                                      color: Colors.black.withOpacity(0.1))
-                                ]),
-                            child: const Center(
-                              child: Text(
-                                "ADD",
-                                style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          Text(
+                            "${redPositions.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 12,
+                              ),
+                              const Text("0 m"),
+                              Expanded(
+                                child: Slider(
+                                    activeColor: Colors.red,
+                                    inactiveColor: Colors.red.withOpacity(0.5),
+                                    thumbColor: Colors.red,
+                                    value: widget.redDistance,
+                                    max: 2000,
+                                    min: 0,
+                                    label:
+                                        "${widget.redDistance.toStringAsFixed(2)}",
+                                    onChanged: (double a) {
+                                      setState(() {
+                                        widget.setTempRedRadius(a);
+                                      });
+                                    }),
+                              ),
+                              const Text("2000 m"),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    bluePositions = [];
+                                    rangeIndexes = [];
+                                    widget.setTempRedRadius(0.0);
+                                  });
+                                },
+                                child: Container(
+                                  height: 50,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            offset: const Offset(0, 2),
+                                            spreadRadius: 2,
+                                            blurRadius: 2,
+                                            color:
+                                                Colors.black.withOpacity(0.1))
+                                      ]),
+                                  child: const Center(
+                                    child: Text(
+                                      "CLEAR",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  TextEditingController textController =
+                                      TextEditingController();
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return Center(
+                                          child: Material(
+                                            color: Colors.white,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(12.0),
+                                              child: SizedBox(
+                                                height: 60,
+                                                width: 300,
+                                                child: Row(
+                                                  children: [
+                                                    Expanded(
+                                                      child: TextField(
+                                                        controller:
+                                                            textController,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          label:
+                                                              Text("beat name"),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    IconButton(
+                                                      onPressed: () {
+                                                        rangeIndexes = [];
+                                                        blueIndexes.add(
+                                                          Beat(
+                                                              textController
+                                                                  .text,
+                                                              redPositions),
+                                                        );
+                                                        widget.setTempRedRadius(
+                                                            0.0);
+                                                        Navigator.pop(context);
+                                                      },
+                                                      color: Colors.blue,
+                                                      icon: Icon(
+                                                        Icons.send,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                },
+                                child: Container(
+                                  height: 50,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            offset: const Offset(0, 2),
+                                            spreadRadius: 2,
+                                            blurRadius: 2,
+                                            color:
+                                                Colors.black.withOpacity(0.1))
+                                      ]),
+                                  child: const Center(
+                                    child: Text(
+                                      "ADD",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                 const SizedBox(
                   height: 12,
                 ),

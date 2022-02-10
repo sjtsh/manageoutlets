@@ -78,6 +78,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  dijkstra:
+    dependency: "direct main"
+    description:
+      name: dijkstra
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.2"
   dotted_border:
     dependency: "direct main"
     description:

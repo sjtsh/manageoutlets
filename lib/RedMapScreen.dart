@@ -9,15 +9,16 @@ import 'backend/Entities/Outlet.dart';
 import 'mapscreen.dart';
 
 class RedMapScreen extends StatefulWidget {
-  final List<Outlet> outletLatLng;  //this is the all of the outlets including invisible ones
+  final List<Outlet>
+      outletLatLng; //this is the all of the outlets including invisible ones
   final double redRadius; //this is the max red radius for the slider
   final controller;
-  final LatLng myPosition;  //this is the position of the user
+  final LatLng myPosition; //this is the position of the user
   final List<Distributor> distributors;
   final List<Category> categories;
 
-  RedMapScreen(this.outletLatLng, this.redRadius,
-      this.controller, this.myPosition, this.distributors, this.categories);
+  RedMapScreen(this.outletLatLng, this.redRadius, this.controller,
+      this.myPosition, this.distributors, this.categories);
 
   @override
   State<RedMapScreen> createState() => _RedMapScreenState();
@@ -29,17 +30,22 @@ class _RedMapScreenState extends State<RedMapScreen> {
   LatLng? center; // this the point from which the latlng will be calculated
   List<Outlet> myOutlets = [];
 
+  List<Outlet> removePermPositions = [];
+
+  setRemovePermPositions(List<Outlet> removePositions) {
+    setState(() {
+      removePermPositions = removePositions;
+    });
+  }
+
   setTempRedRadius(double a) {
     setState(() {
       redDistance = a;
     });
-    if(center!=null){
+    if (center != null) {
       myOutlets = widget.outletLatLng.where((element) {
         return GeolocatorPlatform.instance.distanceBetween(
-            element.lat,
-            element.lng,
-            center!.latitude,
-            center!.longitude) <
+                element.lat, element.lng, center!.latitude, center!.longitude) <
             redDistance;
       }).toList();
     }
@@ -47,15 +53,13 @@ class _RedMapScreenState extends State<RedMapScreen> {
 
   changeCenter(LatLng location) {
     setState(() {
+      removePermPositions = [];
       center = LatLng(location.latitude, location.longitude);
-      myOutlets = widget.outletLatLng.where((element) {
-        return GeolocatorPlatform.instance.distanceBetween(
-            element.lat,
-            element.lng,
-            center!.latitude,
-            center!.longitude) <
-            redDistance;
-      }).toList();
+      // myOutlets = widget.outletLatLng.where((element) {
+      //   return GeolocatorPlatform.instance.distanceBetween(
+      //           element.lat, element.lng, center!.latitude, center!.longitude) <
+      //       redDistance;
+      // }).toList();
     });
   }
 
@@ -73,15 +77,18 @@ class _RedMapScreenState extends State<RedMapScreen> {
   @override
   Widget build(BuildContext context) {
     return MapScreen(
-        myOutlets,
-        widget.redRadius,
-        widget.controller,
-        bluegreyIndexes,
-        redDistance,
-        setTempRedRadius,
-        center,
-        changeCenter,
-    widget.distributors,
-    widget.categories);
+      myOutlets,
+      widget.redRadius,
+      widget.controller,
+      bluegreyIndexes,
+      redDistance,
+      setTempRedRadius,
+      center,
+      changeCenter,
+      widget.distributors,
+      widget.categories,
+      removePermPositions,
+        setRemovePermPositions
+    );
   }
 }
