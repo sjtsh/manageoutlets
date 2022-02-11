@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:manage_outlets/MergeMap.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
-import 'package:window_utils/window_utils.dart';
 
 import 'Entity/OutletsListEntity.dart';
 import 'backend/Entities/Outlet.dart';
