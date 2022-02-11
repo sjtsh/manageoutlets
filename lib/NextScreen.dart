@@ -34,7 +34,6 @@ class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
 
   TextEditingController textController = TextEditingController();
-  TextEditingController outletNameTextController = TextEditingController();
 
   List<Outlet> selectedOutlet = [];
   String headerText = "SELECT THE PHOTO";
@@ -50,10 +49,13 @@ class _NextScreenState extends State<NextScreen> {
   String? imageURL;
   Category? category;
 
-  bool isMerging = false;
+ bool isMerging = false;
+ bool _validate =  false;
 
   @override
   void initState() {
+   // ((tempBeat as Beat).outlet.where((element) => element.outletName.isEmpty)
+
     // TODO: implement initState
     super.initState();
     List<Outlet> outlets = [];
@@ -111,6 +113,7 @@ class _NextScreenState extends State<NextScreen> {
               GestureDetector(
                 onTap: () {
                   widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
+
                   // if(selectedCategories.categoryName!="Select category"){
                   //   Navigator.pop(context);
                   // }else{
@@ -215,6 +218,8 @@ class _NextScreenState extends State<NextScreen> {
                         ),
                       );
                     } else {
+                      TextEditingController controller = TextEditingController();
+                      controller.text = tempBeat!.outlet[i].outletName;
                       return Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Container(
@@ -258,8 +263,10 @@ class _NextScreenState extends State<NextScreen> {
                                   ),
                                   Expanded(
                                     child: TextField(
-                                      controller: outletNameTextController..text= tempBeat!.outlet[i].outletName,
-
+                                      controller: controller,
+                                      onChanged: (String? text){
+                                        tempBeat!.outlet[i].outletName = text ?? "";
+                                      },
                                     ),
                                   ),
                                  // Text(tempBeat!.outlet[i].outletName),
