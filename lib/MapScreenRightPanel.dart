@@ -7,7 +7,7 @@ import 'package:manage_outlets/backend/shortestPath.dart';
 
 import 'backend/Entities/Distributor.dart';
 
-import 'Entity/OutletsListEntity.dart';
+import 'backend/Entities/OutletsListEntity.dart';
 import 'backend/database.dart';
 
 class MapScreenRightPanel extends StatefulWidget {

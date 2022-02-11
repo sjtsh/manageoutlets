@@ -5,7 +5,7 @@ import 'package:manage_outlets/MergeMap.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
 
-import 'Entity/OutletsListEntity.dart';
+import 'backend/Entities/OutletsListEntity.dart';
 import 'MergingScreen.dart';
 import 'backend/Entities/Outlet.dart';
 
@@ -27,6 +27,7 @@ class NextScreen extends StatefulWidget {
 Category selectedCategories = Category("Select category", 10000000);
 
 void _changeDropDownValue(Category newValue) {
+  selectedCategories = newValue;
   selectedCategories = newValue;
 }
 

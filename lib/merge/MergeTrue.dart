@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:manage_outlets/Entity/OutletsListEntity.dart';
+import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 
 import '../backend/Entities/Outlet.dart';
 

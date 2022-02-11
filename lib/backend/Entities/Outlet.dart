@@ -24,7 +24,8 @@ class Outlet {
       required this.lat,
       required this.lng,
       this.md5,
-      required this.imageURL, this.marker});
+      required this.imageURL,
+      this.marker});
 
   factory Outlet.fromJson(Map<String, dynamic> json) {
     return Outlet(

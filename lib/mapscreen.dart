@@ -8,7 +8,7 @@ import 'package:latlng/latlng.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
 import 'package:map/map.dart';
-import 'Entity/OutletsListEntity.dart';
+import 'backend/Entities/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
 import 'backend/Entities/Distributor.dart';
 import 'backend/Entities/Outlet.dart';

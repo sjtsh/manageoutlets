@@ -1,5 +1,5 @@
 import 'package:http/http.dart';
-import 'package:manage_outlets/Entity/OutletsListEntity.dart';
+import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 import 'package:manage_outlets/backend/Entities/Distributor.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
