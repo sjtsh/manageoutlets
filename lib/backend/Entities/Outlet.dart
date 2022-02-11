@@ -3,6 +3,7 @@ import 'package:google_static_maps_controller/google_static_maps_controller.dart
 
 class Outlet {
   String id;
+  int? videoID;
   String? videoName;
   String categoryName;
   String? beatID;

@@ -12,36 +12,36 @@ class AddBeatDialogBox extends StatefulWidget {
   final List<Outlet> redPositions;
   final Function setTempRedRadius;
 
-  const AddBeatDialogBox(this.textController, this.rangeIndexes, this.blueIndexes,
-      this.redPositions, this.setTempRedRadius);
+  const AddBeatDialogBox(this.textController, this.rangeIndexes,
+      this.blueIndexes, this.redPositions, this.setTempRedRadius);
 
   @override
   State<AddBeatDialogBox> createState() => _AddBeatDialogBoxState();
 }
 
-toBeatList(rangeIndexes, blueIndexes, textController, setTempRedRadius,
-    redPositions, context, validate) {
-  if (textController.text == "") {
-    validate = true;
-  } else {
-    validate = false;
-  }
-
-  if (validate == false) {
-    rangeIndexes = [];
-    print(redPositions.length);
-    blueIndexes.add(
-      Beat(textController.text, shortestPath(redPositions)),
-    );
-    setTempRedRadius(0.0);
-    Navigator.pop(context);
-  }
-}
-
 class AddtoBeatIntent extends Intent {}
 
 class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
-  bool _validate = false;
+  bool validate = false;
+
+  toBeatList(rangeIndexes, blueIndexes, textController, setTempRedRadius,
+      redPositions, context, validate) {
+    if (textController.text == "") {
+      validate = true;
+    } else {
+      validate = false;
+    }
+
+    if (validate == false) {
+      rangeIndexes = [];
+      print(redPositions.length);
+      blueIndexes.add(
+        Beat(textController.text, shortestPath(redPositions)),
+      );
+      setTempRedRadius(0.0);
+      Navigator.pop(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +51,26 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
         actions: {
           AddtoBeatIntent: CallbackAction(onInvoke: (intent) {
             print("Added");
+
+            setState(() {
+              if (widget.textController.text == "") {
+                validate = true;
+                print(validate.toString() + " on level 1");
+              } else {
+                validate = false;
+              }
+            });
+
+            if (validate == false) {
+              toBeatList(
+                  widget.rangeIndexes,
+                  widget.blueIndexes,
+                  widget.textController,
+                  widget.setTempRedRadius,
+                  widget.redPositions,
+                  context,
+                  validate);
+            }
           }),
         },
         child: Center(
@@ -64,58 +84,46 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                 child: Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: widget.textController,
-                        decoration: InputDecoration(
-                          errorText: _validate == true
-                              ? 'Field Can\'t Be Empty'
-                              : null,
-                          label: Text("beat name"),
+                      child: Focus(
+                        autofocus: true,
+                        child: TextField(
+                          controller: widget.textController,
+                          decoration: InputDecoration(
+                            errorText: validate == true
+                                ? 'Field Can\'t Be Empty'
+                                : null,
+                            label: Text("beat name"),
+                          ),
                         ),
                       ),
                     ),
-                    IconButton(
-                      onPressed: () {
-                        // setState(() {
-                        //   if (widget.textController
-                        //       .text ==
-                        //       "") {
-                        //     _validate = true;
-                        //     print(_validate.toString() + " on level 1");
-                        //   } else {
-                        //     _validate = false;
-                        //   }
-                        // });
-                        //
-                        // if (_validate ==
-                        //     false) {
-                        toBeatList(
-                            widget.rangeIndexes,
-                            widget.blueIndexes,
-                            widget.textController,
-                            widget.setTempRedRadius,
-                            widget.redPositions,
-                            context,
-                            _validate);
-                        // widget.rangeIndexes = [];
-                        //
-                        //   widget.blueIndexes.add(
-                        //     Beat(
-                        //         widget.textController
-                        //             .text,
-                        //         shortestPath(
-                        //             widget.redPositions)),
-                        //   );
-                        //   widget
-                        //       .setTempRedRadius(
-                        //       0.0);
-                        //   Navigator.pop(
-                        //       context);
-                        // }
-                      },
-                      color: Colors.blue,
-                      icon: Icon(
-                        Icons.send,
+                    Focus(
+                      child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            if (widget.textController.text == "") {
+                              validate = true;
+                              print(validate.toString() + " on level 1");
+                            } else {
+                              validate = false;
+                            }
+                          });
+
+                          if (validate == false) {
+                            toBeatList(
+                                widget.rangeIndexes,
+                                widget.blueIndexes,
+                                widget.textController,
+                                widget.setTempRedRadius,
+                                widget.redPositions,
+                                context,
+                                validate);
+                          }
+                        },
+                        color: Colors.blue,
+                        icon: Icon(
+                          Icons.send,
+                        ),
                       ),
                     ),
                   ],

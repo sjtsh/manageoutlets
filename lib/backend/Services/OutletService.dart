@@ -12,25 +12,26 @@ class OutletService {
   Future<List<Outlet>> getNearbyOutlets(
       double distance, double lat, double lng, context) async {
 
-
-    Response res = await http.get(
-      Uri.parse("$localhost/outlet"),
-      // body: <String, String>{
-      //   'lat': lat.toString(),
-      //   'lng': lng.toString(),
-      //   'distance': distance.toString(),
-      // },
-    );
-    if (res.statusCode == 200) {
-      List<dynamic> a = jsonDecode(res.body);
-      List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
-      print(outlets.length);
-      return outlets;
+      Response res = await http.get(
+        Uri.parse("$localhost/outlet"),
+        // body: <String, String>{
+        //   'lat': lat.toString(),
+        //   'lng': lng.toString(),
+        //   'distance': distance.toString(),
+        // },
+      );
+      if (res.statusCode == 200) {
+        List<dynamic> a = jsonDecode(res.body);
+        List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
+        print(outlets.length);
+        return outlets;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("UNABLE TO CONNECT"),
+      ));
+      print("UNABLE");
+      return [];
     }
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("UNABLE TO CONNECT"),
-    ));
-    print("UNABLE");
-    return [];
+
   }
-}
+

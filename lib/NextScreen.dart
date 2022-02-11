@@ -15,10 +15,12 @@ class NextScreen extends StatefulWidget {
   final Function refresh;
   final Function updateBeat;
 
-  const NextScreen(this.beat,
-      this.categories,
-      this.refresh,
-      this.updateBeat,);
+  const NextScreen(
+    this.beat,
+    this.categories,
+    this.refresh,
+    this.updateBeat,
+  );
 
   @override
   State<NextScreen> createState() => _NextScreenState();
@@ -142,14 +144,8 @@ class _NextScreenState extends State<NextScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Builder(builder: (context) {
-                double height = MediaQuery
-                    .of(context)
-                    .size
-                    .height;
-                double width = MediaQuery
-                    .of(context)
-                    .size
-                    .width;
+                double height = MediaQuery.of(context).size.height;
+                double width = MediaQuery.of(context).size.width;
                 return GridView.count(
                   crossAxisCount: 3,
                   childAspectRatio: width / (height * 1.175),
@@ -183,10 +179,9 @@ class _NextScreenState extends State<NextScreen> {
                                   Checkbox(
                                     // activeColor: Colors.blue,
                                     value: selectedOutlet[i] == chosenOutlet,
-                                    onChanged: (newValue) =>
-                                        setState(() {
-                                          chosenOutlet = selectedOutlet[i];
-                                        }),
+                                    onChanged: (newValue) => setState(() {
+                                      chosenOutlet = selectedOutlet[i];
+                                    }),
                                   ),
                                 ],
                               ),
@@ -197,7 +192,7 @@ class _NextScreenState extends State<NextScreen> {
                                     selectedOutlet[i].videoName == null
                                         ? selectedOutlet[i].imageURL
                                         : localhost +
-                                        selectedOutlet[i].imageURL,
+                                            selectedOutlet[i].imageURL,
                                     fit: BoxFit.cover,
                                     width: double.infinity,
                                   ),
@@ -223,91 +218,125 @@ class _NextScreenState extends State<NextScreen> {
                                   color: Colors.black.withOpacity(0.1))
                             ],
                           ),
-                          child: Column(
+                          child: Stack(
                             children: [
-                              Row(
+                              Column(
                                 children: [
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  Checkbox(
-                                    // activeColor: Colors.blue,
-                                    value: selectedOutlet
-                                        .contains(tempBeat!.outlet[i]),
-                                    onChanged: (newValue) =>
-                                        setState(() {
+                                  Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Checkbox(
+                                        // activeColor: Colors.blue,
+                                        value: selectedOutlet
+                                            .contains(tempBeat!.outlet[i]),
+                                        onChanged: (newValue) => setState(() {
                                           if (selectedOutlet
                                               .contains(tempBeat!.outlet[i])) {
                                             selectedOutlet
                                                 .remove(tempBeat!.outlet[i]);
                                           } else {
-                                            selectedOutlet.add(
-                                                tempBeat!.outlet[i]);
+                                            selectedOutlet
+                                                .add(tempBeat!.outlet[i]);
                                           }
                                         }),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(tempBeat!.outlet[i].outletName),
-                                  Expanded(child: Container()),
-                                  Container(
-                                    width: 200,
-                                    child: Builder(builder: (context) {
-                                      return DropdownSearch<Category>(
-                                        showSearchBox: true,
-                                        mode: Mode.MENU,
-                                        items: widget.categories,
-                                        onChanged: (selected) {
-                                          _changeDropDownValue(
-                                              selectedCategories);
-                                        },
-                                        selectedItem: selectedCategories,
-                                        dropdownSearchDecoration:
-                                        const InputDecoration(
-                                          // filled: true,
-                                          border: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0xFF01689A),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(tempBeat!.outlet[i].outletName),
+                                      Expanded(child: Container()),
+                                      Container(
+                                        width: 200,
+                                        child: Builder(builder: (context) {
+                                          return DropdownSearch<Category>(
+                                            showSearchBox: true,
+                                            mode: Mode.MENU,
+                                            items: widget.categories,
+                                            onChanged: (selected) {
+                                              _changeDropDownValue(
+                                                  selectedCategories);
+                                            },
+                                            selectedItem: selectedCategories,
+                                            dropdownSearchDecoration:
+                                                const InputDecoration(
+                                              // filled: true,
+                                              border: UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: Color(0xFF01689A),
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                          );
+                                        }),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            (tempBeat as Beat)
+                                                .outlet
+                                                .remove(tempBeat!.outlet[i]);
+                                          });
+                                        },
+                                        child: const Icon(
+                                          Icons.clear,
                                         ),
-                                      );
-                                    }),
+                                      ),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        (tempBeat as Beat)
-                                            .outlet
-                                            .remove(tempBeat!.outlet[i]);
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.clear,
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.black.withOpacity(0.1),
+                                      child: Image.network(
+                                        tempBeat!.outlet[i].videoName == null
+                                            ? tempBeat!.outlet[i].imageURL
+                                            : localhost +
+                                                tempBeat!.outlet[i].imageURL,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 12,
                                   ),
                                 ],
                               ),
-                              Expanded(
-                                child: Container(
-                                  color: Colors.black.withOpacity(0.1),
-                                  child: Image.network(
-                                    tempBeat!.outlet[i].videoName == null
-                                        ? tempBeat!.outlet[i].imageURL
-                                        : localhost +
-                                        tempBeat!.outlet[i].imageURL,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
+                              Positioned(
+                                right: 0,
+                                bottom: 0,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Container(
+                                    width: 60,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          tempBeat!.outlet[i].videoName == null
+                                              ? Colors.red
+                                              : Colors.green,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color:
+                                                Colors.black.withOpacity(0.1))
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        tempBeat!.outlet[i].videoName == null
+                                            ? "FA"
+                                            : "SC",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              )
                             ],
                           ),
                         ),
@@ -343,13 +372,12 @@ class _NextScreenState extends State<NextScreen> {
                     scrollDirection: Axis.horizontal,
                     children: selectedOutlet
                         .map(
-                          (e) =>
-                          Stack(
+                          (e) => Stack(
                             children: [
                               Container(
                                 width: 350,
                                 margin:
-                                const EdgeInsets.symmetric(horizontal: 12),
+                                    const EdgeInsets.symmetric(horizontal: 12),
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: NetworkImage(
@@ -384,7 +412,7 @@ class _NextScreenState extends State<NextScreen> {
                               )
                             ],
                           ),
-                    )
+                        )
                         .toList(),
                   ),
                 ),
@@ -392,7 +420,7 @@ class _NextScreenState extends State<NextScreen> {
                   width: 500,
                   child: isMerging
                       ? MergeMap(selectedOutlet,
-                      chosenOutlet == null ? [] : [chosenOutlet!], true)
+                          chosenOutlet == null ? [] : [chosenOutlet!], true)
                       : MergeMap(tempBeat!.outlet, selectedOutlet, false),
                 ),
                 GestureDetector(
@@ -431,7 +459,7 @@ class _NextScreenState extends State<NextScreen> {
                                         padding: const EdgeInsets.all(12.0),
                                         child: Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             TextField(
                                               controller: textController,
@@ -440,9 +468,9 @@ class _NextScreenState extends State<NextScreen> {
                                               showSearchBox: true,
                                               items: List.generate(
                                                   selectedOutlet.length,
-                                                      (index) =>
-                                                  selectedOutlet[index]
-                                                      .outletName),
+                                                  (index) =>
+                                                      selectedOutlet[index]
+                                                          .outletName),
                                               selectedItem: outletName,
                                               onChanged: (String? a) {
                                                 setState(() {
@@ -468,32 +496,32 @@ class _NextScreenState extends State<NextScreen> {
                                                     lat != null &&
                                                     lng != null) {
                                                   if (textController.text !=
-                                                      "" ||
+                                                          "" ||
                                                       outletName != null) {
                                                     if (category != null) {
                                                       for (int i = 0;
-                                                      i <
-                                                          tempBeat!.outlet
-                                                              .length;
-                                                      i++) {
+                                                          i <
+                                                              tempBeat!.outlet
+                                                                  .length;
+                                                          i++) {
                                                         if ((tempBeat as Beat)
-                                                            .outlet[i]
-                                                            .id ==
+                                                                .outlet[i]
+                                                                .id ==
                                                             myID) {
                                                           (tempBeat as Beat)
-                                                              .outlet[i]
-                                                              .categoryName =
-                                                          (category!
-                                                              .categoryName);
+                                                                  .outlet[i]
+                                                                  .categoryName =
+                                                              (category!
+                                                                  .categoryName);
                                                           (tempBeat as Beat)
-                                                              .outlet[i]
-                                                              .outletName =
-                                                          textController
-                                                              .text ==
-                                                              ""
-                                                              ? outletName!
-                                                              : textController
-                                                              .text;
+                                                                  .outlet[i]
+                                                                  .outletName =
+                                                              textController
+                                                                          .text ==
+                                                                      ""
+                                                                  ? outletName!
+                                                                  : textController
+                                                                      .text;
                                                           (tempBeat as Beat)
                                                               .outlet[i]
                                                               .lat = lat!;
@@ -501,22 +529,22 @@ class _NextScreenState extends State<NextScreen> {
                                                               .outlet[i]
                                                               .lng = lng!;
                                                           (tempBeat as Beat)
-                                                              .outlet[i]
-                                                              .imageURL =
-                                                          imageURL!;
+                                                                  .outlet[i]
+                                                                  .imageURL =
+                                                              imageURL!;
                                                           break;
                                                         }
                                                       }
                                                       List dynamicList =
-                                                      selectedOutlet
-                                                          .where(
-                                                              (element) =>
-                                                          element
-                                                              .id !=
-                                                              myID)
-                                                          .toList();
+                                                          selectedOutlet
+                                                              .where(
+                                                                  (element) =>
+                                                                      element
+                                                                          .id !=
+                                                                      myID)
+                                                              .toList();
                                                       for (var element
-                                                      in dynamicList) {
+                                                          in dynamicList) {
                                                         (tempBeat as Beat)
                                                             .outlet
                                                             .remove(element);
@@ -524,7 +552,7 @@ class _NextScreenState extends State<NextScreen> {
                                                       Navigator.pop(context);
                                                       selectedOutlet = [];
                                                       headerText =
-                                                      "SELECT THE PHOTO";
+                                                          "SELECT THE PHOTO";
                                                       chosenOutlet = null;
                                                       myID = null;
                                                       videoName = null;
@@ -541,31 +569,29 @@ class _NextScreenState extends State<NextScreen> {
                                                         isMerging = false;
                                                       });
                                                       ScaffoldMessenger.of(
-                                                          context)
-                                                          .showSnackBar(
-                                                          SnackBar(
+                                                              context)
+                                                          .showSnackBar(SnackBar(
                                                               content: Text(
                                                                   "Successful")));
                                                     } else {
                                                       ScaffoldMessenger.of(
-                                                          context)
-                                                          .showSnackBar(
-                                                          SnackBar(
+                                                              context)
+                                                          .showSnackBar(SnackBar(
                                                               content: Text(
                                                                   "Select a category")));
                                                     }
                                                   } else {
                                                     ScaffoldMessenger.of(
-                                                        context)
+                                                            context)
                                                         .showSnackBar(SnackBar(
-                                                        content: Text(
-                                                            "Select or enter the outlet name")));
+                                                            content: Text(
+                                                                "Select or enter the outlet name")));
                                                   }
                                                 } else {
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          "Soemthing went wrong")));
+                                                          content: Text(
+                                                              "Soemthing went wrong")));
                                                 }
                                               },
                                               child: Container(
@@ -593,7 +619,7 @@ class _NextScreenState extends State<NextScreen> {
                   },
                   child: Container(
                     color: (selectedOutlet.length <= 1 && !isMerging) ||
-                        (chosenOutlet == null && isMerging)
+                            (chosenOutlet == null && isMerging)
                         ? Colors.blueGrey
                         : Colors.green,
                     width: 100,
