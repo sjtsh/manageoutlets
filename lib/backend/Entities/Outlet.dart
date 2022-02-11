@@ -6,11 +6,11 @@ class Outlet {
   String? videoName;
   String categoryName;
   String? beatID;
-  String dateTime;
+  String? dateTime;
   String outletName;
   double lat;
   double lng;
-  String md5;
+  String? md5;
   String imageURL;
   Marker? marker;
 
@@ -19,11 +19,11 @@ class Outlet {
       this.videoName,
       required this.categoryName,
       this.beatID,
-      required this.dateTime,
+      this.dateTime,
       required this.outletName,
       required this.lat,
       required this.lng,
-      required this.md5,
+      this.md5,
       required this.imageURL, this.marker});
 
   factory Outlet.fromJson(Map<String, dynamic> json) {

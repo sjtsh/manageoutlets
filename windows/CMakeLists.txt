@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(manage_outlets LANGUAGES CXX)
+project(manageoutlets LANGUAGES CXX)
 
-set(BINARY_NAME "manage_outlets")
+set(BINARY_NAME "manageoutlets")
 
 cmake_policy(SET CMP0063 NEW)
 

@@ -330,7 +330,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.8"
+    version: "2.0.9"
   path_provider_android:
     dependency: transitive
     description:
@@ -510,14 +510,18 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "2.3.8"
+=======
+    version: "2.3.11"
+>>>>>>> 10775709b8fb0ab9a6d660fd962ba442c35d91f5
   xdg_directories:
     dependency: transitive
     description:
       name: xdg_directories
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.0+1"
   xml:
     dependency: transitive
     description:
@@ -526,5 +530,5 @@ packages:
     source: hosted
     version: "5.3.1"
 sdks:
-  dart: ">=2.15.0 <3.0.0"
+  dart: ">=2.16.0-87.0.dev <3.0.0"
   flutter: ">=2.8.0"

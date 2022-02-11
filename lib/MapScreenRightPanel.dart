@@ -17,6 +17,8 @@ class MapScreenRightPanel extends StatefulWidget {
   final List<Distributor> distributors;
   final Distributor selectedDropDownItem;
   final Function _changeDropDownValue;
+  final Function refresh;
+  final Function updateBeat;
 
   MapScreenRightPanel(
     this.categories,
@@ -24,7 +26,7 @@ class MapScreenRightPanel extends StatefulWidget {
     this.beats,
     this.removeBeat,
     this.selectedDropDownItem,
-    this._changeDropDownValue,
+    this._changeDropDownValue, this.refresh, this.updateBeat,
   );
 
   @override
@@ -32,6 +34,9 @@ class MapScreenRightPanel extends StatefulWidget {
 }
 
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
+
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -82,7 +87,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         // double tap function
                         Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return NextScreen(
-                              widget.beats[index], widget.categories);
+                              widget.beats[index], widget.categories, widget.refresh, widget.updateBeat);
                         }));
                       },
                       child: Container(
@@ -170,7 +175,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                               MaterialPageRoute(builder: (_) {
                             return NextScreen(
                                 widget.selectedDropDownItem.beats[index],
-                                widget.categories);
+                                widget.categories, widget.refresh, widget.updateBeat);
                           }));
                         },
                         child: Container(

@@ -57,6 +57,12 @@ class _MapScreenState extends State<MapScreen> {
   double redRemoveDistance = 0;
   bool _validate = false;
 
+  void refresh(){
+  setState(() {
+
+  });
+  }
+
   setRemoveRedRadius(double a) {
     setState(() {
       redRemoveDistance = a;
@@ -99,6 +105,13 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       selectedDropDownItem = newValue;
       print(selectedDropDownItem.beats);
+    });
+  }
+
+  updateBeat({required Beat formerBeat, required Beat newBeat}){
+    setState(() {
+      blueIndexes.remove(formerBeat);
+      blueIndexes.add(newBeat);
     });
   }
 
@@ -554,7 +567,7 @@ class _MapScreenState extends State<MapScreen> {
                   blueIndexes,
                   removeBeat,
                   selectedDropDownItem,
-                  _changeDropDownValue)),
+                  _changeDropDownValue,refresh, updateBeat)),
         ],
       ),
     );
