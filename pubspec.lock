@@ -510,7 +510,11 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
+    version: "2.3.8"
+=======
     version: "2.3.11"
+>>>>>>> 10775709b8fb0ab9a6d660fd962ba442c35d91f5
   xdg_directories:
     dependency: transitive
     description:

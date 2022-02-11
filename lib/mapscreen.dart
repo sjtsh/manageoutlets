@@ -7,6 +7,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
+import 'package:manage_outlets/addBeatNameDialog.dart';
 import 'package:map/map.dart';
 import 'backend/Entities/OutletsListEntity.dart';
 import 'MapScreenRightPanel.dart';
@@ -54,6 +55,7 @@ class _MapScreenState extends State<MapScreen> {
       removeCenter; // this the point from which the latlng will be calculated
 
   double redRemoveDistance = 0;
+  bool _validate = false;
 
   void refresh(){
   setState(() {
@@ -522,53 +524,7 @@ class _MapScreenState extends State<MapScreen> {
                                   showDialog(
                                       context: context,
                                       builder: (_) {
-                                        return Center(
-                                          child: Material(
-                                            color: Colors.white,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(12.0),
-                                              child: SizedBox(
-                                                height: 60,
-                                                width: 300,
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: TextField(
-                                                        controller:
-                                                            textController,
-                                                        decoration:
-                                                            InputDecoration(
-                                                          label:
-                                                              Text("beat name"),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    IconButton(
-                                                      onPressed: () {
-                                                        rangeIndexes = [];
-
-                                                        blueIndexes.add(
-                                                          Beat(
-                                                              textController
-                                                                  .text,
-                                                              shortestPath(redPositions)),
-                                                        );
-                                                        widget.setTempRedRadius(
-                                                            0.0);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      color: Colors.blue,
-                                                      icon: Icon(
-                                                        Icons.send,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
+                                        return AddBeatDialogBox(textController,rangeIndexes,blueIndexes, redPositions,widget.setTempRedRadius);
                                       });
                                 },
                                 child: Container(
