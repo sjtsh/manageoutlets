@@ -25,6 +25,12 @@ class _MergeMapState extends State<MergeMap> {
 
   final TextEditingController textController = TextEditingController();
 
+  void refresh(){
+  setState(() {
+
+  });
+  }
+
   Widget _buildMarkerWidget(Offset pos, Color color, bool isLarge) {
     return Positioned(
       left: pos.dx - 16,
@@ -54,7 +60,7 @@ class _MergeMapState extends State<MergeMap> {
       location: centerOutlet == null
           ? LatLng(0, 0)
           : LatLng(centerOutlet.lat, centerOutlet.lng),
-      zoom: widget.isMerge ? 22 : 17, //19
+      zoom: widget.isMerge ? 19 : 17, //19
     );
     return MapLayoutBuilder(
       controller: controller,

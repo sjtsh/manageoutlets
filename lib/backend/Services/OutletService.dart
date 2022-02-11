@@ -28,6 +28,7 @@ class OutletService {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("UNABLE TO CONNECT"),
     ));
+    print("UNABLE");
     return [];
   }
 }
