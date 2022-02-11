@@ -284,7 +284,7 @@ class _MapScreenState extends State<MapScreen> {
                           for (int i = 0; i < blueIndexes.length; i++) {
                             markerWidgets.addAll(
                               List.generate(
-                                      blueIndexes[i].outlet.length,
+                                      blueIndexes[i].outlet.length ,
                                       (e) => LatLng(
                                           blueIndexes[i].outlet[e].lat,
                                           blueIndexes[i].outlet[e].lng))
@@ -294,7 +294,6 @@ class _MapScreenState extends State<MapScreen> {
                                     (pos) => _buildMarkerWidget(
                                         pos,
                                         colorIndex[
-                                            selectedDropDownItem.beats.length +
                                                 i],
                                         false),
                                   ),
@@ -568,16 +567,20 @@ class _MapScreenState extends State<MapScreen> {
                                     onTap: () {
                                       TextEditingController textController =
                                           TextEditingController();
-                                      showDialog(
-                                          context: context,
-                                          builder: (_) {
-                                            return AddBeatDialogBox(
-                                                textController,
-                                                rangeIndexes,
-                                                blueIndexes,
-                                                redPositions,
-                                                widget.setTempRedRadius);
-                                          });
+                                      if(redPositions.length!=0){
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) {
+                                              return AddBeatDialogBox(
+                                                  textController,
+                                                  rangeIndexes,
+                                                  blueIndexes,
+                                                  redPositions,
+                                                  widget.setTempRedRadius);
+                                            });
+                                      } else{
+                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(duration: Duration(milliseconds: 500),content: Text("Please select outlet")));
+                                      }
                                     },
                                     child: Focus(
                                       autofocus: true,
