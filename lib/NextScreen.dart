@@ -6,7 +6,7 @@ import 'package:manage_outlets/MergeMap.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
 
-import 'Entity/OutletsListEntity.dart';
+import 'backend/Entities/OutletsListEntity.dart';
 import 'MergingScreen.dart';
 import 'backend/Entities/Outlet.dart';
 
@@ -31,12 +31,14 @@ Category selectedCategories = Category("Select category", 10000000);
 
 void _changeDropDownValue(Category newValue) {
   selectedCategories = newValue;
+  selectedCategories = newValue;
 }
 
 class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
 
   TextEditingController textController = TextEditingController();
+  TextEditingController controller = TextEditingController();
 
   List<Outlet> selectedOutlet = [];
   String headerText = "SELECT THE PHOTO";
@@ -140,6 +142,15 @@ class _NextScreenState extends State<NextScreen> {
                       onTap: () {
                         widget.updateBeat(
                             formerBeat: widget.beat, newBeat: tempBeat);
+                        if (selectedCategories.categoryName !=
+                            "Select category") {
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Select all categories")));
+                        }
+
                         Navigator.pop(context);
                       },
                       child: Padding(
@@ -285,8 +296,7 @@ class _NextScreenState extends State<NextScreen> {
                                             ? selectedOutlet[i].imageURL
                                             : localhost +
                                                 selectedOutlet[i].imageURL,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
+                                        fit: BoxFit.contain,
                                       ),
                                     ),
                                   ),
@@ -297,67 +307,201 @@ class _NextScreenState extends State<NextScreen> {
                         ),
                       );
                     } else {
-                      TextEditingController controller =
-                          TextEditingController();
                       controller.text = tempBeat!.outlet[i].outletName;
                       return Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Container(
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                            color: selectedOutlet.contains(tempBeat!.outlet[i])
-                                ? Color(0xff9497F1)
-                                : Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                  offset: const Offset(0, 2),
-                                  spreadRadius: 2,
-                                  blurRadius: 2,
-                                  color: Colors.black.withOpacity(0.1))
-                            ],
-                          ),
-                          child: Material(
-                            color: selectedOutlet.contains(tempBeat!.outlet[i])
-                                ? Color(0xff9497F1)
-                                : Colors.white,
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  if (selectedOutlet
-                                      .contains(tempBeat!.outlet[i])) {
-                                    selectedOutlet.remove(tempBeat!.outlet[i]);
-                                  } else {
-                                    selectedOutlet.add(tempBeat!.outlet[i]);
-                                  }
-                                });
-                              },
-                              onDoubleTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (_) {
-                                  return Scaffold(
-                                    body: Column(
-                                      children: [
-                                        AppBar(
-                                          leading: GestureDetector(
-                                            onTap: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Icon(
-                                              Icons.arrow_back,
-                                              color: Colors.black,
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                color:
+                                    selectedOutlet.contains(tempBeat!.outlet[i])
+                                        ? Color(0xff9497F1)
+                                        : Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: const Offset(0, 2),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      color: Colors.black.withOpacity(0.1))
+                                ],
+                              ),
+                              child: Material(
+                                color:
+                                    selectedOutlet.contains(tempBeat!.outlet[i])
+                                        ? Color(0xff9497F1)
+                                        : Colors.white,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (selectedOutlet
+                                          .contains(tempBeat!.outlet[i])) {
+                                        selectedOutlet
+                                            .remove(tempBeat!.outlet[i]);
+                                      } else {
+                                        selectedOutlet.add(tempBeat!.outlet[i]);
+                                      }
+                                    });
+                                  },
+                                  onDoubleTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (_) {
+                                      return Scaffold(
+                                        body: Column(
+                                          children: [
+                                            AppBar(
+                                              leading: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Icon(
+                                                  Icons.arrow_back,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              shadowColor: Colors.transparent,
+                                              foregroundColor:
+                                                  Colors.transparent,
                                             ),
-                                          ),
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: Colors.transparent,
-                                          foregroundColor: Colors.transparent,
+                                            Expanded(
+                                              child: InteractiveViewer(
+                                                // boundaryMargin:
+                                                //     const EdgeInsets.all(20.0),
+                                                minScale: 0.7,
+                                                maxScale: 3.1,
+                                                child: Container(
+                                                  color: Colors.black
+                                                      .withOpacity(0.1),
+                                                  child: Image.network(
+                                                    tempBeat!.outlet[i]
+                                                                .videoName ==
+                                                            null
+                                                        ? tempBeat!
+                                                            .outlet[i].imageURL
+                                                        : localhost +
+                                                            tempBeat!.outlet[i]
+                                                                .imageURL,
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Expanded(
-                                          child: InteractiveViewer(
-                                            // boundaryMargin:
-                                            //     const EdgeInsets.all(20.0),
-                                            minScale: 0.7,
-                                            maxScale: 3.1,
+                                      );
+                                    }));
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const SizedBox(
+                                                width: 12,
+                                              ),
+                                              Checkbox(
+                                                // activeColor: Colors.blue,
+                                                value: selectedOutlet.contains(
+                                                    tempBeat!.outlet[i]),
+                                                onChanged: (newValue) =>
+                                                    setState(() {
+                                                  if (selectedOutlet.contains(
+                                                      tempBeat!.outlet[i])) {
+                                                    selectedOutlet.remove(
+                                                        tempBeat!.outlet[i]);
+                                                  } else {
+                                                    selectedOutlet.add(
+                                                        tempBeat!.outlet[i]);
+                                                  }
+                                                }),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: controller,
+                                                  onChanged: (String? text) {
+                                                    tempBeat!.outlet[i]
+                                                            .outletName =
+                                                        text ?? "";
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    errorText: _validate == true
+                                                        ? 'Field Can\'t Be Empty'
+                                                        : null,
+                                                    border:
+                                                        const OutlineInputBorder(),
+                                                  ),
+                                                ),
+                                              ),
+                                              // Text(tempBeat!.outlet[i].outletName),
+                                              // Expanded(child: Container()),
+                                              Container(
+                                                width: 200,
+                                                child:
+                                                    Builder(builder: (context) {
+                                                  return DropdownSearch<
+                                                      Category>(
+                                                    showSearchBox: true,
+                                                    mode: Mode.MENU,
+                                                    items: widget.categories,
+                                                    onChanged: (selected) {
+                                                      _changeDropDownValue(
+                                                          selectedCategories);
+                                                    },
+                                                    selectedItem:
+                                                        selectedCategories,
+                                                    dropdownSearchDecoration:
+                                                        const InputDecoration(
+                                                      contentPadding:
+                                                          const EdgeInsets
+                                                                  .fromLTRB(
+                                                              8, 0, 8, 0),
+                                                      border:
+                                                          UnderlineInputBorder(
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    selectedOutlet.remove(
+                                                        selectedOutlet
+                                                            .firstWhere(
+                                                                (element) =>
+                                                                    tempBeat!
+                                                                        .outlet[
+                                                                            i]
+                                                                        .id ==
+                                                                    element
+                                                                        .id));
+                                                    (tempBeat as Beat)
+                                                        .outlet
+                                                        .remove(tempBeat!
+                                                            .outlet[i]);
+                                                  });
+                                                },
+                                                child: const Icon(
+                                                  Icons.clear,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 12,
+                                              ),
+                                            ],
+                                          ),
+                                          Expanded(
                                             child: Container(
                                               color:
                                                   Colors.black.withOpacity(0.1),
@@ -373,113 +517,47 @@ class _NextScreenState extends State<NextScreen> {
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }));
-                              },
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      const SizedBox(
-                                        width: 12,
+                                        ],
                                       ),
-                                      Checkbox(
-                                        // activeColor: Colors.blue,
-                                        value: selectedOutlet
-                                            .contains(tempBeat!.outlet[i]),
-                                        onChanged: (newValue) => setState(() {
-                                          if (selectedOutlet
-                                              .contains(tempBeat!.outlet[i])) {
-                                            selectedOutlet
-                                                .remove(tempBeat!.outlet[i]);
-                                          } else {
-                                            selectedOutlet
-                                                .add(tempBeat!.outlet[i]);
-                                          }
-                                        }),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: controller,
-                                          onChanged: (String? text) {
-                                            tempBeat!.outlet[i].outletName =
-                                                text ?? "";
-                                          },
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 200,
-                                        child: Builder(builder: (context) {
-                                          return DropdownSearch<Category>(
-                                            showSearchBox: true,
-                                            mode: Mode.MENU,
-                                            items: widget.categories,
-                                            onChanged: (selected) {
-                                              _changeDropDownValue(
-                                                  selectedCategories);
-                                            },
-                                            selectedItem: selectedCategories,
-                                            dropdownSearchDecoration:
-                                                const InputDecoration(
-                                              contentPadding:
-                                                  EdgeInsets.fromLTRB(
-                                                      8, 0, 8, 0),
-                                              // filled: true,
-                                              border: UnderlineInputBorder(
-                                                  borderSide: BorderSide.none),
+                                      Positioned(
+                                        right: 0,
+                                        bottom: 0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Container(
+                                            width: 60,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              color: tempBeat!.outlet[i]
+                                                          .videoName ==
+                                                      null
+                                                  ? Colors.red
+                                                  : Colors.green,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.1))
+                                              ],
                                             ),
-                                          );
-                                        }),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            selectedOutlet.remove(selectedOutlet
-                                                .firstWhere((element) =>
-                                                    tempBeat!.outlet[i].id ==
-                                                    element.id));
-                                            (tempBeat as Beat)
-                                                .outlet
-                                                .remove(tempBeat!.outlet[i]);
-                                          });
-                                        },
-                                        child: const Icon(
-                                          Icons.clear,
+                                            child: Center(
+                                              child: Text(
+                                                tempBeat!.outlet[i].videoName ==
+                                                        null
+                                                    ? "FA"
+                                                    : "SC",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
+                                      )
                                     ],
                                   ),
-                                  Expanded(
-                                    child: Container(
-                                      color: Colors.black.withOpacity(0.1),
-                                      child: Image.network(
-                                        tempBeat!.outlet[i].videoName == null
-                                            ? tempBeat!.outlet[i].imageURL
-                                            : localhost +
-                                                tempBeat!.outlet[i].imageURL,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
+                                ),
+                              )));
                     }
                   }),
                 );
@@ -654,6 +732,15 @@ class _NextScreenState extends State<NextScreen> {
                                             Expanded(child: Container()),
                                             GestureDetector(
                                               onTap: () {
+                                                bool isValidate = false;
+                                                (tempBeat as Beat).outlet.forEach((element) {
+                                                  if(element.outletName == ""){
+                                                    isValidate = true;
+                                                  }
+                                                });
+                                                if(!isValidate){
+                                                  print("wrong");
+                                                }
                                                 if (myID != null &&
                                                     imageURL != null &&
                                                     lat != null &&

@@ -11,6 +11,4 @@ class Category {
     // TODO: implement toString
     return categoryName.toString();
   }
-
-
 }

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:manage_outlets/Entity/OutletsListEntity.dart';
+import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 
 import '../ImageNew.dart';
 import '../backend/Entities/Outlet.dart';

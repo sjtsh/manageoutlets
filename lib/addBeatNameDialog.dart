@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'Entity/OutletsListEntity.dart';
 import 'backend/Entities/Outlet.dart';
+import 'backend/Entities/OutletsListEntity.dart';
 import 'backend/shortestPath.dart';
 
 class AddBeatDialogBox extends StatefulWidget {
@@ -24,21 +24,24 @@ class AddtoBeatIntent extends Intent {}
 class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
   bool validate = false;
 
-  void toBeatList(
-    rangeIndexes,
-    blueIndexes,
-    textController,
-    setTempRedRadius,
-    redPositions,
-    context,
-  ) {
-    rangeIndexes = [];
 
-    blueIndexes.add(
-      Beat(textController.text, shortestPath(redPositions)),
-    );
-    setTempRedRadius(0.0);
-    Navigator.pop(context);
+  toBeatList(rangeIndexes, blueIndexes, textController, setTempRedRadius,
+      redPositions, context, validate) {
+    if (textController.text == "") {
+      validate = true;
+    } else {
+      validate = false;
+    }
+
+    if (validate == false) {
+      rangeIndexes = [];
+      print(redPositions.length);
+      blueIndexes.add(
+        Beat(textController.text, shortestPath(redPositions)),
+      );
+      setTempRedRadius(0.0);
+      Navigator.pop(context);
+    }
   }
 
   @override
@@ -66,7 +69,8 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                   widget.textController,
                   widget.setTempRedRadius,
                   widget.redPositions,
-                  context);
+                  context,
+                  validate);
             }
           }),
         },
@@ -114,7 +118,8 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                                 widget.textController,
                                 widget.setTempRedRadius,
                                 widget.redPositions,
-                                context);
+                                context,
+                                validate);
                           }
                         },
                         color: Colors.blue,

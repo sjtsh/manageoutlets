@@ -1,4 +1,4 @@
-import 'package:manage_outlets/Entity/OutletsListEntity.dart';
+import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 
 class Distributor {
   int? id;

@@ -7,7 +7,8 @@ import 'package:manage_outlets/backend/shortestPath.dart';
 
 import 'backend/Entities/Distributor.dart';
 
-import 'Entity/OutletsListEntity.dart';
+import 'backend/Entities/OutletsListEntity.dart';
+import 'backend/Services/BeatService.dart';
 import 'backend/database.dart';
 
 class MapScreenRightPanel extends StatefulWidget {
@@ -224,23 +225,28 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
             ),
           ),
           Center(
-            child: Container(
-              height: 50,
-              decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                        offset: const Offset(0, 2),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        color: Colors.black.withOpacity(0.1))
-                  ]),
-              child: const Center(
-                  child: Text(
-                "CONFIRM",
-                style: TextStyle(color: Colors.white),
-              )),
+            child: GestureDetector(
+            onTap: (){
+              BeatService().updateOutlets(widget.beats, 0, context);
+            },
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: const Offset(0, 2),
+                          spreadRadius: 2,
+                          blurRadius: 2,
+                          color: Colors.black.withOpacity(0.1))
+                    ]),
+                child: const Center(
+                    child: Text(
+                  "CONFIRM",
+                  style: TextStyle(color: Colors.white),
+                )),
+              ),
             ),
           ),
           //SizedBox(height: 0,)
