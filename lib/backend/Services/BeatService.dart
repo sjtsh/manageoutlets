@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
@@ -13,8 +15,8 @@ class BeatService {
     for (var element in beat) {
       Map<String, dynamic> aJson = {};
       aJson["distributor"] = distributorID.toString();
-      aJson["beat"] = element.id;
-      aJson["beatName"] = element.beatName;
+      aJson["beat"] = element.id.toString();
+      aJson["beatName"] = element.beatName.toString();
       aJson["outlets"] = {};
 
       for (Outlet element in element.outlet) {
@@ -26,7 +28,7 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["categoryID"] =
             element.categoryID.toString();
         aJson["outlets"][element.id.toString()]["dateTime"] =
-            element.dateTime.toString();
+            element.dateTime.toString().split(":").join("c");
         aJson["outlets"][element.id.toString()]["outletName"] =
             element.outletName.toString();
         aJson["outlets"][element.id.toString()]["lat"] = element.lat.toString();
@@ -34,7 +36,7 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["md5"] = element.md5.toString();
         aJson["outlets"][element.id.toString()]["imageURL"] =
             element.imageURL.toString();
-        aJson["outlets"][element.id.toString()]["deactivated"] = "true";
+        aJson["outlets"][element.id.toString()]["deactivated"] = "false";
       }
 
       for (Outlet element in (element.deactivated ?? [])) {
@@ -46,7 +48,7 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["categoryID"] =
             element.categoryID.toString();
         aJson["outlets"][element.id.toString()]["dateTime"] =
-            element.dateTime.toString();
+            element.dateTime.toString().split(":").join("_");;
         aJson["outlets"][element.id.toString()]["outletName"] =
             element.outletName.toString();
         aJson["outlets"][element.id.toString()]["lat"] = element.lat.toString();
@@ -54,10 +56,10 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["md5"] = element.md5.toString();
         aJson["outlets"][element.id.toString()]["imageURL"] =
             element.imageURL.toString();
-        aJson["outlets"][element.id.toString()]["deactivated"] = "false";
+        aJson["outlets"][element.id.toString()]["deactivated"] = "true";
       }
-      print(aJson);
-      Response res = await http.post(
+      aJson["outlets"] = aJson["outlets"].toString();
+      Response res = await http.put(
         Uri.parse("$localhost/beat/update"),
         body: aJson,
       );
@@ -67,7 +69,11 @@ class BeatService {
     }
 
     if (statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("SUCCESSFUL"),
+      ));
       return true;
+
     }
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("UNABLE TO CONNECT"),

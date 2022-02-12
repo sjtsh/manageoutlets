@@ -342,6 +342,12 @@ class _NextScreenState extends State<NextScreen> {
                                         selectedOutlet.add(tempBeat!.outlet[i]);
                                       }
                                     });
+                                    print(tempBeat!.outlet[i].id);
+                                    // print(tempBeat!.outlet[i].categoryID);
+                                    print(tempBeat!.outlet[i].lat);
+                                    print(tempBeat!.outlet[i].lng);
+                                    print(tempBeat!.outlet[i].imageURL);
+                                    print(tempBeat!.outlet[i].beatID);
                                   },
                                   onDoubleTap: () {
                                     Navigator.push(context,

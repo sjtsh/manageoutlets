@@ -227,7 +227,12 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           Center(
             child: GestureDetector(
             onTap: (){
-              BeatService().updateOutlets(widget.beats, 0, context);
+              BeatService().updateOutlets(widget.beats, 1, context).then((value){
+
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("SUCCESSFUL"),
+                ));
+              });
             },
               child: Container(
                 height: 50,
