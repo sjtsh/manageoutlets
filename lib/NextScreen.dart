@@ -53,9 +53,9 @@ class _NextScreenState extends State<NextScreen> {
   double? lng;
   String? imageURL;
   Category? category;
+  int? categoadsuig;
 
   bool isMerging = false;
-  bool _validate = false;
 
   @override
   void initState() {
@@ -97,6 +97,20 @@ class _NextScreenState extends State<NextScreen> {
                 GestureDetector(
                   onTap: () {
                     if (isMerging) {
+                      headerText = "SELECT THE PHOTO";
+                      chosenOutlet = null;
+                      myID = null;
+                      videoName = null;
+                      categoryName = null;
+                      categoadsuig = null;
+                      beatID = null;
+                      dateTime = null;
+                      outletName = null;
+                      lat = null;
+                      lng = null;
+                      imageURL = null;
+                      category = null;
+                      textController.text = "";
                       setState(() {
                         isMerging = false;
                       });
@@ -155,7 +169,6 @@ class _NextScreenState extends State<NextScreen> {
                           Navigator.pop(context);
                         } else {
                           setState(() {
-
                             isValidate = false;
                           });
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -163,7 +176,6 @@ class _NextScreenState extends State<NextScreen> {
                                   content:
                                       Text("Select all name and categories")));
                         }
-
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -229,7 +241,7 @@ class _NextScreenState extends State<NextScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Material(
-                            color: selectedOutlet.contains(tempBeat!.outlet[i])
+                            color: tempBeat!.outlet[i] == chosenOutlet
                                 ? Color(0xff9497F1)
                                 : Colors.white,
                             child: InkWell(
@@ -342,155 +354,93 @@ class _NextScreenState extends State<NextScreen> {
                               ),
                               child: Material(
                                 color:
-                                selectedOutlet.contains(tempBeat!.outlet[i])
-                                    ? Color(0xff9497F1)
-                                    : Colors.white,
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      if (selectedOutlet
-                                          .contains(tempBeat!.outlet[i])) {
-                                        selectedOutlet
-                                            .remove(tempBeat!.outlet[i]);
-                                      } else {
-                                        selectedOutlet.add(tempBeat!.outlet[i]);
-                                      }
-                                    });
-                                    print(tempBeat!.outlet[i].id);
-                                    // print(tempBeat!.outlet[i].categoryID);
-                                    print(tempBeat!.outlet[i].lat);
-                                    print(tempBeat!.outlet[i].lng);
-                                    print(tempBeat!.outlet[i].imageURL);
-                                    print(tempBeat!.outlet[i].beatID);
-                                  },
-                                  onDoubleTap: () {
-                                    Navigator.push(context,
-                                        MaterialPageRoute(builder: (_) {
-                                      return Scaffold(
-                                        body: Column(
+                                    selectedOutlet.contains(tempBeat!.outlet[i])
+                                        ? Color(0xff9497F1)
+                                        : Colors.white,
+                                child: Stack(
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Row(
                                           children: [
-                                            AppBar(
-                                              leading: GestureDetector(
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: const Icon(
-                                                  Icons.arrow_back,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              shadowColor: Colors.transparent,
-                                              foregroundColor:
-                                                  Colors.transparent,
+                                            const SizedBox(
+                                              width: 12,
+                                            ),
+                                            Checkbox(
+                                              // activeColor: Colors.blue,
+                                              value: selectedOutlet.contains(
+                                                  tempBeat!.outlet[i]),
+                                              onChanged: (newValue) =>
+                                                  setState(() {
+                                                if (selectedOutlet.contains(
+                                                    tempBeat!.outlet[i])) {
+                                                  selectedOutlet.remove(
+                                                      tempBeat!.outlet[i]);
+                                                } else {
+                                                  selectedOutlet.add(
+                                                      tempBeat!.outlet[i]);
+                                                }
+                                              }),
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
                                             ),
                                             Expanded(
-                                              child: InteractiveViewer(
-                                                // boundaryMargin:
-                                                //     const EdgeInsets.all(20.0),
-                                                minScale: 0.7,
-                                                maxScale: 3.1,
-                                                child: Container(
-                                                  color: Colors.black
-                                                      .withOpacity(0.1),
-                                                  child: Image.network(
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: TextField(
+                                                  controller: controller,
+                                                  onChanged: (String? text) {
                                                     tempBeat!.outlet[i]
-                                                                .videoName ==
-                                                            null
-                                                        ? tempBeat!
-                                                            .outlet[i].imageURL
-                                                        : localhost +
-                                                            tempBeat!.outlet[i]
-                                                                .imageURL,
-                                                    fit: BoxFit.contain,
+                                                            .outletName =
+                                                        text ?? "";
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    errorText: (controller
+                                                                    .text ==
+                                                                "" &&
+                                                            !isValidate)
+                                                        ? 'Field Can\'t Be Empty'
+                                                        : null,
+                                                    border:
+                                                        const OutlineInputBorder(),
                                                   ),
                                                 ),
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                      );
-                                    }));
-                                  },
-                                  child: Stack(
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const SizedBox(
-                                                width: 12,
-                                              ),
-                                              Checkbox(
-                                                // activeColor: Colors.blue,
-                                                value: selectedOutlet.contains(
-                                                    tempBeat!.outlet[i]),
-                                                onChanged: (newValue) =>
-                                                    setState(() {
-                                                  if (selectedOutlet.contains(
-                                                      tempBeat!.outlet[i])) {
-                                                    selectedOutlet.remove(
-                                                        tempBeat!.outlet[i]);
-                                                  } else {
-                                                    selectedOutlet.add(
-                                                        tempBeat!.outlet[i]);
-                                                  }
-                                                }),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: TextField(
-                                                    controller: controller,
-                                                    onChanged: (String? text) {
+                                            // Text(tempBeat!.outlet[i].outletName),
+                                            // Expanded(child: Container()),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Container(
+                                                width: 200,
+                                                child: Builder(
+                                                    builder: (context) {
+                                                  return DropdownSearch<
+                                                      Category>(
+                                                    showSearchBox: true,
+                                                    mode: Mode.MENU,
+                                                    items: widget.categories,
+                                                    onChanged: (selected) {
+                                                      _changeDropDownValue(
+                                                          selectedCategories);
                                                       tempBeat!.outlet[i]
-                                                              .outletName =
-                                                          text ?? "";
+                                                              .newcategoryID =
+                                                          selected?.id;
                                                     },
-                                                    decoration: InputDecoration(
-                                                      errorText: (controller
-                                                                      .text ==
-                                                                  "" &&
-                                                              !isValidate)
-                                                          ? 'Field Can\'t Be Empty'
-                                                          : null,
-                                                      border:
-                                                          const OutlineInputBorder(),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              // Text(tempBeat!.outlet[i].outletName),
-                                              // Expanded(child: Container()),
-                                              Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Container(
-                                                  width: 200,
-                                                  child:
-                                                      Builder(builder: (context) {
-                                                    return DropdownSearch<
-                                                        Category>(
-                                                      showSearchBox: true,
-                                                      mode: Mode.MENU,
-                                                      items: widget.categories,
-                                                      onChanged: (selected) {
-                                                        _changeDropDownValue(
-                                                            selectedCategories);
-                                                        tempBeat!
-                                                            .outlet[i]
-                                                            .newcategoryID = selected?.id;
-                                                      },
-                                                      selectedItem:
-                                                          selectedCategories,
-                                                      dropdownSearchDecoration:
-                                                          InputDecoration(
+                                                    selectedItem: ((tempBeat as Beat)
+                                                                .outlet[i]
+                                                                .newcategoryID ==
+                                                            null)
+                                                        ? selectedCategories
+                                                        : widget.categories.firstWhere((e) => e.id == (tempBeat!).outlet[i]
+                                                            .newcategoryID!),
+                                                    dropdownSearchDecoration: InputDecoration(
                                                         errorText: (tempBeat!
-                                                                        .outlet[i]
+                                                                        .outlet[
+                                                                            i]
                                                                         .newcategoryID ==
                                                                     null &&
                                                                 !isValidate)
@@ -500,47 +450,129 @@ class _NextScreenState extends State<NextScreen> {
                                                             const EdgeInsets
                                                                     .fromLTRB(
                                                                 8, 0, 8, 0),
-                                                        border: OutlineInputBorder()
-                                                      ),
-                                                    );
-                                                  }),
-                                                ),
+                                                        border:
+                                                            OutlineInputBorder()),
+                                                  );
+                                                }),
                                               ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  setState(() {
-                                                    selectedOutlet.remove(
-                                                        selectedOutlet
-                                                            .firstWhere(
-                                                                (element) =>
-                                                                    tempBeat!
-                                                                        .outlet[
-                                                                            i]
-                                                                        .id ==
-                                                                    element
-                                                                        .id));
-                                                    (tempBeat as Beat)
-                                                        .outlet
-                                                        .remove(tempBeat!
+                                            ),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                setState(() {
+                                                  selectedOutlet.remove(
+                                                      selectedOutlet
+                                                          .firstWhere(
+                                                              (element) =>
+                                                                  tempBeat!
+                                                                      .outlet[
+                                                                          i]
+                                                                      .id ==
+                                                                  element
+                                                                      .id));
+
+                                                  if (widget
+                                                          .beat.deactivated !=
+                                                      null) {
+                                                    tempBeat?.deactivated!
+                                                        .add(tempBeat!
                                                             .outlet[i]);
-                                                  });
-                                                },
-                                                child: const Icon(
-                                                  Icons.clear,
-                                                ),
+                                                  } else {
+                                                    tempBeat?.deactivated = [
+                                                      tempBeat!.outlet[i]
+                                                    ];
+                                                  }
+
+                                                  (tempBeat as Beat)
+                                                      .outlet
+                                                      .remove(tempBeat!
+                                                          .outlet[i]);
+                                                });
+                                              },
+                                              child: const Icon(
+                                                Icons.clear,
                                               ),
-                                              const SizedBox(
-                                                width: 12,
-                                              ),
-                                            ],
-                                          ),
-                                          Expanded(
-                                            child: Row(
-                                              children: [
-                                                Expanded(
+                                            ),
+                                            const SizedBox(
+                                              width: 12,
+                                            ),
+                                          ],
+                                        ),
+                                        Expanded(
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: InkWell(
+
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (selectedOutlet
+                                                          .contains(tempBeat!.outlet[i])) {
+                                                        selectedOutlet
+                                                            .remove(tempBeat!.outlet[i]);
+                                                      } else {
+                                                        selectedOutlet.add(tempBeat!.outlet[i]);
+                                                      }
+                                                    });
+                                                    print(tempBeat!.outlet[i].id);
+                                                    // print(tempBeat!.outlet[i].categoryID);
+                                                    print(tempBeat!.outlet[i].lat);
+                                                    print(tempBeat!.outlet[i].lng);
+                                                    print(tempBeat!.outlet[i].imageURL);
+                                                    print(tempBeat!.outlet[i].beatID);
+                                                  },
+                                                  onDoubleTap: () {
+                                                    Navigator.push(context,
+                                                        MaterialPageRoute(builder: (_) {
+                                                      return Scaffold(
+                                                        body: Column(
+                                                          children: [
+                                                            AppBar(
+                                                              leading: GestureDetector(
+                                                                onTap: () {
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: const Icon(
+                                                                  Icons.arrow_back,
+                                                                  color: Colors.black,
+                                                                ),
+                                                              ),
+                                                              backgroundColor:
+                                                                  Colors.transparent,
+                                                              shadowColor: Colors.transparent,
+                                                              foregroundColor:
+                                                                  Colors.transparent,
+                                                            ),
+                                                            Expanded(
+                                                              child: InteractiveViewer(
+                                                                // boundaryMargin:
+                                                                //     const EdgeInsets.all(20.0),
+                                                                minScale: 0.7,
+                                                                maxScale: 3.1,
+                                                                child: Container(
+                                                                  color: Colors.black
+                                                                      .withOpacity(0.1),
+                                                                  child: Image.network(
+                                                                    tempBeat!.outlet[i]
+                                                                                .videoName ==
+                                                                            null
+                                                                        ? tempBeat!
+                                                                            .outlet[i].imageURL
+                                                                        : localhost +
+                                                                            tempBeat!.outlet[i]
+                                                                                .imageURL,
+                                                                    fit: BoxFit.contain,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    }));
+                                                  },
                                                   child: Container(
                                                     color: Colors.black
                                                         .withOpacity(0.1),
@@ -558,48 +590,48 @@ class _NextScreenState extends State<NextScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Positioned(
-                                        right: 0,
-                                        bottom: 0,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(12.0),
-                                          child: Container(
-                                            width: 60,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                              color: tempBeat!.outlet[i]
-                                                          .videoName ==
-                                                      null
-                                                  ? Colors.red
-                                                  : Colors.green,
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.black
-                                                        .withOpacity(0.1))
-                                              ],
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                tempBeat!.outlet[i].videoName ==
-                                                        null
-                                                    ? "FA"
-                                                    : "SC",
-                                                style: TextStyle(
-                                                    color: Colors.white),
                                               ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Container(
+                                          width: 60,
+                                          height: 30,
+                                          decoration: BoxDecoration(
+                                            color: tempBeat!.outlet[i]
+                                                        .videoName ==
+                                                    null
+                                                ? Colors.red
+                                                : Colors.green,
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                  color: Colors.black
+                                                      .withOpacity(0.1))
+                                            ],
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              tempBeat!.outlet[i].videoName ==
+                                                      null
+                                                  ? "FA"
+                                                  : "SC",
+                                              style: TextStyle(
+                                                  color: Colors.white),
                                             ),
                                           ),
                                         ),
-                                      )
-                                    ],
-                                  ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               )));
                     }
@@ -790,6 +822,7 @@ class _NextScreenState extends State<NextScreen> {
                                               onChanged: (Category? a) {
                                                 setState(() {
                                                   category = a;
+                                                  categoadsuig = a?.id;
                                                 });
                                               },
                                             ),
@@ -818,6 +851,10 @@ class _NextScreenState extends State<NextScreen> {
                                                                   .categoryName =
                                                               (category!
                                                                   .categoryName);
+                                                          (tempBeat as Beat)
+                                                                  .outlet[i]
+                                                                  .newcategoryID =
+                                                              categoadsuig;
                                                           (tempBeat as Beat)
                                                                   .outlet[i]
                                                                   .outletName =
@@ -850,6 +887,18 @@ class _NextScreenState extends State<NextScreen> {
                                                               .toList();
                                                       for (var element
                                                           in dynamicList) {
+                                                        if ((tempBeat as Beat)
+                                                                .deactivated ==
+                                                            null) {
+                                                          (tempBeat as Beat)
+                                                              .deactivated = [
+                                                            element
+                                                          ];
+                                                        } else {
+                                                          (tempBeat as Beat)
+                                                              .deactivated
+                                                              ?.add(element);
+                                                        }
                                                         (tempBeat as Beat)
                                                             .outlet
                                                             .remove(element);
@@ -862,6 +911,7 @@ class _NextScreenState extends State<NextScreen> {
                                                       myID = null;
                                                       videoName = null;
                                                       categoryName = null;
+                                                      categoadsuig = null;
                                                       beatID = null;
                                                       dateTime = null;
                                                       outletName = null;

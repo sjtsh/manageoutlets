@@ -18,7 +18,6 @@ class BeatService {
       aJson["beat"] = element.id.toString();
       aJson["beatName"] = element.beatName.toString();
       aJson["outlets"] = {};
-
       for (Outlet element in element.outlet) {
         aJson["outlets"][element.id.toString()] = {};
         aJson["outlets"][element.id.toString()]["videoID"] =
@@ -26,7 +25,7 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["beatID"] =
             element.beatID.toString();
         aJson["outlets"][element.id.toString()]["categoryID"] =
-            element.categoryID.toString();
+            element.newcategoryID.toString();
         aJson["outlets"][element.id.toString()]["dateTime"] =
             element.dateTime.toString().split(":").join("c");
         aJson["outlets"][element.id.toString()]["outletName"] =
@@ -46,9 +45,9 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["beatID"] =
             element.beatID.toString();
         aJson["outlets"][element.id.toString()]["categoryID"] =
-            element.categoryID.toString();
+            element.newcategoryID.toString();
         aJson["outlets"][element.id.toString()]["dateTime"] =
-            element.dateTime.toString().split(":").join("_");;
+            element.dateTime.toString().split(":").join("c");
         aJson["outlets"][element.id.toString()]["outletName"] =
             element.outletName.toString();
         aJson["outlets"][element.id.toString()]["lat"] = element.lat.toString();
@@ -58,6 +57,8 @@ class BeatService {
             element.imageURL.toString();
         aJson["outlets"][element.id.toString()]["deactivated"] = "true";
       }
+
+      print(aJson);
       aJson["outlets"] = aJson["outlets"].toString();
       Response res = await http.put(
         Uri.parse("$localhost/beat/update"),
@@ -75,10 +76,6 @@ class BeatService {
       return true;
 
     }
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("UNABLE TO CONNECT"),
-    ));
-    print("UNABLE");
     return false;
   }
 }
