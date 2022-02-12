@@ -52,12 +52,12 @@ class _NextScreenState extends State<NextScreen> {
   String? imageURL;
   Category? category;
 
- bool isMerging = false;
- bool _validate =  false;
+  bool isMerging = false;
+  bool _validate = false;
 
   @override
   void initState() {
-   // ((tempBeat as Beat).outlet.where((element) => element.outletName.isEmpty)
+    // ((tempBeat as Beat).outlet.where((element) => element.outletName.isEmpty)
 
     // TODO: implement initState
     super.initState();
@@ -297,7 +297,8 @@ class _NextScreenState extends State<NextScreen> {
                         ),
                       );
                     } else {
-                      TextEditingController controller = TextEditingController();
+                      TextEditingController controller =
+                          TextEditingController();
                       controller.text = tempBeat!.outlet[i].outletName;
                       return Padding(
                         padding: const EdgeInsets.all(12.0),
@@ -403,14 +404,15 @@ class _NextScreenState extends State<NextScreen> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-    Expanded(
-    child: TextField(
-    controller: controller,
-    onChanged: (String? text){
-    tempBeat!.outlet[i].outletName = text ?? "";
-    },
-    ),
-    ),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: controller,
+                                          onChanged: (String? text) {
+                                            tempBeat!.outlet[i].outletName =
+                                                text ?? "";
+                                          },
+                                        ),
+                                      ),
                                       Container(
                                         width: 200,
                                         child: Builder(builder: (context) {
@@ -441,7 +443,10 @@ class _NextScreenState extends State<NextScreen> {
                                       GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            selectedOutlet.remove(selectedOutlet.firstWhere((element) => tempBeat!.outlet[i].id == element.id));
+                                            selectedOutlet.remove(selectedOutlet
+                                                .firstWhere((element) =>
+                                                    tempBeat!.outlet[i].id ==
+                                                    element.id));
                                             (tempBeat as Beat)
                                                 .outlet
                                                 .remove(tempBeat!.outlet[i]);
@@ -610,11 +615,13 @@ class _NextScreenState extends State<NextScreen> {
                                             TextField(
                                               controller: textController,
                                               decoration: const InputDecoration(
-                                                  border:OutlineInputBorder(),
-                                                labelText:"Oulet Name (optional)"
-                                              ),
+                                                  border: OutlineInputBorder(),
+                                                  labelText:
+                                                      "Oulet Name (optional)"),
                                             ),
-                                            const SizedBox(height: 12,),
+                                            const SizedBox(
+                                              height: 12,
+                                            ),
                                             DropdownSearch(
                                               showSearchBox: true,
                                               items: List.generate(
@@ -630,7 +637,9 @@ class _NextScreenState extends State<NextScreen> {
                                                 });
                                               },
                                             ),
-                                            const SizedBox(height: 12,),
+                                            const SizedBox(
+                                              height: 12,
+                                            ),
                                             DropdownSearch(
                                               selectedItem: category,
                                               showSearchBox: true,
