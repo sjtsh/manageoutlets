@@ -19,16 +19,11 @@ class OutletService {
       //   'distance': distance.toString(),
       // },
     );
-    if (res.statusCode == 200) {
-      List<dynamic> a = jsonDecode(res.body);
-      List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
-      print(outlets.length);
-      return outlets;
-    }
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text("UNABLE TO CONNECT"),
-    ));
-    print("UNABLE");
-    return [];
+    print(res.body.toString().substring(0, 100));
+    print("GOT");
+    List<dynamic> a = jsonDecode(res.body);
+    List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
+    print(outlets.length);
+    return outlets;
   }
 }
