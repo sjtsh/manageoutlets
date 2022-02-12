@@ -529,29 +529,30 @@ class _MapScreenState extends State<MapScreen> {
                                   const SizedBox(
                                     width: 12,
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        bluePositions = [];
-                                        rangeIndexes = [];
-                                        widget.setTempRedRadius(0.0);
-                                      });
-                                    },
-                                    child: Container(
-                                      height: 50,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                offset: const Offset(0, 2),
-                                                spreadRadius: 2,
-                                                blurRadius: 2,
-                                                color: Colors.black
-                                                    .withOpacity(0.1))
-                                          ]),
+                                  Container(
+                                    clipBehavior: Clip.hardEdge,
+                                    height: 50,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: const Offset(0, 2),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              color: Colors.black
+                                                  .withOpacity(0.1))
+                                        ]),
+                                    child: RawMaterialButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          bluePositions = [];
+                                          rangeIndexes = [];
+                                          widget.setTempRedRadius(0.0);
+                                        });
+                                      },
                                       child: const Center(
                                         child: Text(
                                           "CLEAR",
@@ -563,42 +564,43 @@ class _MapScreenState extends State<MapScreen> {
                                   SizedBox(
                                     width: 12,
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      TextEditingController textController =
-                                          TextEditingController();
-                                      if(redPositions.length!=0){
-                                        showDialog(
-                                            context: context,
-                                            builder: (_) {
-                                              return AddBeatDialogBox(
-                                                  textController,
-                                                  rangeIndexes,
-                                                  blueIndexes,
-                                                  redPositions,
-                                                  widget.setTempRedRadius);
-                                            });
-                                      } else{
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(duration: Duration(milliseconds: 500),content: Text("Please select outlet")));
-                                      }
-                                    },
-                                    child: Focus(
-                                      autofocus: true,
-                                      child: Container(
-                                        height: 50,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                            color: Colors.green,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  offset: const Offset(0, 2),
-                                                  spreadRadius: 2,
-                                                  blurRadius: 2,
-                                                  color: Colors.black
-                                                      .withOpacity(0.1))
-                                            ]),
+                                  Focus(
+                                    autofocus: true,
+                                    child: Container(
+                                      clipBehavior: Clip.hardEdge,
+                                      height: 50,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                offset: const Offset(0, 2),
+                                                spreadRadius: 2,
+                                                blurRadius: 2,
+                                                color: Colors.black
+                                                    .withOpacity(0.1))
+                                          ]),
+                                      child: RawMaterialButton(
+                                        onPressed: () {
+                                          TextEditingController textController =
+                                              TextEditingController();
+                                          if(redPositions.length!=0){
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) {
+                                                  return AddBeatDialogBox(
+                                                      textController,
+                                                      rangeIndexes,
+                                                      blueIndexes,
+                                                      redPositions,
+                                                      widget.setTempRedRadius);
+                                                });
+                                          } else{
+                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(duration: Duration(milliseconds: 500),content: Text("Please select outlet")));
+                                          }
+                                        },
                                         child: const Center(
                                           child: Text(
                                             "ADD",

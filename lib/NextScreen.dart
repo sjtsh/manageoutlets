@@ -214,9 +214,13 @@ class _NextScreenState extends State<NextScreen> {
                         child: Container(
                           clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
-                            color: selectedOutlet[i] == chosenOutlet
-                                ? Color(0xff9497F1)
-                                : Colors.white,
+                            border: Border.all(
+                              color: selectedOutlet[i] == chosenOutlet
+                                  ? Colors.green
+                                  : Colors.white,
+                            width: selectedOutlet[i] == chosenOutlet
+                                ? 5
+                                : 0),
                             boxShadow: [
                               BoxShadow(
                                   offset: const Offset(0, 2),
@@ -227,9 +231,8 @@ class _NextScreenState extends State<NextScreen> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Material(
-                            color: selectedOutlet.contains(tempBeat!.outlet[i])
-                                ? Color(0xff9497F1)
-                                : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.white,
                             child: InkWell(
                               onTap: () {
                                 setState(() {
@@ -289,7 +292,7 @@ class _NextScreenState extends State<NextScreen> {
                                         width: 12,
                                       ),
                                       Checkbox(
-                                        // activeColor: Colors.blue,
+                                        activeColor: Colors.green,
                                         value:
                                             selectedOutlet[i] == chosenOutlet,
                                         onChanged: (newValue) => setState(() {
@@ -328,7 +331,7 @@ class _NextScreenState extends State<NextScreen> {
                                 border: Border.all(
                                   color: selectedOutlet
                                           .contains(tempBeat!.outlet[i])
-                                      ? Color(0xff9497F1)
+                                      ? Colors.green
                                       : Colors.transparent,
                                   width: selectedOutlet
                                           .contains(tempBeat!.outlet[i])
@@ -419,7 +422,7 @@ class _NextScreenState extends State<NextScreen> {
                                                 width: 12,
                                               ),
                                               Checkbox(
-                                                // activeColor: Colors.blue,
+                                                activeColor: Colors.green,
                                                 value: selectedOutlet.contains(
                                                     tempBeat!.outlet[i]),
                                                 onChanged: (newValue) =>
