@@ -94,7 +94,7 @@ class _NextScreenState extends State<NextScreen> {
                 SizedBox(
                   width: 12,
                 ),
-                GestureDetector(
+                InkWell(
                   onTap: () {
                     if (isMerging) {
                       setState(() {
@@ -155,7 +155,6 @@ class _NextScreenState extends State<NextScreen> {
                           Navigator.pop(context);
                         } else {
                           setState(() {
-
                             isValidate = false;
                           });
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -163,7 +162,6 @@ class _NextScreenState extends State<NextScreen> {
                                   content:
                                       Text("Select all name and categories")));
                         }
-
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -327,10 +325,16 @@ class _NextScreenState extends State<NextScreen> {
                           child: Container(
                               clipBehavior: Clip.hardEdge,
                               decoration: BoxDecoration(
-                                color:
-                                    selectedOutlet.contains(tempBeat!.outlet[i])
-                                        ? Color(0xff9497F1)
-                                        : Colors.white,
+                                border: Border.all(
+                                  color: selectedOutlet
+                                          .contains(tempBeat!.outlet[i])
+                                      ? Color(0xff9497F1)
+                                      : Colors.transparent,
+                                  width: selectedOutlet
+                                          .contains(tempBeat!.outlet[i])
+                                      ? 5
+                                      : 0,
+                                ),
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
@@ -341,10 +345,8 @@ class _NextScreenState extends State<NextScreen> {
                                 ],
                               ),
                               child: Material(
-                                color:
-                                selectedOutlet.contains(tempBeat!.outlet[i])
-                                    ? Color(0xff9497F1)
-                                    : Colors.white,
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
                                 child: InkWell(
                                   onTap: () {
                                     setState(() {
@@ -439,22 +441,27 @@ class _NextScreenState extends State<NextScreen> {
                                                 child: Padding(
                                                   padding:
                                                       const EdgeInsets.all(8.0),
-                                                  child: TextField(
-                                                    controller: controller,
-                                                    onChanged: (String? text) {
-                                                      tempBeat!.outlet[i]
-                                                              .outletName =
-                                                          text ?? "";
-                                                    },
-                                                    decoration: InputDecoration(
-                                                      errorText: (controller
-                                                                      .text ==
-                                                                  "" &&
-                                                              !isValidate)
-                                                          ? 'Field Can\'t Be Empty'
-                                                          : null,
-                                                      border:
-                                                          const OutlineInputBorder(),
+                                                  child: Container(
+                                                    height: 50,
+                                                    child: TextField(
+                                                      controller: controller,
+                                                      onChanged:
+                                                          (String? text) {
+                                                        tempBeat!.outlet[i]
+                                                                .outletName =
+                                                            text ?? "";
+                                                      },
+                                                      decoration:
+                                                          InputDecoration(
+                                                        errorText: (controller
+                                                                        .text ==
+                                                                    "" &&
+                                                                !isValidate)
+                                                            ? 'Field Can\'t Be Empty'
+                                                            : null,
+                                                        border:
+                                                            const OutlineInputBorder(),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -462,40 +469,42 @@ class _NextScreenState extends State<NextScreen> {
                                               // Text(tempBeat!.outlet[i].outletName),
                                               // Expanded(child: Container()),
                                               Padding(
-                                                padding: const EdgeInsets.all(8.0),
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
                                                 child: Container(
                                                   width: 200,
-                                                  child:
-                                                      Builder(builder: (context) {
+                                                  height: 50,
+                                                  child: Builder(
+                                                      builder: (context) {
                                                     return DropdownSearch<
                                                         Category>(
                                                       showSearchBox: true,
+                                                      dropDownButton:
+                                                          SizedBox.shrink(),
                                                       mode: Mode.MENU,
                                                       items: widget.categories,
                                                       onChanged: (selected) {
                                                         _changeDropDownValue(
                                                             selectedCategories);
-                                                        tempBeat!
-                                                            .outlet[i]
-                                                            .newcategoryID = selected?.id;
+                                                        tempBeat!.outlet[i]
+                                                                .newcategoryID =
+                                                            selected?.id;
                                                       },
                                                       selectedItem:
                                                           selectedCategories,
-                                                      dropdownSearchDecoration:
-                                                          InputDecoration(
-                                                        errorText: (tempBeat!
-                                                                        .outlet[i]
-                                                                        .newcategoryID ==
-                                                                    null &&
-                                                                !isValidate)
-                                                            ? "define category"
-                                                            : null,
-                                                        contentPadding:
-                                                            const EdgeInsets
-                                                                    .fromLTRB(
-                                                                8, 0, 8, 0),
-                                                        border: OutlineInputBorder()
-                                                      ),
+                                                      dropdownSearchDecoration: InputDecoration(
+                                                          errorText: (tempBeat!
+                                                                          .outlet[
+                                                                              i]
+                                                                          .newcategoryID ==
+                                                                      null &&
+                                                                  !isValidate)
+                                                              ? 'Field Can\'t Be Empty'
+                                                              : null,
+                                                          suffixIcon: Icon(Icons
+                                                              .arrow_drop_down),
+                                                          border:
+                                                              OutlineInputBorder()),
                                                     );
                                                   }),
                                                 ),
