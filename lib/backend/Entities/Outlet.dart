@@ -5,7 +5,7 @@ class Outlet {
   String id;
   int? videoID;
   String? videoName;
-  int? categoryID;
+  int categoryID;
   String categoryName;
   String? beatID;
   String? dateTime;
@@ -16,10 +16,11 @@ class Outlet {
   String imageURL;
   Marker? marker;
 
-
   Outlet(
       {required this.id,
+      this.videoID,
       this.videoName,
+      required this.categoryID,
       required this.categoryName,
       this.beatID,
       this.dateTime,
@@ -42,6 +43,7 @@ class Outlet {
       lng: double.parse(json["lng"]),
       md5: json["md5"],
       imageURL: json["imageURL"],
+      categoryID: json["category"],
     );
   }
 }
