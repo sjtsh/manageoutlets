@@ -38,7 +38,6 @@ class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
 
   TextEditingController textController = TextEditingController();
-  TextEditingController controller = TextEditingController();
 
   List<Outlet> selectedOutlet = [];
   String headerText = "SELECT THE PHOTO";
@@ -307,6 +306,7 @@ class _NextScreenState extends State<NextScreen> {
                         ),
                       );
                     } else {
+                      TextEditingController controller = TextEditingController();
                       controller.text = tempBeat!.outlet[i].outletName;
                       return Padding(
                           padding: const EdgeInsets.all(12.0),
