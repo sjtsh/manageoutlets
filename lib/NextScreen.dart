@@ -37,6 +37,8 @@ class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
 
   TextEditingController textController = TextEditingController();
+  TextEditingController outletNameTextController = TextEditingController();
+
   List<Outlet> selectedOutlet = [];
   String headerText = "SELECT THE PHOTO";
   Outlet? chosenOutlet;
@@ -112,6 +114,12 @@ class _NextScreenState extends State<NextScreen> {
               GestureDetector(
                 onTap: () {
                   widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
+                  if(selectedCategories.categoryName!="Select category"){
+                    Navigator.pop(context);
+                  }else{
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Select all categories")));
+                  }
+
                   Navigator.pop(context);
                 },
                 child: Container(
@@ -245,7 +253,13 @@ class _NextScreenState extends State<NextScreen> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      Text(tempBeat!.outlet[i].outletName),
+                                      Expanded(
+                                        child: TextField(
+                                          controller: outletNameTextController
+                                            ..text =
+                                                tempBeat!.outlet[i].outletName,
+                                        ),
+                                      ),
                                       Expanded(child: Container()),
                                       Container(
                                         width: 200,
@@ -463,6 +477,13 @@ class _NextScreenState extends State<NextScreen> {
                                           children: [
                                             TextField(
                                               controller: textController,
+                                              decoration: const InputDecoration(
+                                                  border: OutlineInputBorder(),
+                                                  labelText:
+                                                      "Oulet Name (optional)"),
+                                            ),
+                                            const SizedBox(
+                                              height: 12,
                                             ),
                                             DropdownSearch(
                                               showSearchBox: true,
@@ -472,16 +493,21 @@ class _NextScreenState extends State<NextScreen> {
                                                       selectedOutlet[index]
                                                           .outletName),
                                               selectedItem: outletName,
+                                              hint: "Outlet Name",
                                               onChanged: (String? a) {
                                                 setState(() {
                                                   outletName = a;
                                                 });
                                               },
                                             ),
+                                            const SizedBox(
+                                              height: 12,
+                                            ),
                                             DropdownSearch(
                                               selectedItem: category,
                                               showSearchBox: true,
                                               items: widget.categories,
+                                              hint: "Select Category",
                                               onChanged: (Category? a) {
                                                 setState(() {
                                                   category = a;

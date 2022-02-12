@@ -12,8 +12,8 @@ class AddBeatDialogBox extends StatefulWidget {
   final List<Outlet> redPositions;
   final Function setTempRedRadius;
 
-  const AddBeatDialogBox(this.textController, this.rangeIndexes,
-      this.blueIndexes, this.redPositions, this.setTempRedRadius);
+  AddBeatDialogBox(this.textController, this.rangeIndexes, this.blueIndexes,
+      this.redPositions, this.setTempRedRadius);
 
   @override
   State<AddBeatDialogBox> createState() => _AddBeatDialogBoxState();
@@ -23,6 +23,7 @@ class AddtoBeatIntent extends Intent {}
 
 class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
   bool validate = false;
+
 
   toBeatList(rangeIndexes, blueIndexes, textController, setTempRedRadius,
       redPositions, context, validate) {
@@ -92,7 +93,8 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                             errorText: validate == true
                                 ? 'Field Can\'t Be Empty'
                                 : null,
-                            label: Text("beat name"),
+                            border: const OutlineInputBorder( ),
+                            label: const Text("beat name"),
                           ),
                         ),
                       ),

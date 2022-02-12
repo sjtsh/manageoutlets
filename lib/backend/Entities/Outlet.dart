@@ -5,6 +5,7 @@ class Outlet {
   String id;
   int? videoID;
   String? videoName;
+  int? categoryID;
   String categoryName;
   String? beatID;
   String? dateTime;
@@ -14,6 +15,7 @@ class Outlet {
   String? md5;
   String imageURL;
   Marker? marker;
+
 
   Outlet(
       {required this.id,
