@@ -22,7 +22,7 @@ class BeatService {
       for (Outlet element in element.outlet) {
         aJson["outlets"][element.id.toString()] = {};
         aJson["outlets"][element.id.toString()]["videoID"] =
-            element.videoID.toString();
+            (element.videoID ?? ).toString();
         aJson["outlets"][element.id.toString()]["beatID"] =
             element.beatID.toString();
         aJson["outlets"][element.id.toString()]["categoryID"] =
@@ -58,7 +58,7 @@ class BeatService {
             element.imageURL.toString();
         aJson["outlets"][element.id.toString()]["deactivated"] = "false";
       }
-
+      print(aJson);
       Response res = await http.post(
         Uri.parse("$localhost/outlet/update"),
         body: aJson,
