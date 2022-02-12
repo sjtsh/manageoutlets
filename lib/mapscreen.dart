@@ -55,10 +55,8 @@ class _MapScreenState extends State<MapScreen> {
 
   double redRemoveDistance = 0;
 
-  void refresh(){
-  setState(() {
-
-  });
+  void refresh() {
+    setState(() {});
   }
 
   setRemoveRedRadius(double a) {
@@ -106,7 +104,7 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  updateBeat({required Beat formerBeat, required Beat newBeat}){
+  updateBeat({required Beat formerBeat, required Beat newBeat}) {
     setState(() {
       blueIndexes.remove(formerBeat);
       blueIndexes.add(newBeat);
@@ -538,7 +536,7 @@ class _MapScreenState extends State<MapScreen> {
                                                         controller:
                                                             textController,
                                                         decoration:
-                                                            InputDecoration(
+                                                            const InputDecoration(
                                                           label:
                                                               Text("beat name"),
                                                         ),
@@ -550,9 +548,10 @@ class _MapScreenState extends State<MapScreen> {
 
                                                         blueIndexes.add(
                                                           Beat(
-                                                              textController
-                                                                  .text,
-                                                              shortestPath(redPositions)),
+                                                            textController.text,
+                                                            shortestPath(
+                                                                redPositions),
+                                                          ),
                                                         );
                                                         widget.setTempRedRadius(
                                                             0.0);
@@ -611,7 +610,9 @@ class _MapScreenState extends State<MapScreen> {
                   blueIndexes,
                   removeBeat,
                   selectedDropDownItem,
-                  _changeDropDownValue,refresh, updateBeat)),
+                  _changeDropDownValue,
+                  refresh,
+                  updateBeat)),
         ],
       ),
     );

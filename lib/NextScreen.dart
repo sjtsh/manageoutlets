@@ -1,4 +1,5 @@
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/MergeMap.dart';
@@ -15,10 +16,12 @@ class NextScreen extends StatefulWidget {
   final Function refresh;
   final Function updateBeat;
 
-  const NextScreen(this.beat,
-      this.categories,
-      this.refresh,
-      this.updateBeat,);
+  const NextScreen(
+    this.beat,
+    this.categories,
+    this.refresh,
+    this.updateBeat,
+  );
 
   @override
   State<NextScreen> createState() => _NextScreenState();
@@ -68,87 +71,111 @@ class _NextScreenState extends State<NextScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: AppBar(
-                  title: Center(
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    offset: const Offset(0, 2),
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    color: Colors.black.withOpacity(0.1))
+              ],
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 12,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    if (isMerging) {
+                      setState(() {
+                        isMerging = false;
+                      });
+                    } else {
+                      Navigator.pop(context);
+                      print(tempBeat!.outlet.length.toString() +
+                          " " +
+                          widget.beat.outlet.length.toString());
+                      // widget.updateBeat(
+                      //     formerBeat: tempBeat, newBeat: widget.beat);
+                      widget.refresh();
+                    }
+                  },
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                ),
+                Expanded(
+                  child: Center(
                     child: Text(
                       isMerging
                           ? headerText
                           : "${(tempBeat as Beat).outlet.length} Outlets",
-                      style: const TextStyle(color: Colors.black),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  toolbarHeight: 50,
-                  leading: GestureDetector(
-                    onTap: () {
-                      if (isMerging) {
-                        setState(() {
-                          isMerging = false;
-                        });
-                      } else {
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.green,
+                      width: 2,
+                    ),
+                  ),
+                  child: Material(
+                    color: Colors.white,
+                    child: InkWell(
+                      onTap: () {
+                        widget.updateBeat(
+                            formerBeat: widget.beat, newBeat: tempBeat);
                         Navigator.pop(context);
-                        print(tempBeat!.outlet.length.toString() +
-                            " " +
-                            widget.beat.outlet.length.toString());
-                        // widget.updateBeat(
-                        //     formerBeat: tempBeat, newBeat: widget.beat);
-                        widget.refresh();
-                      }
-                    },
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                "DONE",
+                                style: TextStyle(
+                                  color: Colors.green,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.arrow_forward_outlined,
+                                color: Colors.green,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  height: 60,
-                  width: 120,
-                  color: Colors.green,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "DONE",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        const Icon(
-                          Icons.arrow_forward_outlined,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
+                SizedBox(
+                  width: 12,
                 ),
-              ),
-              SizedBox(
-                width: 12,
-              ),
-            ],
+              ],
+            ),
           ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0),
               child: Builder(builder: (context) {
-                double height = MediaQuery
-                    .of(context)
-                    .size
-                    .height;
-                double width = MediaQuery
-                    .of(context)
-                    .size
-                    .width;
+                double height = MediaQuery.of(context).size.height;
+                double width = MediaQuery.of(context).size.width;
                 return GridView.count(
                   crossAxisCount: 3,
                   childAspectRatio: width / (height * 1.175),
@@ -160,49 +187,108 @@ class _NextScreenState extends State<NextScreen> {
                       return Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Container(
+                          clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                             color: selectedOutlet[i] == chosenOutlet
-                                ? Colors.blue
+                                ? Color(0xff9497F1)
                                 : Colors.white,
                             boxShadow: [
                               BoxShadow(
-                                  offset: const Offset(0, -2),
+                                  offset: const Offset(0, 2),
                                   spreadRadius: 2,
                                   blurRadius: 2,
                                   color: Colors.black.withOpacity(0.1))
                             ],
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Column(
-                            children: [
-                              Row(
+                          child: Material(
+                            color: selectedOutlet.contains(tempBeat!.outlet[i])
+                                ? Color(0xff9497F1)
+                                : Colors.white,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  chosenOutlet = selectedOutlet[i];
+                                });
+                              },
+                              onDoubleTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) {
+                                  return Scaffold(
+                                      body: Column(
+                                    children: [
+                                      AppBar(
+                                        leading: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Icon(
+                                            Icons.arrow_back,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.transparent,
+                                        shadowColor: Colors.transparent,
+                                        foregroundColor: Colors.transparent,
+                                      ),
+                                      Expanded(
+                                        child: InteractiveViewer(
+                                          // boundaryMargin:
+                                          //     const EdgeInsets.all(20.0),
+                                          minScale: 0.7,
+                                          maxScale: 3.1,
+                                          child: Container(
+                                            color:
+                                                Colors.black.withOpacity(0.1),
+                                            child: Image.network(
+                                              selectedOutlet[i].videoName ==
+                                                      null
+                                                  ? selectedOutlet[i].imageURL
+                                                  : localhost +
+                                                      selectedOutlet[i]
+                                                          .imageURL,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ));
+                                }));
+                              },
+                              child: Column(
                                 children: [
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  Checkbox(
-                                    // activeColor: Colors.blue,
-                                    value: selectedOutlet[i] == chosenOutlet,
-                                    onChanged: (newValue) =>
-                                        setState(() {
+                                  Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Checkbox(
+                                        // activeColor: Colors.blue,
+                                        value:
+                                            selectedOutlet[i] == chosenOutlet,
+                                        onChanged: (newValue) => setState(() {
                                           chosenOutlet = selectedOutlet[i];
                                         }),
+                                      ),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.black.withOpacity(0.1),
+                                      child: Image.network(
+                                        selectedOutlet[i].videoName == null
+                                            ? selectedOutlet[i].imageURL
+                                            : localhost +
+                                                selectedOutlet[i].imageURL,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                              Expanded(
-                                child: Container(
-                                  color: Colors.black.withOpacity(0.1),
-                                  child: Image.network(
-                                    selectedOutlet[i].videoName == null
-                                        ? selectedOutlet[i].imageURL
-                                        : localhost +
-                                        selectedOutlet[i].imageURL,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       );
@@ -210,104 +296,170 @@ class _NextScreenState extends State<NextScreen> {
                       return Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Container(
+                          clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                             color: selectedOutlet.contains(tempBeat!.outlet[i])
-                                ? Colors.blue
+                                ? Color(0xff9497F1)
                                 : Colors.white,
+                            borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                  offset: const Offset(0, -2),
+                                  offset: const Offset(0, 2),
                                   spreadRadius: 2,
                                   blurRadius: 2,
                                   color: Colors.black.withOpacity(0.1))
                             ],
                           ),
-                          child: Column(
-                            children: [
-                              Row(
+                          child: Material(
+                            color: selectedOutlet.contains(tempBeat!.outlet[i])
+                                ? Color(0xff9497F1)
+                                : Colors.white,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  if (selectedOutlet
+                                      .contains(tempBeat!.outlet[i])) {
+                                    selectedOutlet.remove(tempBeat!.outlet[i]);
+                                  } else {
+                                    selectedOutlet.add(tempBeat!.outlet[i]);
+                                  }
+                                });
+                              },
+                              onDoubleTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) {
+                                  return Scaffold(
+                                    body: Column(
+                                      children: [
+                                        AppBar(
+                                          leading: GestureDetector(
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: const Icon(
+                                              Icons.arrow_back,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          backgroundColor: Colors.transparent,
+                                          shadowColor: Colors.transparent,
+                                          foregroundColor: Colors.transparent,
+                                        ),
+                                        Expanded(
+                                          child: InteractiveViewer(
+                                            // boundaryMargin:
+                                            //     const EdgeInsets.all(20.0),
+                                            minScale: 0.7,
+                                            maxScale: 3.1,
+                                            child: Container(
+                                              color:
+                                                  Colors.black.withOpacity(0.1),
+                                              child: Image.network(
+                                                tempBeat!.outlet[i].videoName ==
+                                                        null
+                                                    ? tempBeat!
+                                                        .outlet[i].imageURL
+                                                    : localhost +
+                                                        tempBeat!
+                                                            .outlet[i].imageURL,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }));
+                              },
+                              child: Column(
                                 children: [
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  Checkbox(
-                                    // activeColor: Colors.blue,
-                                    value: selectedOutlet
-                                        .contains(tempBeat!.outlet[i]),
-                                    onChanged: (newValue) =>
-                                        setState(() {
+                                  Row(
+                                    children: [
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                      Checkbox(
+                                        // activeColor: Colors.blue,
+                                        value: selectedOutlet
+                                            .contains(tempBeat!.outlet[i]),
+                                        onChanged: (newValue) => setState(() {
                                           if (selectedOutlet
                                               .contains(tempBeat!.outlet[i])) {
                                             selectedOutlet
                                                 .remove(tempBeat!.outlet[i]);
                                           } else {
-                                            selectedOutlet.add(
-                                                tempBeat!.outlet[i]);
+                                            selectedOutlet
+                                                .add(tempBeat!.outlet[i]);
                                           }
                                         }),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(tempBeat!.outlet[i].outletName),
-                                  Expanded(child: Container()),
-                                  Container(
-                                    width: 200,
-                                    child: Builder(builder: (context) {
-                                      return DropdownSearch<Category>(
-                                        showSearchBox: true,
-                                        mode: Mode.MENU,
-                                        items: widget.categories,
-                                        onChanged: (selected) {
-                                          _changeDropDownValue(
-                                              selectedCategories);
-                                        },
-                                        selectedItem: selectedCategories,
-                                        dropdownSearchDecoration:
-                                        const InputDecoration(
-                                          // filled: true,
-                                          border: UnderlineInputBorder(
-                                            borderSide: BorderSide(
-                                              color: Color(0xFF01689A),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      Text(tempBeat!.outlet[i].outletName),
+                                      Expanded(child: Container()),
+                                      Container(
+                                        width: 200,
+                                        child: Builder(builder: (context) {
+                                          return DropdownSearch<Category>(
+                                            showSearchBox: true,
+                                            mode: Mode.MENU,
+                                            items: widget.categories,
+                                            onChanged: (selected) {
+                                              _changeDropDownValue(
+                                                  selectedCategories);
+                                            },
+                                            selectedItem: selectedCategories,
+                                            dropdownSearchDecoration:
+                                                const InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.fromLTRB(
+                                                      8, 0, 8, 0),
+                                              // filled: true,
+                                              border: UnderlineInputBorder(
+                                                  borderSide: BorderSide.none),
                                             ),
-                                          ),
+                                          );
+                                        }),
+                                      ),
+                                      const SizedBox(
+                                        width: 10,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            selectedOutlet.remove(selectedOutlet.firstWhere((element) => tempBeat!.outlet[i].id == element.id));
+                                            (tempBeat as Beat)
+                                                .outlet
+                                                .remove(tempBeat!.outlet[i]);
+                                          });
+                                        },
+                                        child: const Icon(
+                                          Icons.clear,
                                         ),
-                                      );
-                                    }),
+                                      ),
+                                      const SizedBox(
+                                        width: 12,
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        (tempBeat as Beat)
-                                            .outlet
-                                            .remove(tempBeat!.outlet[i]);
-                                      });
-                                    },
-                                    child: const Icon(
-                                      Icons.clear,
+                                  Expanded(
+                                    child: Container(
+                                      color: Colors.black.withOpacity(0.1),
+                                      child: Image.network(
+                                        tempBeat!.outlet[i].videoName == null
+                                            ? tempBeat!.outlet[i].imageURL
+                                            : localhost +
+                                                tempBeat!.outlet[i].imageURL,
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 12,
                                   ),
                                 ],
                               ),
-                              Expanded(
-                                child: Container(
-                                  color: Colors.black.withOpacity(0.1),
-                                  child: Image.network(
-                                    tempBeat!.outlet[i].videoName == null
-                                        ? tempBeat!.outlet[i].imageURL
-                                        : localhost +
-                                        tempBeat!.outlet[i].imageURL,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       );
@@ -320,7 +472,7 @@ class _NextScreenState extends State<NextScreen> {
           Container(
             height: 200,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white.withOpacity(0.5),
               boxShadow: [
                 BoxShadow(
                     offset: const Offset(0, -2),
@@ -328,12 +480,12 @@ class _NextScreenState extends State<NextScreen> {
                     blurRadius: 2,
                     color: Colors.black.withOpacity(0.1))
               ],
-              border: const Border(
-                top: BorderSide(
-                  color: Colors.black,
-                  width: 10,
-                ),
-              ),
+              // border: const Border(
+              //   top: BorderSide(
+              //     color: Colors.black,
+              //     width: 10,
+              //   ),
+              // ),
             ),
             child: Row(
               children: [
@@ -342,13 +494,11 @@ class _NextScreenState extends State<NextScreen> {
                     scrollDirection: Axis.horizontal,
                     children: selectedOutlet
                         .map(
-                          (e) =>
-                          Stack(
+                          (e) => Stack(
                             children: [
                               Container(
-                                width: 350,
-                                margin:
-                                const EdgeInsets.symmetric(horizontal: 12),
+                                width: 200,
+                                margin: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: NetworkImage(
@@ -371,19 +521,32 @@ class _NextScreenState extends State<NextScreen> {
                                 ),
                               ),
                               Positioned(
-                                right: 12,
-                                child: IconButton(
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    selectedOutlet.remove(e);
-                                    setState(() {});
-                                  },
-                                  icon: const Icon(Icons.cancel),
+                                right: 4,
+                                top: 4,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.red),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      selectedOutlet.remove(e);
+                                      setState(() {});
+                                    },
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.clear,
+                                        color: Colors.white,
+                                        size: 12,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               )
                             ],
                           ),
-                    )
+                        )
                         .toList(),
                   ),
                 ),
@@ -391,7 +554,7 @@ class _NextScreenState extends State<NextScreen> {
                   width: 500,
                   child: isMerging
                       ? MergeMap(selectedOutlet,
-                      chosenOutlet == null ? [] : [chosenOutlet!], true)
+                          chosenOutlet == null ? [] : [chosenOutlet!], true)
                       : MergeMap(tempBeat!.outlet, selectedOutlet, false),
                 ),
                 GestureDetector(
@@ -430,7 +593,7 @@ class _NextScreenState extends State<NextScreen> {
                                         padding: const EdgeInsets.all(12.0),
                                         child: Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             TextField(
                                               controller: textController,
@@ -439,9 +602,9 @@ class _NextScreenState extends State<NextScreen> {
                                               showSearchBox: true,
                                               items: List.generate(
                                                   selectedOutlet.length,
-                                                      (index) =>
-                                                  selectedOutlet[index]
-                                                      .outletName),
+                                                  (index) =>
+                                                      selectedOutlet[index]
+                                                          .outletName),
                                               selectedItem: outletName,
                                               onChanged: (String? a) {
                                                 setState(() {
@@ -467,32 +630,32 @@ class _NextScreenState extends State<NextScreen> {
                                                     lat != null &&
                                                     lng != null) {
                                                   if (textController.text !=
-                                                      "" ||
+                                                          "" ||
                                                       outletName != null) {
                                                     if (category != null) {
                                                       for (int i = 0;
-                                                      i <
-                                                          tempBeat!.outlet
-                                                              .length;
-                                                      i++) {
+                                                          i <
+                                                              tempBeat!.outlet
+                                                                  .length;
+                                                          i++) {
                                                         if ((tempBeat as Beat)
-                                                            .outlet[i]
-                                                            .id ==
+                                                                .outlet[i]
+                                                                .id ==
                                                             myID) {
                                                           (tempBeat as Beat)
-                                                              .outlet[i]
-                                                              .categoryName =
-                                                          (category!
-                                                              .categoryName);
+                                                                  .outlet[i]
+                                                                  .categoryName =
+                                                              (category!
+                                                                  .categoryName);
                                                           (tempBeat as Beat)
-                                                              .outlet[i]
-                                                              .outletName =
-                                                          textController
-                                                              .text ==
-                                                              ""
-                                                              ? outletName!
-                                                              : textController
-                                                              .text;
+                                                                  .outlet[i]
+                                                                  .outletName =
+                                                              textController
+                                                                          .text ==
+                                                                      ""
+                                                                  ? outletName!
+                                                                  : textController
+                                                                      .text;
                                                           (tempBeat as Beat)
                                                               .outlet[i]
                                                               .lat = lat!;
@@ -500,22 +663,22 @@ class _NextScreenState extends State<NextScreen> {
                                                               .outlet[i]
                                                               .lng = lng!;
                                                           (tempBeat as Beat)
-                                                              .outlet[i]
-                                                              .imageURL =
-                                                          imageURL!;
+                                                                  .outlet[i]
+                                                                  .imageURL =
+                                                              imageURL!;
                                                           break;
                                                         }
                                                       }
                                                       List dynamicList =
-                                                      selectedOutlet
-                                                          .where(
-                                                              (element) =>
-                                                          element
-                                                              .id !=
-                                                              myID)
-                                                          .toList();
+                                                          selectedOutlet
+                                                              .where(
+                                                                  (element) =>
+                                                                      element
+                                                                          .id !=
+                                                                      myID)
+                                                              .toList();
                                                       for (var element
-                                                      in dynamicList) {
+                                                          in dynamicList) {
                                                         (tempBeat as Beat)
                                                             .outlet
                                                             .remove(element);
@@ -523,7 +686,7 @@ class _NextScreenState extends State<NextScreen> {
                                                       Navigator.pop(context);
                                                       selectedOutlet = [];
                                                       headerText =
-                                                      "SELECT THE PHOTO";
+                                                          "SELECT THE PHOTO";
                                                       chosenOutlet = null;
                                                       myID = null;
                                                       videoName = null;
@@ -540,31 +703,29 @@ class _NextScreenState extends State<NextScreen> {
                                                         isMerging = false;
                                                       });
                                                       ScaffoldMessenger.of(
-                                                          context)
-                                                          .showSnackBar(
-                                                          SnackBar(
+                                                              context)
+                                                          .showSnackBar(SnackBar(
                                                               content: Text(
                                                                   "Successful")));
                                                     } else {
                                                       ScaffoldMessenger.of(
-                                                          context)
-                                                          .showSnackBar(
-                                                          SnackBar(
+                                                              context)
+                                                          .showSnackBar(SnackBar(
                                                               content: Text(
                                                                   "Select a category")));
                                                     }
                                                   } else {
                                                     ScaffoldMessenger.of(
-                                                        context)
+                                                            context)
                                                         .showSnackBar(SnackBar(
-                                                        content: Text(
-                                                            "Select or enter the outlet name")));
+                                                            content: Text(
+                                                                "Select or enter the outlet name")));
                                                   }
                                                 } else {
                                                   ScaffoldMessenger.of(context)
                                                       .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          "Soemthing went wrong")));
+                                                          content: Text(
+                                                              "Soemthing went wrong")));
                                                 }
                                               },
                                               child: Container(
@@ -592,7 +753,7 @@ class _NextScreenState extends State<NextScreen> {
                   },
                   child: Container(
                     color: (selectedOutlet.length <= 1 && !isMerging) ||
-                        (chosenOutlet == null && isMerging)
+                            (chosenOutlet == null && isMerging)
                         ? Colors.blueGrey
                         : Colors.green,
                     width: 100,
