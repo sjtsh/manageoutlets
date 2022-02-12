@@ -37,6 +37,7 @@ class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
 
   TextEditingController textController = TextEditingController();
+
   List<Outlet> selectedOutlet = [];
   String headerText = "SELECT THE PHOTO";
   Outlet? chosenOutlet;
@@ -51,10 +52,13 @@ class _NextScreenState extends State<NextScreen> {
   String? imageURL;
   Category? category;
 
-  bool isMerging = false;
+ bool isMerging = false;
+ bool _validate =  false;
 
   @override
   void initState() {
+   // ((tempBeat as Beat).outlet.where((element) => element.outletName.isEmpty)
+
     // TODO: implement initState
     super.initState();
     List<Outlet> outlets = [];
@@ -293,6 +297,8 @@ class _NextScreenState extends State<NextScreen> {
                         ),
                       );
                     } else {
+                      TextEditingController controller = TextEditingController();
+                      controller.text = tempBeat!.outlet[i].outletName;
                       return Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Container(
@@ -397,8 +403,14 @@ class _NextScreenState extends State<NextScreen> {
                                       const SizedBox(
                                         width: 10,
                                       ),
-                                      Text(tempBeat!.outlet[i].outletName),
-                                      Expanded(child: Container()),
+    Expanded(
+    child: TextField(
+    controller: controller,
+    onChanged: (String? text){
+    tempBeat!.outlet[i].outletName = text ?? "";
+    },
+    ),
+    ),
                                       Container(
                                         width: 200,
                                         child: Builder(builder: (context) {
@@ -597,7 +609,12 @@ class _NextScreenState extends State<NextScreen> {
                                           children: [
                                             TextField(
                                               controller: textController,
+                                              decoration: const InputDecoration(
+                                                  border:OutlineInputBorder(),
+                                                labelText:"Oulet Name (optional)"
+                                              ),
                                             ),
+                                            const SizedBox(height: 12,),
                                             DropdownSearch(
                                               showSearchBox: true,
                                               items: List.generate(
@@ -606,16 +623,19 @@ class _NextScreenState extends State<NextScreen> {
                                                       selectedOutlet[index]
                                                           .outletName),
                                               selectedItem: outletName,
+                                              hint: "Outlet Name",
                                               onChanged: (String? a) {
                                                 setState(() {
                                                   outletName = a;
                                                 });
                                               },
                                             ),
+                                            const SizedBox(height: 12,),
                                             DropdownSearch(
                                               selectedItem: category,
                                               showSearchBox: true,
                                               items: widget.categories,
+                                              hint: "Select Category",
                                               onChanged: (Category? a) {
                                                 setState(() {
                                                   category = a;
