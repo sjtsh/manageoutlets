@@ -36,6 +36,7 @@ void _changeDropDownValue(Category newValue) {
 
 class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
+  bool isValidate = true;
 
   TextEditingController textController = TextEditingController();
 
@@ -139,18 +140,30 @@ class _NextScreenState extends State<NextScreen> {
                     color: Colors.white,
                     child: InkWell(
                       onTap: () {
-                        widget.updateBeat(
-                            formerBeat: widget.beat, newBeat: tempBeat);
-                        if (selectedCategories.categoryName !=
-                            "Select category") {
+                        isValidate = false;
+                        for (var element in (tempBeat as Beat).outlet) {
+                          if (element.outletName == "") {
+                            isValidate = true;
+                          }
+                          if (element.newcategoryID == null) {
+                            isValidate = true;
+                          }
+                        }
+                        if (!isValidate) {
+                          widget.updateBeat(
+                              formerBeat: widget.beat, newBeat: tempBeat);
                           Navigator.pop(context);
                         } else {
+                          setState(() {
+
+                            isValidate = false;
+                          });
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text("Select all categories")));
+                                  content:
+                                      Text("Select all name and categories")));
                         }
 
-                        Navigator.pop(context);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -306,7 +319,8 @@ class _NextScreenState extends State<NextScreen> {
                         ),
                       );
                     } else {
-                      TextEditingController controller = TextEditingController();
+                      TextEditingController controller =
+                          TextEditingController();
                       controller.text = tempBeat!.outlet[i].outletName;
                       return Padding(
                           padding: const EdgeInsets.all(12.0),
@@ -328,9 +342,9 @@ class _NextScreenState extends State<NextScreen> {
                               ),
                               child: Material(
                                 color:
-                                    selectedOutlet.contains(tempBeat!.outlet[i])
-                                        ? Color(0xff9497F1)
-                                        : Colors.white,
+                                selectedOutlet.contains(tempBeat!.outlet[i])
+                                    ? Color(0xff9497F1)
+                                    : Colors.white,
                                 child: InkWell(
                                   onTap: () {
                                     setState(() {
@@ -428,58 +442,74 @@ class _NextScreenState extends State<NextScreen> {
                                                 width: 10,
                                               ),
                                               Expanded(
-                                                child: TextField(
-                                                  controller: controller,
-                                                  onChanged: (String? text) {
-                                                    tempBeat!.outlet[i]
-                                                            .outletName =
-                                                        text ?? "";
-                                                  },
-                                                  decoration: InputDecoration(
-                                                    errorText: _validate == true
-                                                        ? 'Field Can\'t Be Empty'
-                                                        : null,
-                                                    border:
-                                                        const OutlineInputBorder(),
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: TextField(
+                                                    controller: controller,
+                                                    onChanged: (String? text) {
+                                                      tempBeat!.outlet[i]
+                                                              .outletName =
+                                                          text ?? "";
+                                                    },
+                                                    decoration: InputDecoration(
+                                                      errorText: (controller
+                                                                      .text ==
+                                                                  "" &&
+                                                              !isValidate)
+                                                          ? 'Field Can\'t Be Empty'
+                                                          : null,
+                                                      border:
+                                                          const OutlineInputBorder(),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                               // Text(tempBeat!.outlet[i].outletName),
                                               // Expanded(child: Container()),
-                                              Container(
-                                                width: 200,
-                                                child:
-                                                    Builder(builder: (context) {
-                                                  return DropdownSearch<
-                                                      Category>(
-                                                    showSearchBox: true,
-                                                    mode: Mode.MENU,
-                                                    items: widget.categories,
-                                                    onChanged: (selected) {
-                                                      _changeDropDownValue(
-                                                          selectedCategories);
-                                                    },
-                                                    selectedItem:
-                                                        selectedCategories,
-                                                    dropdownSearchDecoration:
-                                                        const InputDecoration(
-                                                      contentPadding:
-                                                          const EdgeInsets
-                                                                  .fromLTRB(
-                                                              8, 0, 8, 0),
-                                                      border:
-                                                          UnderlineInputBorder(
-                                                        borderSide:
-                                                            BorderSide.none,
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Container(
+                                                  width: 200,
+                                                  child:
+                                                      Builder(builder: (context) {
+                                                    return DropdownSearch<
+                                                        Category>(
+                                                      showSearchBox: true,
+                                                      mode: Mode.MENU,
+                                                      items: widget.categories,
+                                                      onChanged: (selected) {
+                                                        _changeDropDownValue(
+                                                            selectedCategories);
+                                                        tempBeat!
+                                                            .outlet[i]
+                                                            .newcategoryID = selected?.id;
+                                                      },
+                                                      selectedItem:
+                                                          selectedCategories,
+                                                      dropdownSearchDecoration:
+                                                          InputDecoration(
+                                                        errorText: (tempBeat!
+                                                                        .outlet[i]
+                                                                        .newcategoryID ==
+                                                                    null &&
+                                                                !isValidate)
+                                                            ? "define category"
+                                                            : null,
+                                                        contentPadding:
+                                                            const EdgeInsets
+                                                                    .fromLTRB(
+                                                                8, 0, 8, 0),
+                                                        border: OutlineInputBorder()
                                                       ),
-                                                    ),
-                                                  );
-                                                }),
+                                                    );
+                                                  }),
+                                                ),
                                               ),
                                               const SizedBox(
                                                 width: 10,
                                               ),
-                                              GestureDetector(
+                                              InkWell(
                                                 onTap: () {
                                                   setState(() {
                                                     selectedOutlet.remove(
@@ -508,19 +538,27 @@ class _NextScreenState extends State<NextScreen> {
                                             ],
                                           ),
                                           Expanded(
-                                            child: Container(
-                                              color:
-                                                  Colors.black.withOpacity(0.1),
-                                              child: Image.network(
-                                                tempBeat!.outlet[i].videoName ==
-                                                        null
-                                                    ? tempBeat!
-                                                        .outlet[i].imageURL
-                                                    : localhost +
-                                                        tempBeat!
-                                                            .outlet[i].imageURL,
-                                                fit: BoxFit.contain,
-                                              ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    color: Colors.black
+                                                        .withOpacity(0.1),
+                                                    child: Image.network(
+                                                      tempBeat!.outlet[i]
+                                                                  .videoName ==
+                                                              null
+                                                          ? tempBeat!.outlet[i]
+                                                              .imageURL
+                                                          : localhost +
+                                                              tempBeat!
+                                                                  .outlet[i]
+                                                                  .imageURL,
+                                                      fit: BoxFit.contain,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -696,6 +734,26 @@ class _NextScreenState extends State<NextScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "FILL THE REQUIREMENTS",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Expanded(child: Container()),
+                                                InkWell(
+                                                  onTap: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Icon(Icons.clear),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              height: 10,
+                                            ),
                                             TextField(
                                               controller: textController,
                                               decoration: const InputDecoration(
@@ -738,15 +796,6 @@ class _NextScreenState extends State<NextScreen> {
                                             Expanded(child: Container()),
                                             GestureDetector(
                                               onTap: () {
-                                                bool isValidate = false;
-                                                (tempBeat as Beat).outlet.forEach((element) {
-                                                  if(element.outletName == ""){
-                                                    isValidate = true;
-                                                  }
-                                                });
-                                                if(!isValidate){
-                                                  print("wrong");
-                                                }
                                                 if (myID != null &&
                                                     imageURL != null &&
                                                     lat != null &&
@@ -851,8 +900,21 @@ class _NextScreenState extends State<NextScreen> {
                                                 }
                                               },
                                               child: Container(
-                                                color: Colors.green,
-                                                height: 60,
+                                                height: 50,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.green,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            6),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                          offset: const Offset(
+                                                              0, 2),
+                                                          spreadRadius: 2,
+                                                          blurRadius: 2,
+                                                          color: Colors.black
+                                                              .withOpacity(0.1))
+                                                    ]),
                                                 child: Center(
                                                   child: Text(
                                                     "CONFIRM",
