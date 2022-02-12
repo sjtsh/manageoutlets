@@ -22,7 +22,7 @@ class BeatService {
       for (Outlet element in element.outlet) {
         aJson["outlets"][element.id.toString()] = {};
         aJson["outlets"][element.id.toString()]["videoID"] =
-            (element.videoID ?? ).toString();
+            element.videoID.toString();
         aJson["outlets"][element.id.toString()]["beatID"] =
             element.beatID.toString();
         aJson["outlets"][element.id.toString()]["categoryID"] =
@@ -39,7 +39,7 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["deactivated"] = "true";
       }
 
-      for (Outlet element in element.deactivated) {
+      for (Outlet element in (element.deactivated ?? [])) {
         aJson["outlets"][element.id.toString()] = {};
         aJson["outlets"][element.id.toString()]["videoID"] =
             element.videoID.toString();
@@ -60,7 +60,7 @@ class BeatService {
       }
       print(aJson);
       Response res = await http.post(
-        Uri.parse("$localhost/outlet/update"),
+        Uri.parse("$localhost/beat/update"),
         body: aJson,
       );
       if (res.statusCode != 200) {

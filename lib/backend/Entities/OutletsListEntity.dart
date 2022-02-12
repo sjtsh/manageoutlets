@@ -5,9 +5,9 @@ class Beat {
 
   String beatName;
   List<Outlet> outlet;
-  List<Outlet> deactivated;
+  List<Outlet>? deactivated;
 
-  Beat(this.beatName, this.outlet, {this.id, this.deactivated = const []});
+  Beat(this.beatName, this.outlet, {this.id, this.deactivated});
 
   factory Beat.fromJson(Map<String, dynamic> json) {
     return Beat(
