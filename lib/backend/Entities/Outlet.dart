@@ -5,7 +5,7 @@ class Outlet {
   String id;
   int? videoID;
   String? videoName;
-  int? categoryID;
+  int categoryID;
   String categoryName;
   String? beatID;
   String? dateTime;
@@ -20,7 +20,7 @@ class Outlet {
       {required this.id,
       this.videoID,
       this.videoName,
-      this.categoryID,
+      required this.categoryID,
       required this.categoryName,
       this.beatID,
       this.dateTime,
@@ -34,8 +34,8 @@ class Outlet {
   factory Outlet.fromJson(Map<String, dynamic> json) {
     return Outlet(
       id: json["id"],
-      videoID: json["videoID"],
-      categoryID: json["category"],
+      videoID: json["videoID"] == null ? null : int.parse(json["videoID"]),
+      categoryID: int.parse(json["category"]),
       videoName: json["videoName"],
       categoryName: json["categoryName"],
       beatID: json["beatID"],

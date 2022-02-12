@@ -19,8 +19,6 @@ class OutletService {
       //   'distance': distance.toString(),
       // },
     );
-    print(res.body.toString().substring(0, 100));
-    print("GOT");
     List<dynamic> a = jsonDecode(res.body);
     List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
     print(outlets.length);
