@@ -91,20 +91,6 @@ class _SplashScreenState extends State<SplashScreen> {
                   height: 5,
                   width: total * (percentage / 100),
                 ),
-                Stack(
-                  children: [
-                    Container(
-                      color: Colors.blueGrey,
-                      height: 5,
-                      width: total + 0.0,
-                    ),
-                    Container(
-                      color: Colors.blue,
-                      height: 5,
-                      width: total * (percentage / 100),
-                    ),
-                  ],
-                ),
               ],
             ),
             SizedBox(

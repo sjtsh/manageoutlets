@@ -1,4 +1,5 @@
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/MergeMap.dart';
@@ -75,81 +76,113 @@ class _NextScreenState extends State<NextScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: AppBar(
-                  title: Center(
+          Container(
+            padding: EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                    offset: const Offset(0, 2),
+                    spreadRadius: 2,
+                    blurRadius: 2,
+                    color: Colors.black.withOpacity(0.1))
+              ],
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 12,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    if (isMerging) {
+                      setState(() {
+                        isMerging = false;
+                      });
+                    } else {
+                      Navigator.pop(context);
+                      print(tempBeat!.outlet.length.toString() +
+                          " " +
+                          widget.beat.outlet.length.toString());
+                      // widget.updateBeat(
+                      //     formerBeat: tempBeat, newBeat: widget.beat);
+                      widget.refresh();
+                    }
+                  },
+                  child: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                ),
+                Expanded(
+                  child: Center(
                     child: Text(
                       isMerging
                           ? headerText
                           : "${(tempBeat as Beat).outlet.length} Outlets",
-                      style: const TextStyle(color: Colors.black),
-                    ),
-                  ),
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  toolbarHeight: 50,
-                  leading: GestureDetector(
-                    onTap: () {
-                      if (isMerging) {
-                        setState(() {
-                          isMerging = false;
-                        });
-                      } else {
-                        Navigator.pop(context);
-                        print(tempBeat!.outlet.length.toString() +
-                            " " +
-                            widget.beat.outlet.length.toString());
-                        // widget.updateBeat(
-                        //     formerBeat: tempBeat, newBeat: widget.beat);
-                        widget.refresh();
-                      }
-                    },
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.black,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
-                  if (selectedCategories.categoryName != "Select category") {
-                    Navigator.pop(context);
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Select all categories")));
-                  }
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.green,
+                      width: 2,
+                    ),
+                  ),
+                  child: Material(
+                    color: Colors.white,
+                    child: InkWell(
+                      onTap: () {
+                        widget.updateBeat(
+                            formerBeat: widget.beat, newBeat: tempBeat);
+                        if (selectedCategories.categoryName !=
+                            "Select category") {
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text("Select all categories")));
+                        }
 
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  height: 60,
-                  width: 120,
-                  color: Colors.green,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "DONE",
-                          style: TextStyle(color: Colors.white),
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                "DONE",
+                                style: TextStyle(
+                                  color: Colors.green,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Icon(
+                                Icons.arrow_forward_outlined,
+                                color: Colors.green,
+                              ),
+                            ],
+                          ),
                         ),
-                        const Icon(
-                          Icons.arrow_forward_outlined,
-                          color: Colors.white,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 12,
-              ),
-            ],
+                SizedBox(
+                  width: 12,
+                ),
+              ],
+            ),
           ),
           Expanded(
             child: Padding(
@@ -168,73 +201,76 @@ class _NextScreenState extends State<NextScreen> {
                       return Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: Container(
+                          clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                             color: selectedOutlet[i] == chosenOutlet
-                                ? Colors.blue
+                                ? Color(0xff9497F1)
                                 : Colors.white,
                             boxShadow: [
                               BoxShadow(
-                                  offset: const Offset(0, -2),
+                                  offset: const Offset(0, 2),
                                   spreadRadius: 2,
                                   blurRadius: 2,
                                   color: Colors.black.withOpacity(0.1))
                             ],
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  Checkbox(
-                                    // activeColor: Colors.blue,
-                                    value: selectedOutlet[i] == chosenOutlet,
-                                    onChanged: (newValue) => setState(() {
-                                      chosenOutlet = selectedOutlet[i];
-                                    }),
-                                  ),
-                                ],
-                              ),
-                              Expanded(
-                                child: Container(
-                                  color: Colors.black.withOpacity(0.1),
-                                  child: Image.network(
-                                    selectedOutlet[i].videoName == null
-                                        ? selectedOutlet[i].imageURL
-                                        : localhost +
-                                            selectedOutlet[i].imageURL,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else {
-                      TextEditingController controller =
-                          TextEditingController();
-                      controller.text = tempBeat!.outlet[i].outletName;
-                      return Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Container(
-                          decoration: BoxDecoration(
+                          child: Material(
                             color: selectedOutlet.contains(tempBeat!.outlet[i])
-                                ? Colors.blue
+                                ? Color(0xff9497F1)
                                 : Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                  offset: const Offset(0, -2),
-                                  spreadRadius: 2,
-                                  blurRadius: 2,
-                                  color: Colors.black.withOpacity(0.1))
-                            ],
-                          ),
-                          child: Stack(
-                            children: [
-                              Column(
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  chosenOutlet = selectedOutlet[i];
+                                });
+                              },
+                              onDoubleTap: () {
+                                Navigator.push(context,
+                                    MaterialPageRoute(builder: (_) {
+                                  return Scaffold(
+                                      body: Column(
+                                    children: [
+                                      AppBar(
+                                        leading: GestureDetector(
+                                          onTap: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: Icon(
+                                            Icons.arrow_back,
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.transparent,
+                                        shadowColor: Colors.transparent,
+                                        foregroundColor: Colors.transparent,
+                                      ),
+                                      Expanded(
+                                        child: InteractiveViewer(
+                                          // boundaryMargin:
+                                          //     const EdgeInsets.all(20.0),
+                                          minScale: 0.7,
+                                          maxScale: 3.1,
+                                          child: Container(
+                                            color:
+                                                Colors.black.withOpacity(0.1),
+                                            child: Image.network(
+                                              selectedOutlet[i].videoName ==
+                                                      null
+                                                  ? selectedOutlet[i].imageURL
+                                                  : localhost +
+                                                      selectedOutlet[i]
+                                                          .imageURL,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ));
+                                }));
+                              },
+                              child: Column(
                                 children: [
                                   Row(
                                     children: [
@@ -243,74 +279,11 @@ class _NextScreenState extends State<NextScreen> {
                                       ),
                                       Checkbox(
                                         // activeColor: Colors.blue,
-                                        value: selectedOutlet
-                                            .contains(tempBeat!.outlet[i]),
+                                        value:
+                                            selectedOutlet[i] == chosenOutlet,
                                         onChanged: (newValue) => setState(() {
-                                          if (selectedOutlet
-                                              .contains(tempBeat!.outlet[i])) {
-                                            selectedOutlet
-                                                .remove(tempBeat!.outlet[i]);
-                                          } else {
-                                            selectedOutlet
-                                                .add(tempBeat!.outlet[i]);
-                                          }
+                                          chosenOutlet = selectedOutlet[i];
                                         }),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          controller: controller,
-                                          onChanged: (String? text) {
-                                            tempBeat!.outlet[i].outletName =
-                                                text ?? "";
-                                          },
-                                        ),
-                                      ),
-                                      // Text(tempBeat!.outlet[i].outletName),
-                                      // Expanded(child: Container()),
-                                      Container(
-                                        width: 200,
-                                        child: Builder(builder: (context) {
-                                          return DropdownSearch<Category>(
-                                            showSearchBox: true,
-                                            mode: Mode.MENU,
-                                            items: widget.categories,
-                                            onChanged: (selected) {
-                                              _changeDropDownValue(
-                                                  selectedCategories);
-                                            },
-                                            selectedItem: selectedCategories,
-                                            dropdownSearchDecoration:
-                                                const InputDecoration(
-                                              // filled: true,
-                                              border: UnderlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color: Color(0xFF01689A),
-                                                ),
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                      ),
-                                      const SizedBox(
-                                        width: 10,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            (tempBeat as Beat)
-                                                .outlet
-                                                .remove(tempBeat!.outlet[i]);
-                                          });
-                                        },
-                                        child: const Icon(
-                                          Icons.clear,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 12,
                                       ),
                                     ],
                                   ),
@@ -318,52 +291,273 @@ class _NextScreenState extends State<NextScreen> {
                                     child: Container(
                                       color: Colors.black.withOpacity(0.1),
                                       child: Image.network(
-                                        tempBeat!.outlet[i].videoName == null
-                                            ? tempBeat!.outlet[i].imageURL
+                                        selectedOutlet[i].videoName == null
+                                            ? selectedOutlet[i].imageURL
                                             : localhost +
-                                                tempBeat!.outlet[i].imageURL,
-                                        fit: BoxFit.cover,
-                                        width: double.infinity,
+                                                selectedOutlet[i].imageURL,
+                                        fit: BoxFit.contain,
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Container(
-                                    width: 60,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          tempBeat!.outlet[i].videoName == null
-                                              ? Colors.red
-                                              : Colors.green,
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color:
-                                                Colors.black.withOpacity(0.1))
-                                      ],
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        tempBeat!.outlet[i].videoName == null
-                                            ? "FA"
-                                            : "SC",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
+                            ),
                           ),
                         ),
                       );
+                    } else {
+                      TextEditingController controller = TextEditingController();
+                      controller.text = tempBeat!.outlet[i].outletName;
+                      return Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                              clipBehavior: Clip.hardEdge,
+                              decoration: BoxDecoration(
+                                color:
+                                    selectedOutlet.contains(tempBeat!.outlet[i])
+                                        ? Color(0xff9497F1)
+                                        : Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: const Offset(0, 2),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      color: Colors.black.withOpacity(0.1))
+                                ],
+                              ),
+                              child: Material(
+                                color:
+                                    selectedOutlet.contains(tempBeat!.outlet[i])
+                                        ? Color(0xff9497F1)
+                                        : Colors.white,
+                                child: InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (selectedOutlet
+                                          .contains(tempBeat!.outlet[i])) {
+                                        selectedOutlet
+                                            .remove(tempBeat!.outlet[i]);
+                                      } else {
+                                        selectedOutlet.add(tempBeat!.outlet[i]);
+                                      }
+                                    });
+                                  },
+                                  onDoubleTap: () {
+                                    Navigator.push(context,
+                                        MaterialPageRoute(builder: (_) {
+                                      return Scaffold(
+                                        body: Column(
+                                          children: [
+                                            AppBar(
+                                              leading: GestureDetector(
+                                                onTap: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Icon(
+                                                  Icons.arrow_back,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              shadowColor: Colors.transparent,
+                                              foregroundColor:
+                                                  Colors.transparent,
+                                            ),
+                                            Expanded(
+                                              child: InteractiveViewer(
+                                                // boundaryMargin:
+                                                //     const EdgeInsets.all(20.0),
+                                                minScale: 0.7,
+                                                maxScale: 3.1,
+                                                child: Container(
+                                                  color: Colors.black
+                                                      .withOpacity(0.1),
+                                                  child: Image.network(
+                                                    tempBeat!.outlet[i]
+                                                                .videoName ==
+                                                            null
+                                                        ? tempBeat!
+                                                            .outlet[i].imageURL
+                                                        : localhost +
+                                                            tempBeat!.outlet[i]
+                                                                .imageURL,
+                                                    fit: BoxFit.contain,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }));
+                                  },
+                                  child: Stack(
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const SizedBox(
+                                                width: 12,
+                                              ),
+                                              Checkbox(
+                                                // activeColor: Colors.blue,
+                                                value: selectedOutlet.contains(
+                                                    tempBeat!.outlet[i]),
+                                                onChanged: (newValue) =>
+                                                    setState(() {
+                                                  if (selectedOutlet.contains(
+                                                      tempBeat!.outlet[i])) {
+                                                    selectedOutlet.remove(
+                                                        tempBeat!.outlet[i]);
+                                                  } else {
+                                                    selectedOutlet.add(
+                                                        tempBeat!.outlet[i]);
+                                                  }
+                                                }),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Expanded(
+                                                child: TextField(
+                                                  controller: controller,
+                                                  onChanged: (String? text) {
+                                                    tempBeat!.outlet[i]
+                                                            .outletName =
+                                                        text ?? "";
+                                                  },
+                                                  decoration: InputDecoration(
+                                                    errorText: _validate == true
+                                                        ? 'Field Can\'t Be Empty'
+                                                        : null,
+                                                    border:
+                                                        const OutlineInputBorder(),
+                                                  ),
+                                                ),
+                                              ),
+                                              // Text(tempBeat!.outlet[i].outletName),
+                                              // Expanded(child: Container()),
+                                              Container(
+                                                width: 200,
+                                                child:
+                                                    Builder(builder: (context) {
+                                                  return DropdownSearch<
+                                                      Category>(
+                                                    showSearchBox: true,
+                                                    mode: Mode.MENU,
+                                                    items: widget.categories,
+                                                    onChanged: (selected) {
+                                                      _changeDropDownValue(
+                                                          selectedCategories);
+                                                    },
+                                                    selectedItem:
+                                                        selectedCategories,
+                                                    dropdownSearchDecoration:
+                                                        const InputDecoration(
+                                                      contentPadding:
+                                                          const EdgeInsets
+                                                                  .fromLTRB(
+                                                              8, 0, 8, 0),
+                                                      border:
+                                                          UnderlineInputBorder(
+                                                        borderSide:
+                                                            BorderSide.none,
+                                                      ),
+                                                    ),
+                                                  );
+                                                }),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    selectedOutlet.remove(
+                                                        selectedOutlet
+                                                            .firstWhere(
+                                                                (element) =>
+                                                                    tempBeat!
+                                                                        .outlet[
+                                                                            i]
+                                                                        .id ==
+                                                                    element
+                                                                        .id));
+                                                    (tempBeat as Beat)
+                                                        .outlet
+                                                        .remove(tempBeat!
+                                                            .outlet[i]);
+                                                  });
+                                                },
+                                                child: const Icon(
+                                                  Icons.clear,
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 12,
+                                              ),
+                                            ],
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              color:
+                                                  Colors.black.withOpacity(0.1),
+                                              child: Image.network(
+                                                tempBeat!.outlet[i].videoName ==
+                                                        null
+                                                    ? tempBeat!
+                                                        .outlet[i].imageURL
+                                                    : localhost +
+                                                        tempBeat!
+                                                            .outlet[i].imageURL,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Positioned(
+                                        right: 0,
+                                        bottom: 0,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Container(
+                                            width: 60,
+                                            height: 30,
+                                            decoration: BoxDecoration(
+                                              color: tempBeat!.outlet[i]
+                                                          .videoName ==
+                                                      null
+                                                  ? Colors.red
+                                                  : Colors.green,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.1))
+                                              ],
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                tempBeat!.outlet[i].videoName ==
+                                                        null
+                                                    ? "FA"
+                                                    : "SC",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )));
                     }
                   }),
                 );
@@ -373,7 +567,7 @@ class _NextScreenState extends State<NextScreen> {
           Container(
             height: 200,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.white.withOpacity(0.5),
               boxShadow: [
                 BoxShadow(
                     offset: const Offset(0, -2),
@@ -381,12 +575,12 @@ class _NextScreenState extends State<NextScreen> {
                     blurRadius: 2,
                     color: Colors.black.withOpacity(0.1))
               ],
-              border: const Border(
-                top: BorderSide(
-                  color: Colors.black,
-                  width: 10,
-                ),
-              ),
+              // border: const Border(
+              //   top: BorderSide(
+              //     color: Colors.black,
+              //     width: 10,
+              //   ),
+              // ),
             ),
             child: Row(
               children: [
@@ -398,9 +592,8 @@ class _NextScreenState extends State<NextScreen> {
                           (e) => Stack(
                             children: [
                               Container(
-                                width: 350,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 12),
+                                width: 200,
+                                margin: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
                                     image: NetworkImage(
@@ -423,14 +616,27 @@ class _NextScreenState extends State<NextScreen> {
                                 ),
                               ),
                               Positioned(
-                                right: 12,
-                                child: IconButton(
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    selectedOutlet.remove(e);
-                                    setState(() {});
-                                  },
-                                  icon: const Icon(Icons.cancel),
+                                right: 4,
+                                top: 4,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.red),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      selectedOutlet.remove(e);
+                                      setState(() {});
+                                    },
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.clear,
+                                        color: Colors.white,
+                                        size: 12,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               )
                             ],
@@ -526,6 +732,15 @@ class _NextScreenState extends State<NextScreen> {
                                             Expanded(child: Container()),
                                             GestureDetector(
                                               onTap: () {
+                                                bool isValidate = false;
+                                                (tempBeat as Beat).outlet.forEach((element) {
+                                                  if(element.outletName == ""){
+                                                    isValidate = true;
+                                                  }
+                                                });
+                                                if(!isValidate){
+                                                  print("wrong");
+                                                }
                                                 if (myID != null &&
                                                     imageURL != null &&
                                                     lat != null &&
