@@ -24,7 +24,6 @@ class AddtoBeatIntent extends Intent {}
 class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
   bool validate = false;
 
-
   toBeatList(rangeIndexes, blueIndexes, textController, setTempRedRadius,
       redPositions, context, validate) {
     if (textController.text == "") {
@@ -82,8 +81,26 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
               child: SizedBox(
                 height: 150,
                 width: 300,
-                child: Row(
+                child: Column(
                   children: [
+                    Row(
+                      children: [
+                        Text(
+                          "ADD BEAT NAME",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Expanded(child: Container()),
+                        InkWell(
+                          onTap: (){
+                            Navigator.pop(context);
+                          },
+                          child: Icon(Icons.clear),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10,),
                     Expanded(
                       child: Focus(
                         autofocus: true,
@@ -93,38 +110,61 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                             errorText: validate == true
                                 ? 'Field Can\'t Be Empty'
                                 : null,
-                            border: const OutlineInputBorder( ),
+                            border: const OutlineInputBorder(),
                             label: const Text("beat name"),
                           ),
                         ),
                       ),
                     ),
+                    SizedBox(height: 10,),
                     Focus(
-                      child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            if (widget.textController.text == "") {
-                              validate = true;
-                              print(validate.toString() + " on level 1");
-                            } else {
-                              validate = false;
-                            }
-                          });
+                      child: Container(
+                        clipBehavior: Clip.hardEdge,
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius:
+                            BorderRadius.circular(6),
+                            boxShadow: [
+                              BoxShadow(
+                                  offset: const Offset(0, 2),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  color: Colors.black
+                                      .withOpacity(0.1))
+                            ]),
+                        child: Material(
+                          color: Colors.green,
+                          child: InkWell(
+                            onTap: (){
+                              setState(() {
+                                if (widget.textController.text == "") {
+                                  validate = true;
+                                  print(validate.toString() + " on level 1");
+                                } else {
+                                  validate = false;
+                                }
+                              });
 
-                          if (validate == false) {
-                            toBeatList(
-                                widget.rangeIndexes,
-                                widget.blueIndexes,
-                                widget.textController,
-                                widget.setTempRedRadius,
-                                widget.redPositions,
-                                context,
-                                validate);
-                          }
-                        },
-                        color: Colors.blue,
-                        icon: Icon(
-                          Icons.send,
+                              if (validate == false) {
+                                toBeatList(
+                                    widget.rangeIndexes,
+                                    widget.blueIndexes,
+                                    widget.textController,
+                                    widget.setTempRedRadius,
+                                    widget.redPositions,
+                                    context,
+                                    validate);
+                              }
+
+                            },
+                            child: const Center(
+                              child: Text(
+                                "ENTER",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ),

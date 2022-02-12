@@ -6,6 +6,7 @@ class Outlet {
   int? videoID;
   String? videoName;
   int categoryID;
+  int? newcategoryID;
   String categoryName;
   String? beatID;
   String? dateTime;
