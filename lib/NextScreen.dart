@@ -54,8 +54,28 @@ class _NextScreenState extends State<NextScreen> {
   void initState() {
     super.initState();
     List<Outlet> outlets = [];
+    List<Outlet> deactivateds = [];
     for (var element in widget.beat.outlet) {
-      outlets.add(Outlet(
+    Outlet outlet = Outlet(
+        imageURL: element.imageURL,
+        categoryID: element.categoryID,
+        categoryName: element.categoryName,
+        lng: element.lng,
+        lat: element.lat,
+        id: element.id,
+        outletName: element.outletName,
+        marker: element.marker,
+        beatID: element.beatID,
+        dateTime: element.dateTime,
+        md5: element.md5,
+        videoID: element.videoID,
+        videoName: element.videoName);
+        outlet.newcategoryID = element.newcategoryID;
+      outlets.add(outlet);
+    }
+
+    for (var element in widget.beat.deactivated ?? []) {
+      deactivateds.add(Outlet(
           imageURL: element.imageURL,
           categoryID: element.categoryID,
           categoryName: element.categoryName,
@@ -74,6 +94,7 @@ class _NextScreenState extends State<NextScreen> {
       widget.beat.beatName,
       outlets,
       id: widget.beat.id,
+      deactivated: deactivateds,
     );
   }
 
@@ -471,30 +492,39 @@ class _NextScreenState extends State<NextScreen> {
                                             ),
                                             InkWell(
                                               onTap: () {
-                                                setState(() {
-                                                  selectedOutlet.remove(
-                                                      selectedOutlet.firstWhere(
-                                                          (element) =>
-                                                              tempBeat!
-                                                                  .outlet[i]
-                                                                  .id ==
-                                                              element.id));
+                                                try{
+                                                  setState(() {
+                                                    selectedOutlet.remove(
+                                                        selectedOutlet
+                                                            .firstWhere(
+                                                                (element) =>
+                                                                    tempBeat!
+                                                                        .outlet[
+                                                                            i]
+                                                                        .id ==
+                                                                    element
+                                                                        .id));
 
-                                                  if (widget.beat.deactivated !=
-                                                      null) {
-                                                    tempBeat?.deactivated!.add(
-                                                        tempBeat!.outlet[i]);
-                                                  } else {
-                                                    tempBeat?.deactivated = [
-                                                      tempBeat!.outlet[i]
-                                                    ];
-                                                  }
+                                                    if (widget
+                                                            .beat.deactivated !=
+                                                        null) {
+                                                      tempBeat?.deactivated!
+                                                          .add(tempBeat!
+                                                              .outlet[i]);
+                                                    } else {
+                                                      tempBeat?.deactivated = [
+                                                        tempBeat!.outlet[i]
+                                                      ];
+                                                    }
 
-                                                  (tempBeat as Beat)
-                                                      .outlet
-                                                      .remove(
-                                                          tempBeat!.outlet[i]);
-                                                });
+                                                    (tempBeat as Beat)
+                                                        .outlet
+                                                        .remove(tempBeat!
+                                                            .outlet[i]);
+                                                  });
+                                                }catch(e){
+                                                  print("");
+                                                }
                                               },
                                               child: const Icon(
                                                 Icons.clear,

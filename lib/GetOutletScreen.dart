@@ -15,19 +15,31 @@ import 'package:latlng/latlng.dart';
 
 import 'backend/database.dart';
 
-class GetOutletScreen extends StatelessWidget {
+class GetOutletScreen extends StatefulWidget {
   final double redRadius;
 
   GetOutletScreen(this.redRadius);
 
+  @override
+  State<GetOutletScreen> createState() => _GetOutletScreenState();
+}
+
+class _GetOutletScreenState extends State<GetOutletScreen> {
+String loadingText = "Loading all of the outlets";
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future:
           GeolocatorPlatform.instance.getCurrentPosition().then((value) async {
         List<Outlet> outlets = await OutletService().getNearbyOutlets(context);
+        setState(() {
+          loadingText = "Loading all of the distributors";
+        });
         List<Distributor> distributors =
             await DistributorService().getDistributor();
+        setState(() {
+          loadingText = "Loading all of the categories";
+        });
         List<Category> categories = await CategoryService().getCatagory();
         return [outlets, distributors, categories, value];
       }),
@@ -43,13 +55,13 @@ class GetOutletScreen extends StatelessWidget {
           );
           return RedMapScreen(
               outletLatLng,
-              redRadius,
+              widget.redRadius,
               controller,
               LatLng(position.latitude, position.longitude),
               distributors,
               categories);
         }
-        return const SplashScreen();
+        return SplashScreen(loadingText,localhost);
       },
     );
   }
