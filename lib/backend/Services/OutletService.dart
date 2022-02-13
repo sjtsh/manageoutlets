@@ -9,15 +9,9 @@ import '../Entities/Outlet.dart';
 import '../database.dart';
 
 class OutletService {
-  Future<List<Outlet>> getNearbyOutlets(
-      double distance, double lat, double lng, context) async {
+  Future<List<Outlet>> getNearbyOutlets( context) async {
     Response res = await http.get(
       Uri.parse("$localhost/outlet"),
-      // body: <String, String>{
-      //   'lat': lat.toString(),
-      //   'lng': lng.toString(),
-      //   'distance': distance.toString(),
-      // },
     );
     List<dynamic> a = jsonDecode(res.body);
     List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();

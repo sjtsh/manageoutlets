@@ -55,11 +55,11 @@ class _RedMapScreenState extends State<RedMapScreen> {
     setState(() {
       removePermPositions = [];
       center = LatLng(location.latitude, location.longitude);
-      // myOutlets = widget.outletLatLng.where((element) {
-      //   return GeolocatorPlatform.instance.distanceBetween(
-      //           element.lat, element.lng, center!.latitude, center!.longitude) <
-      //       redDistance;
-      // }).toList();
+      myOutlets = widget.outletLatLng.where((element) {
+        return GeolocatorPlatform.instance.distanceBetween(
+                element.lat, element.lng, center!.latitude, center!.longitude) <
+            redDistance;
+      }).toList();
     });
   }
 
@@ -77,18 +77,17 @@ class _RedMapScreenState extends State<RedMapScreen> {
   @override
   Widget build(BuildContext context) {
     return MapScreen(
-      myOutlets,
-      widget.redRadius,
-      widget.controller,
-      bluegreyIndexes,
-      redDistance,
-      setTempRedRadius,
-      center,
-      changeCenter,
-      widget.distributors,
-      widget.categories,
-      removePermPositions,
-        setRemovePermPositions
-    );
+        myOutlets,
+        widget.redRadius,
+        widget.controller,
+        bluegreyIndexes,
+        redDistance,
+        setTempRedRadius,
+        center,
+        changeCenter,
+        widget.distributors,
+        widget.categories,
+        removePermPositions,
+        setRemovePermPositions);
   }
 }
