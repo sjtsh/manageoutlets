@@ -18,6 +18,7 @@ class DistributorService {
         List<dynamic> beats = a[element]["beats"];
         distributors.add(
           Distributor(
+            int.parse(element),
             a[element]["name"],
             beats
                 .map((e) => Beat(
@@ -26,7 +27,6 @@ class DistributorService {
                       id: e["id"],
                     ))
                 .toList(),
-            id: int.parse(element),
           ),
         );
       }

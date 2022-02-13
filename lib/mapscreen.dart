@@ -100,6 +100,7 @@ class _MapScreenState extends State<MapScreen> {
   bool removeActive = false;
 
   Distributor selectedDropDownItem = Distributor(
+    -1,
     "Select Distributor",
     [],
   );
@@ -179,19 +180,13 @@ class _MapScreenState extends State<MapScreen> {
             },
           ),
           AddButtonIntent: CallbackAction(onInvoke: (intent) {
-            TextEditingController textController =
-            TextEditingController();
+            TextEditingController textController = TextEditingController();
             showDialog(
                 context: context,
                 builder: (_) {
-                  return AddBeatDialogBox(
-                      textController,
-                      rangeIndexes,
-                      blueIndexes,
-                      redPositions,
-                      widget.setTempRedRadius);
+                  return AddBeatDialogBox(textController, rangeIndexes,
+                      blueIndexes, redPositions, widget.setTempRedRadius);
                 });
-
           })
         },
         child: Scaffold(
@@ -284,7 +279,7 @@ class _MapScreenState extends State<MapScreen> {
                           for (int i = 0; i < blueIndexes.length; i++) {
                             markerWidgets.addAll(
                               List.generate(
-                                      blueIndexes[i].outlet.length ,
+                                      blueIndexes[i].outlet.length,
                                       (e) => LatLng(
                                           blueIndexes[i].outlet[e].lat,
                                           blueIndexes[i].outlet[e].lng))
@@ -292,10 +287,7 @@ class _MapScreenState extends State<MapScreen> {
                                   .toList()
                                   .map(
                                     (pos) => _buildMarkerWidget(
-                                        pos,
-                                        colorIndex[
-                                                i],
-                                        false),
+                                        pos, colorIndex[i], false),
                                   ),
                             );
                           }
@@ -535,15 +527,14 @@ class _MapScreenState extends State<MapScreen> {
                                     width: 100,
                                     decoration: BoxDecoration(
                                         color: Colors.red,
-                                        borderRadius:
-                                            BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(12),
                                         boxShadow: [
                                           BoxShadow(
                                               offset: const Offset(0, 2),
                                               spreadRadius: 2,
                                               blurRadius: 2,
-                                              color: Colors.black
-                                                  .withOpacity(0.1))
+                                              color:
+                                                  Colors.black.withOpacity(0.1))
                                         ]),
                                     child: RawMaterialButton(
                                       onPressed: () {
@@ -586,7 +577,7 @@ class _MapScreenState extends State<MapScreen> {
                                         onPressed: () {
                                           TextEditingController textController =
                                               TextEditingController();
-                                          if(redPositions.length!=0){
+                                          if (redPositions.length != 0) {
                                             showDialog(
                                                 context: context,
                                                 builder: (_) {
@@ -597,14 +588,20 @@ class _MapScreenState extends State<MapScreen> {
                                                       redPositions,
                                                       widget.setTempRedRadius);
                                                 });
-                                          } else{
-                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(duration: Duration(milliseconds: 500),content: Text("Please select outlet")));
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    duration: Duration(
+                                                        milliseconds: 500),
+                                                    content: Text(
+                                                        "Please select outlet")));
                                           }
                                         },
                                         child: const Center(
                                           child: Text(
                                             "ADD",
-                                            style: TextStyle(color: Colors.white),
+                                            style:
+                                                TextStyle(color: Colors.white),
                                           ),
                                         ),
                                       ),

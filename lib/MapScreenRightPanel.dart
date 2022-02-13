@@ -1,10 +1,12 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/container.dart' as hi;
 import 'package:manage_outlets/NextScreen.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
 import 'package:manage_outlets/backend/shortestPath.dart';
 
+import 'GetOutletScreen.dart';
 import 'backend/Entities/Distributor.dart';
 
 import 'backend/Entities/OutletsListEntity.dart';
@@ -21,22 +23,21 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function refresh;
   final Function updateBeat;
 
-  MapScreenRightPanel(
-    this.categories,
-    this.distributors,
-    this.beats,
-    this.removeBeat,
-    this.selectedDropDownItem,
-    this._changeDropDownValue, this.refresh, this.updateBeat,
-  );
+  MapScreenRightPanel(this.categories,
+      this.distributors,
+      this.beats,
+      this.removeBeat,
+      this.selectedDropDownItem,
+      this._changeDropDownValue,
+      this.refresh,
+      this.updateBeat,);
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
 }
 
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
-
-
+  bool isDisabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +53,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           const SizedBox(
             height: 12,
           ),
-          Container(
+          hi.Container(
             color: Colors.white,
             child: DropdownSearch<Distributor>(
                 showSearchBox: true,
@@ -80,7 +81,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 ...List.generate(widget.beats.length, (int index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: Container(
+                    child: hi.Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -100,10 +101,14 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                           },
                           onDoubleTap: () {
                             // double tap function
-                            Navigator.push(context, MaterialPageRoute(builder: (_) {
-                              return NextScreen(
-                                  widget.beats[index], widget.categories, widget.refresh, widget.updateBeat);
-                            }));
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) {
+                                  return NextScreen(
+                                      widget.beats[index],
+                                      widget.categories,
+                                      widget.refresh,
+                                      widget.updateBeat);
+                                }));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
@@ -120,13 +125,15 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                       height: 4,
                                     ),
                                     Text(
-                                      "${widget.beats[index].outlet.length} Outlets",
-                                      style: const TextStyle(color: Colors.grey),
+                                      "${widget.beats[index].outlet
+                                          .length} Outlets",
+                                      style:
+                                      const TextStyle(color: Colors.grey),
                                     )
                                   ],
                                 ),
-                                Expanded(child: Container()),
-                                Container(
+                                Expanded(child: hi.Container()),
+                                hi.Container(
                                   height: 20,
                                   width: 20,
                                   decoration: BoxDecoration(
@@ -142,7 +149,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     /// remove from list
                                     widget.removeBeat(widget.beats[index]);
                                   },
-                                  child: Container(
+                                  child: hi.Container(
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: Colors.red,
@@ -165,13 +172,12 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                     ),
                   );
                 }),
-
                 ...List.generate(
                   widget.selectedDropDownItem.beats.length,
-                  (int index) {
+                      (int index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: Container(
+                      child: hi.Container(
                         decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
@@ -200,19 +206,20 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     height: 4,
                                   ),
                                   Text(
-                                    "${widget.selectedDropDownItem.beats[index].outlet.length} Outlets",
+                                    "${widget.selectedDropDownItem.beats[index]
+                                        .outlet.length} Outlets",
                                     style: const TextStyle(color: Colors.white),
                                   )
                                 ],
                               ),
-                              Expanded(child: Container()),
-                              Container(
+                              Expanded(child: hi.Container()),
+                              hi.Container(
                                 height: 20,
                                 width: 20,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: colorIndex[
-                                        widget.beats.length + index],
+                                    color:
+                                    colorIndex[widget.beats.length + index],
                                     border: Border.all(color: Colors.black)),
                               ),
                               const SizedBox(
@@ -229,7 +236,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
             ),
           ),
           Center(
-            child: Container(
+            child: hi.Container(
               clipBehavior: Clip.hardEdge,
               height: 50,
               decoration: BoxDecoration(
@@ -243,14 +250,49 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         color: Colors.black.withOpacity(0.1))
                   ]),
               child: RawMaterialButton(
-                onPressed: (){
-                BeatService().updateOutlets(widget.beats, 0, context);
-              },
-                child: const Center(
-                    child: Text(
-                  "CONFIRM",
-                  style: TextStyle(color: Colors.white),
-                )),
+                onPressed: () {
+                  if (
+                  widget
+                      .selectedDropDownItem.distributorName.isNotEmpty) {
+                    if ("Select Distributor" !=
+                        widget.selectedDropDownItem.distributorName) {
+                      if (!isDisabled) {
+                        setState(() {
+                          isDisabled = true;
+                        });
+                        BeatService()
+                            .updateOutlets(widget.beats,
+                            widget.selectedDropDownItem.id, context)
+                            .then((value) {
+                          setState(() {
+                            isDisabled = false;
+                          });
+                          while(Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          }
+                          Navigator.push(context, MaterialPageRoute(builder: (_){
+                            return GetOutletScreen(1000000);
+                          }));
+                        });
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Select a distributor"),
+                      ));
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("No beats created"),
+                    ));
+                  }
+                },
+                child: Center(
+                    child: isDisabled
+                        ? CircularProgressIndicator()
+                        : Text(
+                      "CONFIRM",
+                      style: TextStyle(color: Colors.white),
+                    )),
               ),
             ),
           ),

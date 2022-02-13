@@ -6,7 +6,7 @@ import 'package:hovering/hovering.dart';
 import 'package:manage_outlets/MergeMap.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
-
+import 'package:flutter/src/widgets/container.dart' as hi;
 import 'backend/Entities/OutletsListEntity.dart';
 import 'MergingScreen.dart';
 import 'backend/Entities/Outlet.dart';
@@ -54,9 +54,9 @@ class _NextScreenState extends State<NextScreen> {
   double? lng;
   String? imageURL;
   Category? category;
+  int? categoadsuig;
 
   bool isMerging = false;
-  bool _validate = false;
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class _NextScreenState extends State<NextScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Container(
+          hi.Container(
             padding: EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -95,9 +95,23 @@ class _NextScreenState extends State<NextScreen> {
                 SizedBox(
                   width: 12,
                 ),
-                InkWell(
+                GestureDetector(
                   onTap: () {
                     if (isMerging) {
+                      headerText = "SELECT THE PHOTO";
+                      chosenOutlet = null;
+                      myID = null;
+                      videoName = null;
+                      categoryName = null;
+                      categoadsuig = null;
+                      beatID = null;
+                      dateTime = null;
+                      outletName = null;
+                      lat = null;
+                      lng = null;
+                      imageURL = null;
+                      category = null;
+                      textController.text = "";
                       setState(() {
                         isMerging = false;
                       });
@@ -212,7 +226,7 @@ class _NextScreenState extends State<NextScreen> {
                     if (isMerging) {
                       return Padding(
                         padding: const EdgeInsets.all(12.0),
-                        child: Container(
+                        child: hi.Container(
                           clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -220,7 +234,7 @@ class _NextScreenState extends State<NextScreen> {
                                     ? Colors.green
                                     : Colors.white,
                                 width:
-                                    selectedOutlet[i] == chosenOutlet ? 5 : 0),
+                                selectedOutlet[i] == chosenOutlet ? 5 : 0),
                             boxShadow: [
                               BoxShadow(
                                   offset: const Offset(0, 2),
@@ -265,7 +279,7 @@ class _NextScreenState extends State<NextScreen> {
                                           //     const EdgeInsets.all(20.0),
                                           minScale: 0.7,
                                           maxScale: 3.1,
-                                          child: Container(
+                                          child: hi.Container(
                                             color:
                                                 Colors.black.withOpacity(0.1),
                                             child: Image.network(
@@ -302,7 +316,7 @@ class _NextScreenState extends State<NextScreen> {
                                     ],
                                   ),
                                   Expanded(
-                                    child: Container(
+                                    child: hi.Container(
                                       color: Colors.black.withOpacity(0.1),
                                       child: Image.network(
                                         selectedOutlet[i].videoName == null
@@ -325,16 +339,16 @@ class _NextScreenState extends State<NextScreen> {
                       controller.text = tempBeat!.outlet[i].outletName;
                       return Padding(
                           padding: const EdgeInsets.all(12.0),
-                          child: Container(
+                          child: hi.Container(
                               clipBehavior: Clip.hardEdge,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   color: selectedOutlet
-                                          .contains(tempBeat!.outlet[i])
+                                      .contains(tempBeat!.outlet[i])
                                       ? Colors.green
                                       : Colors.transparent,
                                   width: selectedOutlet
-                                          .contains(tempBeat!.outlet[i])
+                                      .contains(tempBeat!.outlet[i])
                                       ? 5
                                       : 0,
                                 ),
@@ -361,6 +375,12 @@ class _NextScreenState extends State<NextScreen> {
                                         selectedOutlet.add(tempBeat!.outlet[i]);
                                       }
                                     });
+                                    print(tempBeat!.outlet[i].id);
+                                    // print(tempBeat!.outlet[i].categoryID);
+                                    print(tempBeat!.outlet[i].lat);
+                                    print(tempBeat!.outlet[i].lng);
+                                    print(tempBeat!.outlet[i].imageURL);
+                                    print(tempBeat!.outlet[i].beatID);
                                   },
                                   onDoubleTap: () {
                                     Navigator.push(context,
@@ -446,7 +466,7 @@ class _NextScreenState extends State<NextScreen> {
                                                     padding:
                                                         const EdgeInsets.all(
                                                             8.0),
-                                                    child: Container(
+                                                    child: hi.Container(
                                                       height: 50,
                                                       color: Colors.white,
                                                       child: TextField(
@@ -477,7 +497,8 @@ class _NextScreenState extends State<NextScreen> {
                                                             8.0),
                                                     child: Container(
                                                       height: 50,
-                                                      color: Colors.grey.shade200,
+                                                      color:
+                                                          Colors.grey.shade200,
                                                       child: TextField(
                                                         controller: controller,
                                                         onChanged:
@@ -518,7 +539,8 @@ class _NextScreenState extends State<NextScreen> {
                                                     return DropdownSearch<
                                                         Category>(
                                                       showSearchBox: true,
-                                                      dropdownButtonSplashRadius:1,
+                                                      dropdownButtonSplashRadius:
+                                                          1,
                                                       dropDownButton:
                                                           SizedBox.shrink(),
                                                       mode: Mode.MENU,
@@ -530,8 +552,18 @@ class _NextScreenState extends State<NextScreen> {
                                                                 .newcategoryID =
                                                             selected?.id;
                                                       },
-                                                      selectedItem:
-                                                          selectedCategories,
+                                                      selectedItem: ((tempBeat
+                                                                      as Beat)
+                                                                  .outlet[i]
+                                                                  .newcategoryID ==
+                                                              null)
+                                                          ? selectedCategories
+                                                          : widget.categories
+                                                              .firstWhere((e) =>
+                                                                  e.id ==
+                                                                  (tempBeat!)
+                                                                      .outlet[i]
+                                                                      .newcategoryID!),
                                                       dropdownSearchDecoration: InputDecoration(
                                                           errorText: (tempBeat!
                                                                           .outlet[
@@ -565,6 +597,19 @@ class _NextScreenState extends State<NextScreen> {
                                                                         .id ==
                                                                     element
                                                                         .id));
+
+                                                    if (widget
+                                                            .beat.deactivated !=
+                                                        null) {
+                                                      tempBeat?.deactivated!
+                                                          .add(tempBeat!
+                                                              .outlet[i]);
+                                                    } else {
+                                                      tempBeat?.deactivated = [
+                                                        tempBeat!.outlet[i]
+                                                      ];
+                                                    }
+
                                                     (tempBeat as Beat)
                                                         .outlet
                                                         .remove(tempBeat!
@@ -584,21 +629,24 @@ class _NextScreenState extends State<NextScreen> {
                                             child: Row(
                                               children: [
                                                 Expanded(
-                                                  child: Container(
-                                                    width: double.infinity,
-                                                    color: Colors.black
-                                                        .withOpacity(0.1),
-                                                    child: Image.network(
-                                                      tempBeat!.outlet[i]
-                                                                  .videoName ==
-                                                              null
-                                                          ? tempBeat!.outlet[i]
-                                                              .imageURL
-                                                          : localhost +
-                                                              tempBeat!
-                                                                  .outlet[i]
-                                                                  .imageURL,
-                                                      fit: BoxFit.contain,
+                                                  child: InkWell(
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      color: Colors.black
+                                                          .withOpacity(0.1),
+                                                      child: Image.network(
+                                                        tempBeat!.outlet[i]
+                                                                    .videoName ==
+                                                                null
+                                                            ? tempBeat!
+                                                                .outlet[i]
+                                                                .imageURL
+                                                            : localhost +
+                                                                tempBeat!
+                                                                    .outlet[i]
+                                                                    .imageURL,
+                                                        fit: BoxFit.contain,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
@@ -703,7 +751,7 @@ class _NextScreenState extends State<NextScreen> {
                                   ],
                                 ),
                               ),
-                              Positioned(
+                              isMerging ? Container() : Positioned(
                                 right: 4,
                                 top: 4,
                                 child: Container(
@@ -726,7 +774,7 @@ class _NextScreenState extends State<NextScreen> {
                                     ),
                                   ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         )
@@ -834,6 +882,7 @@ class _NextScreenState extends State<NextScreen> {
                                               onChanged: (Category? a) {
                                                 setState(() {
                                                   category = a;
+                                                  categoadsuig = a?.id;
                                                 });
                                               },
                                             ),
@@ -862,6 +911,10 @@ class _NextScreenState extends State<NextScreen> {
                                                                   .categoryName =
                                                               (category!
                                                                   .categoryName);
+                                                          (tempBeat as Beat)
+                                                                  .outlet[i]
+                                                                  .newcategoryID =
+                                                              categoadsuig;
                                                           (tempBeat as Beat)
                                                                   .outlet[i]
                                                                   .outletName =
@@ -894,6 +947,18 @@ class _NextScreenState extends State<NextScreen> {
                                                               .toList();
                                                       for (var element
                                                           in dynamicList) {
+                                                        if ((tempBeat as Beat)
+                                                                .deactivated ==
+                                                            null) {
+                                                          (tempBeat as Beat)
+                                                              .deactivated = [
+                                                            element
+                                                          ];
+                                                        } else {
+                                                          (tempBeat as Beat)
+                                                              .deactivated
+                                                              ?.add(element);
+                                                        }
                                                         (tempBeat as Beat)
                                                             .outlet
                                                             .remove(element);
@@ -906,6 +971,7 @@ class _NextScreenState extends State<NextScreen> {
                                                       myID = null;
                                                       videoName = null;
                                                       categoryName = null;
+                                                      categoadsuig = null;
                                                       beatID = null;
                                                       dateTime = null;
                                                       outletName = null;
