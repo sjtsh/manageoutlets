@@ -27,7 +27,9 @@ class MapScreenRightPanel extends StatefulWidget {
     this.beats,
     this.removeBeat,
     this.selectedDropDownItem,
-    this._changeDropDownValue, this.refresh, this.updateBeat,
+    this._changeDropDownValue,
+    this.refresh,
+    this.updateBeat,
   );
 
   @override
@@ -35,8 +37,7 @@ class MapScreenRightPanel extends StatefulWidget {
 }
 
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
-
-
+  bool isDisabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -100,9 +101,13 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                           },
                           onDoubleTap: () {
                             // double tap function
-                            Navigator.push(context, MaterialPageRoute(builder: (_) {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) {
                               return NextScreen(
-                                  widget.beats[index], widget.categories, widget.refresh, widget.updateBeat);
+                                  widget.beats[index],
+                                  widget.categories,
+                                  widget.refresh,
+                                  widget.updateBeat);
                             }));
                           },
                           child: Padding(
@@ -121,7 +126,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     ),
                                     Text(
                                       "${widget.beats[index].outlet.length} Outlets",
-                                      style: const TextStyle(color: Colors.grey),
+                                      style:
+                                          const TextStyle(color: Colors.grey),
                                     )
                                   ],
                                 ),
@@ -165,7 +171,6 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                     ),
                   );
                 }),
-
                 ...List.generate(
                   widget.selectedDropDownItem.beats.length,
                   (int index) {
@@ -211,8 +216,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 width: 20,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: colorIndex[
-                                        widget.beats.length + index],
+                                    color:
+                                        colorIndex[widget.beats.length + index],
                                     border: Border.all(color: Colors.black)),
                               ),
                               const SizedBox(
@@ -243,14 +248,49 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         color: Colors.black.withOpacity(0.1))
                   ]),
               child: RawMaterialButton(
-                onPressed: (){
-                BeatService().updateOutlets(widget.beats, 0, context);
-              },
-                child: const Center(
-                    child: Text(
-                  "CONFIRM",
-                  style: TextStyle(color: Colors.white),
-                )),
+                onPressed: () {
+                  if(
+                  widget
+                      .selectedDropDownItem.distributorName.isNotEmpty){
+                    if ("Select Distributor" !=
+                        widget.selectedDropDownItem.distributorName) {
+                      if (!isDisabled) {
+                        setState(() {
+                          isDisabled = true;
+                        });
+                        BeatService()
+                            .updateOutlets(widget.beats,
+                                widget.selectedDropDownItem.id, context)
+                            .then((value) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("SUCCESSFUL"),
+                          ));
+
+                          setState(() {
+                            isDisabled = false;
+                          });
+                        });
+                      }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Select a distributor"),
+                      ));
+                    }
+                  }else{
+
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("No beats created"),
+                    ));
+                  }
+                },
+                child: Center(
+                    child: isDisabled
+                        ? CircularProgressIndicator()
+                        : Text(
+                            "CONFIRM",
+                            style: TextStyle(color: Colors.white),
+                          )),
               ),
             ),
           ),
