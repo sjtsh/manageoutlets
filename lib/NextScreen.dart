@@ -150,6 +150,7 @@ class _NextScreenState extends State<NextScreen> {
                       width: 2,
                     ),
                   ),
+
                   child: Material(
                     color: Colors.white,
                     child: InkWell(
