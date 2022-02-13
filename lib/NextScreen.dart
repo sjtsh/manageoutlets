@@ -114,13 +114,21 @@ class _NextScreenState extends State<NextScreen> {
                 onTap: () {
                   widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
 
+                  (tempBeat as Beat).outlet.where((element)  {
+                   if  (element.outletName.isEmpty){
+                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Select all categories")));
+                   }
+                   return true;
+                  });
+
+
                   // if(selectedCategories.categoryName!="Select category"){
                   //   Navigator.pop(context);
                   // }else{
                   //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Select all categories")));
                   // }
 
-                  Navigator.pop(context);
+
                 },
                 child: Container(
                   height: 60,
