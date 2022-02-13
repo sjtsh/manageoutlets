@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:hovering/hovering.dart';
 import 'package:manage_outlets/MergeMap.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
@@ -215,12 +216,11 @@ class _NextScreenState extends State<NextScreen> {
                           clipBehavior: Clip.hardEdge,
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: selectedOutlet[i] == chosenOutlet
-                                  ? Colors.green
-                                  : Colors.white,
-                            width: selectedOutlet[i] == chosenOutlet
-                                ? 5
-                                : 0),
+                                color: selectedOutlet[i] == chosenOutlet
+                                    ? Colors.green
+                                    : Colors.white,
+                                width:
+                                    selectedOutlet[i] == chosenOutlet ? 5 : 0),
                             boxShadow: [
                               BoxShadow(
                                   offset: const Offset(0, 2),
@@ -441,34 +441,70 @@ class _NextScreenState extends State<NextScreen> {
                                                 width: 10,
                                               ),
                                               Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8.0),
-                                                  child: Container(
-                                                    height: 50,
-                                                    child: TextField(
-                                                      controller: controller,
-                                                      onChanged:
-                                                          (String? text) {
-                                                        tempBeat!.outlet[i]
-                                                                .outletName =
-                                                            text ?? "";
-                                                      },
-                                                      decoration:
-                                                          InputDecoration(
-                                                        errorText: (controller
-                                                                        .text ==
-                                                                    "" &&
-                                                                !isValidate)
-                                                            ? 'Field Can\'t Be Empty'
-                                                            : null,
-                                                        border:
-                                                            const OutlineInputBorder(),
+                                                child: HoverWidget(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Container(
+                                                      height: 50,
+                                                      color: Colors.white,
+                                                      child: TextField(
+                                                        controller: controller,
+                                                        onChanged:
+                                                            (String? text) {
+                                                          tempBeat!.outlet[i]
+                                                                  .outletName =
+                                                              text ?? "";
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          errorText: (controller
+                                                                          .text ==
+                                                                      "" &&
+                                                                  !isValidate)
+                                                              ? 'Field Can\'t Be Empty'
+                                                              : null,
+                                                          border:
+                                                              const OutlineInputBorder(),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
+                                                  hoverChild: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            8.0),
+                                                    child: Container(
+                                                      height: 50,
+                                                      color: Colors.grey.shade200,
+                                                      child: TextField(
+                                                        controller: controller,
+                                                        onChanged:
+                                                            (String? text) {
+                                                          tempBeat!.outlet[i]
+                                                                  .outletName =
+                                                              text ?? "";
+                                                        },
+                                                        decoration:
+                                                            InputDecoration(
+                                                          errorText: (controller
+                                                                          .text ==
+                                                                      "" &&
+                                                                  !isValidate)
+                                                              ? 'Field Can\'t Be Empty'
+                                                              : null,
+                                                          border:
+                                                              const OutlineInputBorder(),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  onHover: (PointerEnterEvent
+                                                      event) {},
                                                 ),
                                               ),
+
                                               // Text(tempBeat!.outlet[i].outletName),
                                               // Expanded(child: Container()),
                                               Padding(
@@ -482,6 +518,7 @@ class _NextScreenState extends State<NextScreen> {
                                                     return DropdownSearch<
                                                         Category>(
                                                       showSearchBox: true,
+                                                      dropdownButtonSplashRadius:1,
                                                       dropDownButton:
                                                           SizedBox.shrink(),
                                                       mode: Mode.MENU,
@@ -548,6 +585,7 @@ class _NextScreenState extends State<NextScreen> {
                                               children: [
                                                 Expanded(
                                                   child: Container(
+                                                    width: double.infinity,
                                                     color: Colors.black
                                                         .withOpacity(0.1),
                                                     child: Image.network(
