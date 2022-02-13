@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:manage_outlets/Entity/OutletsListEntity.dart';
+import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 import 'package:manage_outlets/merge/MergeTrue.dart';
 import 'package:manage_outlets/merge/OutletMergeMap.dart';
 import 'package:manage_outlets/merge/OutletMergeScreen.dart';

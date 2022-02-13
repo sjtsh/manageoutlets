@@ -25,12 +25,11 @@ class GetOutletScreen extends StatelessWidget {
     return FutureBuilder(
       future:
           GeolocatorPlatform.instance.getCurrentPosition().then((value) async {
-        List<Outlet> outlets = await OutletService()
-            .getNearbyOutlets(redRadius, value.latitude, value.longitude, context);
+        List<Outlet> outlets = await OutletService().getNearbyOutlets(
+            redRadius, value.latitude, value.longitude, context);
         List<Distributor> distributors =
             await DistributorService().getDistributor();
-        List<Category> categories =
-        await CategoryService().getCatagory();
+        List<Category> categories = await CategoryService().getCatagory();
 
         return [outlets, distributors, categories, value];
       }),
@@ -44,8 +43,13 @@ class GetOutletScreen extends StatelessWidget {
             location: LatLng(position.latitude, position.longitude),
             zoom: 17,
           );
-          return RedMapScreen(outletLatLng, redRadius, controller,
-              LatLng(position.latitude, position.longitude), distributors, categories);
+          return RedMapScreen(
+              outletLatLng,
+              redRadius,
+              controller,
+              LatLng(position.latitude, position.longitude),
+              distributors,
+              categories);
         }
         return const SplashScreen();
       },

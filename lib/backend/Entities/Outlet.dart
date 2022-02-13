@@ -3,7 +3,10 @@ import 'package:google_static_maps_controller/google_static_maps_controller.dart
 
 class Outlet {
   String id;
+  int? videoID;
   String? videoName;
+  int categoryID;
+  int? newcategoryID;
   String categoryName;
   String? beatID;
   String? dateTime;
@@ -16,7 +19,9 @@ class Outlet {
 
   Outlet(
       {required this.id,
+      this.videoID,
       this.videoName,
+      required this.categoryID,
       required this.categoryName,
       this.beatID,
       this.dateTime,
@@ -24,11 +29,14 @@ class Outlet {
       required this.lat,
       required this.lng,
       this.md5,
-      required this.imageURL, this.marker});
+      required this.imageURL,
+      this.marker});
 
   factory Outlet.fromJson(Map<String, dynamic> json) {
     return Outlet(
       id: json["id"],
+      videoID: json["videoID"] == null ? null : int.parse(json["videoID"]),
+      categoryID: int.parse(json["category"]),
       videoName: json["videoName"],
       categoryName: json["categoryName"],
       beatID: json["beatID"],
