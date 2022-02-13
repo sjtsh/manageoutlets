@@ -27,13 +27,6 @@ class NextScreen extends StatefulWidget {
   State<NextScreen> createState() => _NextScreenState();
 }
 
-Category selectedCategories = Category("Select category", 10000000);
-
-void _changeDropDownValue(Category newValue) {
-  selectedCategories = newValue;
-  selectedCategories = newValue;
-}
-
 class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
   bool isValidate = true;
@@ -59,12 +52,24 @@ class _NextScreenState extends State<NextScreen> {
 
   @override
   void initState() {
-    // ((tempBeat as Beat).outlet.where((element) => element.outletName.isEmpty)
-
-    // TODO: implement initState
     super.initState();
     List<Outlet> outlets = [];
-    outlets.addAll(widget.beat.outlet);
+    for (var element in widget.beat.outlet) {
+      outlets.add(Outlet(
+          imageURL: element.imageURL,
+          categoryID: element.categoryID,
+          categoryName: element.categoryName,
+          lng: element.lng,
+          lat: element.lat,
+          id: element.id,
+          outletName: element.outletName,
+          marker: element.marker,
+          beatID: element.beatID,
+          dateTime: element.dateTime,
+          md5: element.md5,
+          videoID: element.videoID,
+          videoName: element.videoName));
+    }
     tempBeat = Beat(
       widget.beat.beatName,
       outlets,
@@ -150,7 +155,6 @@ class _NextScreenState extends State<NextScreen> {
                       width: 2,
                     ),
                   ),
-
                   child: Material(
                     color: Colors.white,
                     child: InkWell(
@@ -378,8 +382,8 @@ class _NextScreenState extends State<NextScreen> {
                                                   selectedOutlet.remove(
                                                       tempBeat!.outlet[i]);
                                                 } else {
-                                                  selectedOutlet.add(
-                                                      tempBeat!.outlet[i]);
+                                                  selectedOutlet
+                                                      .add(tempBeat!.outlet[i]);
                                                 }
                                               }),
                                             ),
@@ -417,27 +421,32 @@ class _NextScreenState extends State<NextScreen> {
                                                   const EdgeInsets.all(8.0),
                                               child: Container(
                                                 width: 200,
-                                                child: Builder(
-                                                    builder: (context) {
+                                                child:
+                                                    Builder(builder: (context) {
                                                   return DropdownSearch<
                                                       Category>(
                                                     showSearchBox: true,
                                                     mode: Mode.MENU,
                                                     items: widget.categories,
                                                     onChanged: (selected) {
-                                                      _changeDropDownValue(
-                                                          selectedCategories);
                                                       tempBeat!.outlet[i]
                                                               .newcategoryID =
                                                           selected?.id;
                                                     },
-                                                    selectedItem: ((tempBeat as Beat)
+                                                    selectedItem: ((tempBeat
+                                                                    as Beat)
                                                                 .outlet[i]
                                                                 .newcategoryID ==
                                                             null)
-                                                        ? selectedCategories
-                                                        : widget.categories.firstWhere((e) => e.id == (tempBeat!).outlet[i]
-                                                            .newcategoryID!),
+                                                        ? Category(
+                                                            "Select category",
+                                                            10000000)
+                                                        : widget.categories
+                                                            .firstWhere((e) =>
+                                                                e.id ==
+                                                                (tempBeat!)
+                                                                    .outlet[i]
+                                                                    .newcategoryID!),
                                                     dropdownSearchDecoration: InputDecoration(
                                                         errorText: (tempBeat!
                                                                         .outlet[
@@ -464,22 +473,17 @@ class _NextScreenState extends State<NextScreen> {
                                               onTap: () {
                                                 setState(() {
                                                   selectedOutlet.remove(
-                                                      selectedOutlet
-                                                          .firstWhere(
-                                                              (element) =>
-                                                                  tempBeat!
-                                                                      .outlet[
-                                                                          i]
-                                                                      .id ==
-                                                                  element
-                                                                      .id));
+                                                      selectedOutlet.firstWhere(
+                                                          (element) =>
+                                                              tempBeat!
+                                                                  .outlet[i]
+                                                                  .id ==
+                                                              element.id));
 
-                                                  if (widget
-                                                          .beat.deactivated !=
+                                                  if (widget.beat.deactivated !=
                                                       null) {
-                                                    tempBeat?.deactivated!
-                                                        .add(tempBeat!
-                                                            .outlet[i]);
+                                                    tempBeat?.deactivated!.add(
+                                                        tempBeat!.outlet[i]);
                                                   } else {
                                                     tempBeat?.deactivated = [
                                                       tempBeat!.outlet[i]
@@ -488,8 +492,8 @@ class _NextScreenState extends State<NextScreen> {
 
                                                   (tempBeat as Beat)
                                                       .outlet
-                                                      .remove(tempBeat!
-                                                          .outlet[i]);
+                                                      .remove(
+                                                          tempBeat!.outlet[i]);
                                                 });
                                               },
                                               child: const Icon(
@@ -506,65 +510,88 @@ class _NextScreenState extends State<NextScreen> {
                                             children: [
                                               Expanded(
                                                 child: InkWell(
-
                                                   onTap: () {
                                                     setState(() {
                                                       if (selectedOutlet
-                                                          .contains(tempBeat!.outlet[i])) {
-                                                        selectedOutlet
-                                                            .remove(tempBeat!.outlet[i]);
+                                                          .contains(tempBeat!
+                                                              .outlet[i])) {
+                                                        selectedOutlet.remove(
+                                                            tempBeat!
+                                                                .outlet[i]);
                                                       } else {
-                                                        selectedOutlet.add(tempBeat!.outlet[i]);
+                                                        selectedOutlet.add(
+                                                            tempBeat!
+                                                                .outlet[i]);
                                                       }
                                                     });
-                                                    print(tempBeat!.outlet[i].id);
+                                                    print(
+                                                        tempBeat!.outlet[i].id);
                                                     // print(tempBeat!.outlet[i].categoryID);
-                                                    print(tempBeat!.outlet[i].lat);
-                                                    print(tempBeat!.outlet[i].lng);
-                                                    print(tempBeat!.outlet[i].imageURL);
-                                                    print(tempBeat!.outlet[i].beatID);
+                                                    print(tempBeat!
+                                                        .outlet[i].lat);
+                                                    print(tempBeat!
+                                                        .outlet[i].lng);
+                                                    print(tempBeat!
+                                                        .outlet[i].imageURL);
+                                                    print(tempBeat!
+                                                        .outlet[i].beatID);
                                                   },
                                                   onDoubleTap: () {
                                                     Navigator.push(context,
-                                                        MaterialPageRoute(builder: (_) {
+                                                        MaterialPageRoute(
+                                                            builder: (_) {
                                                       return Scaffold(
                                                         body: Column(
                                                           children: [
                                                             AppBar(
-                                                              leading: GestureDetector(
+                                                              leading:
+                                                                  GestureDetector(
                                                                 onTap: () {
-                                                                  Navigator.pop(context);
+                                                                  Navigator.pop(
+                                                                      context);
                                                                 },
-                                                                child: const Icon(
-                                                                  Icons.arrow_back,
-                                                                  color: Colors.black,
+                                                                child:
+                                                                    const Icon(
+                                                                  Icons
+                                                                      .arrow_back,
+                                                                  color: Colors
+                                                                      .black,
                                                                 ),
                                                               ),
                                                               backgroundColor:
-                                                                  Colors.transparent,
-                                                              shadowColor: Colors.transparent,
+                                                                  Colors
+                                                                      .transparent,
+                                                              shadowColor: Colors
+                                                                  .transparent,
                                                               foregroundColor:
-                                                                  Colors.transparent,
+                                                                  Colors
+                                                                      .transparent,
                                                             ),
                                                             Expanded(
-                                                              child: InteractiveViewer(
+                                                              child:
+                                                                  InteractiveViewer(
                                                                 // boundaryMargin:
                                                                 //     const EdgeInsets.all(20.0),
                                                                 minScale: 0.7,
                                                                 maxScale: 3.1,
-                                                                child: Container(
-                                                                  color: Colors.black
-                                                                      .withOpacity(0.1),
-                                                                  child: Image.network(
-                                                                    tempBeat!.outlet[i]
-                                                                                .videoName ==
+                                                                child:
+                                                                    Container(
+                                                                  color: Colors
+                                                                      .black
+                                                                      .withOpacity(
+                                                                          0.1),
+                                                                  child: Image
+                                                                      .network(
+                                                                    tempBeat!.outlet[i].videoName ==
                                                                             null
                                                                         ? tempBeat!
-                                                                            .outlet[i].imageURL
+                                                                            .outlet[
+                                                                                i]
+                                                                            .imageURL
                                                                         : localhost +
-                                                                            tempBeat!.outlet[i]
-                                                                                .imageURL,
-                                                                    fit: BoxFit.contain,
+                                                                            tempBeat!.outlet[i].imageURL,
+                                                                    fit: BoxFit
+                                                                        .contain,
                                                                   ),
                                                                 ),
                                                               ),
@@ -606,11 +633,11 @@ class _NextScreenState extends State<NextScreen> {
                                           width: 60,
                                           height: 30,
                                           decoration: BoxDecoration(
-                                            color: tempBeat!.outlet[i]
-                                                        .videoName ==
-                                                    null
-                                                ? Colors.red
-                                                : Colors.green,
+                                            color:
+                                                tempBeat!.outlet[i].videoName ==
+                                                        null
+                                                    ? Colors.red
+                                                    : Colors.green,
                                             borderRadius:
                                                 BorderRadius.circular(12),
                                             boxShadow: [

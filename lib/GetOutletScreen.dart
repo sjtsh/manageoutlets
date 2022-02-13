@@ -28,7 +28,6 @@ class GetOutletScreen extends StatelessWidget {
         List<Outlet> outlets = await OutletService().getNearbyOutlets(context);
         List<Distributor> distributors =
             await DistributorService().getDistributor();
-            print(distributors);
         List<Category> categories = await CategoryService().getCatagory();
         return [outlets, distributors, categories, value];
       }),
