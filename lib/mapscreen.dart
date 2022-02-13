@@ -100,6 +100,7 @@ class _MapScreenState extends State<MapScreen> {
   bool removeActive = false;
 
   Distributor selectedDropDownItem = Distributor(
+    -1,
     "Select Distributor",
     [],
   );
@@ -179,19 +180,13 @@ class _MapScreenState extends State<MapScreen> {
             },
           ),
           AddButtonIntent: CallbackAction(onInvoke: (intent) {
-            TextEditingController textController =
-            TextEditingController();
+            TextEditingController textController = TextEditingController();
             showDialog(
                 context: context,
                 builder: (_) {
-                  return AddBeatDialogBox(
-                      textController,
-                      rangeIndexes,
-                      blueIndexes,
-                      redPositions,
-                      widget.setTempRedRadius);
+                  return AddBeatDialogBox(textController, rangeIndexes,
+                      blueIndexes, redPositions, widget.setTempRedRadius);
                 });
-
           })
         },
         child: Scaffold(
@@ -284,7 +279,7 @@ class _MapScreenState extends State<MapScreen> {
                           for (int i = 0; i < blueIndexes.length; i++) {
                             markerWidgets.addAll(
                               List.generate(
-                                      blueIndexes[i].outlet.length ,
+                                      blueIndexes[i].outlet.length,
                                       (e) => LatLng(
                                           blueIndexes[i].outlet[e].lat,
                                           blueIndexes[i].outlet[e].lng))
@@ -292,10 +287,7 @@ class _MapScreenState extends State<MapScreen> {
                                   .toList()
                                   .map(
                                     (pos) => _buildMarkerWidget(
-                                        pos,
-                                        colorIndex[
-                                                i],
-                                        false),
+                                        pos, colorIndex[i], false),
                                   ),
                             );
                           }
@@ -529,29 +521,29 @@ class _MapScreenState extends State<MapScreen> {
                                   const SizedBox(
                                     width: 12,
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        bluePositions = [];
-                                        rangeIndexes = [];
-                                        widget.setTempRedRadius(0.0);
-                                      });
-                                    },
-                                    child: Container(
-                                      height: 50,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                offset: const Offset(0, 2),
-                                                spreadRadius: 2,
-                                                blurRadius: 2,
-                                                color: Colors.black
-                                                    .withOpacity(0.1))
-                                          ]),
+                                  Container(
+                                    clipBehavior: Clip.hardEdge,
+                                    height: 50,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: const Offset(0, 2),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              color:
+                                                  Colors.black.withOpacity(0.1))
+                                        ]),
+                                    child: RawMaterialButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          bluePositions = [];
+                                          rangeIndexes = [];
+                                          widget.setTempRedRadius(0.0);
+                                        });
+                                      },
                                       child: const Center(
                                         child: Text(
                                           "CLEAR",
@@ -563,46 +555,53 @@ class _MapScreenState extends State<MapScreen> {
                                   SizedBox(
                                     width: 12,
                                   ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      TextEditingController textController =
-                                          TextEditingController();
-                                      if(redPositions.length!=0){
-                                        showDialog(
-                                            context: context,
-                                            builder: (_) {
-                                              return AddBeatDialogBox(
-                                                  textController,
-                                                  rangeIndexes,
-                                                  blueIndexes,
-                                                  redPositions,
-                                                  widget.setTempRedRadius);
-                                            });
-                                      } else{
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(duration: Duration(milliseconds: 500),content: Text("Please select outlet")));
-                                      }
-                                    },
-                                    child: Focus(
-                                      autofocus: true,
-                                      child: Container(
-                                        height: 50,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                            color: Colors.green,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  offset: const Offset(0, 2),
-                                                  spreadRadius: 2,
-                                                  blurRadius: 2,
-                                                  color: Colors.black
-                                                      .withOpacity(0.1))
-                                            ]),
+                                  Focus(
+                                    autofocus: true,
+                                    child: Container(
+                                      clipBehavior: Clip.hardEdge,
+                                      height: 50,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          color: Colors.green,
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                offset: const Offset(0, 2),
+                                                spreadRadius: 2,
+                                                blurRadius: 2,
+                                                color: Colors.black
+                                                    .withOpacity(0.1))
+                                          ]),
+                                      child: RawMaterialButton(
+                                        onPressed: () {
+                                          TextEditingController textController =
+                                              TextEditingController();
+                                          if (redPositions.length != 0) {
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) {
+                                                  return AddBeatDialogBox(
+                                                      textController,
+                                                      rangeIndexes,
+                                                      blueIndexes,
+                                                      redPositions,
+                                                      widget.setTempRedRadius);
+                                                });
+                                          } else {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(const SnackBar(
+                                                    duration: Duration(
+                                                        milliseconds: 500),
+                                                    content: Text(
+                                                        "Please select outlet")));
+                                          }
+                                        },
                                         child: const Center(
                                           child: Text(
                                             "ADD",
-                                            style: TextStyle(color: Colors.white),
+                                            style:
+                                                TextStyle(color: Colors.white),
                                           ),
                                         ),
                                       ),
