@@ -1,10 +1,12 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:manage_outlets/NextScreen.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
 import 'package:manage_outlets/backend/shortestPath.dart';
 
+import 'GetOutletScreen.dart';
 import 'backend/Entities/Distributor.dart';
 
 import 'backend/Entities/OutletsListEntity.dart';
@@ -21,16 +23,14 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function refresh;
   final Function updateBeat;
 
-  MapScreenRightPanel(
-    this.categories,
-    this.distributors,
-    this.beats,
-    this.removeBeat,
-    this.selectedDropDownItem,
-    this._changeDropDownValue,
-    this.refresh,
-    this.updateBeat,
-  );
+  MapScreenRightPanel(this.categories,
+      this.distributors,
+      this.beats,
+      this.removeBeat,
+      this.selectedDropDownItem,
+      this._changeDropDownValue,
+      this.refresh,
+      this.updateBeat,);
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
@@ -103,12 +103,12 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                             // double tap function
                             Navigator.push(context,
                                 MaterialPageRoute(builder: (_) {
-                              return NextScreen(
-                                  widget.beats[index],
-                                  widget.categories,
-                                  widget.refresh,
-                                  widget.updateBeat);
-                            }));
+                                  return NextScreen(
+                                      widget.beats[index],
+                                      widget.categories,
+                                      widget.refresh,
+                                      widget.updateBeat);
+                                }));
                           },
                           child: Padding(
                             padding: const EdgeInsets.all(12.0),
@@ -125,9 +125,10 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                       height: 4,
                                     ),
                                     Text(
-                                      "${widget.beats[index].outlet.length} Outlets",
+                                      "${widget.beats[index].outlet
+                                          .length} Outlets",
                                       style:
-                                          const TextStyle(color: Colors.grey),
+                                      const TextStyle(color: Colors.grey),
                                     )
                                   ],
                                 ),
@@ -173,7 +174,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 }),
                 ...List.generate(
                   widget.selectedDropDownItem.beats.length,
-                  (int index) {
+                      (int index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: Container(
@@ -205,7 +206,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     height: 4,
                                   ),
                                   Text(
-                                    "${widget.selectedDropDownItem.beats[index].outlet.length} Outlets",
+                                    "${widget.selectedDropDownItem.beats[index]
+                                        .outlet.length} Outlets",
                                     style: const TextStyle(color: Colors.white),
                                   )
                                 ],
@@ -217,7 +219,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color:
-                                        colorIndex[widget.beats.length + index],
+                                    colorIndex[widget.beats.length + index],
                                     border: Border.all(color: Colors.black)),
                               ),
                               const SizedBox(
@@ -249,9 +251,9 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                   ]),
               child: RawMaterialButton(
                 onPressed: () {
-                  if(
+                  if (
                   widget
-                      .selectedDropDownItem.distributorName.isNotEmpty){
+                      .selectedDropDownItem.distributorName.isNotEmpty) {
                     if ("Select Distributor" !=
                         widget.selectedDropDownItem.distributorName) {
                       if (!isDisabled) {
@@ -260,16 +262,17 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         });
                         BeatService()
                             .updateOutlets(widget.beats,
-                                widget.selectedDropDownItem.id, context)
+                            widget.selectedDropDownItem.id, context)
                             .then((value) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                            content: Text("SUCCESSFUL"),
-                          ));
-
                           setState(() {
                             isDisabled = false;
                           });
+                          while(Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          }
+                          Navigator.push(context, MaterialPageRoute(builder: (_){
+                            return GetOutletScreen(1000000);
+                          }));
                         });
                       }
                     } else {
@@ -277,8 +280,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         content: Text("Select a distributor"),
                       ));
                     }
-                  }else{
-
+                  } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text("No beats created"),
                     ));
@@ -288,9 +290,9 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                     child: isDisabled
                         ? CircularProgressIndicator()
                         : Text(
-                            "CONFIRM",
-                            style: TextStyle(color: Colors.white),
-                          )),
+                      "CONFIRM",
+                      style: TextStyle(color: Colors.white),
+                    )),
               ),
             ),
           ),
