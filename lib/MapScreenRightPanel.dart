@@ -254,6 +254,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                       .selectedDropDownItem.distributorName.isNotEmpty){
                     if ("Select Distributor" !=
                         widget.selectedDropDownItem.distributorName) {
+
                       if (!isDisabled) {
                         setState(() {
                           isDisabled = true;

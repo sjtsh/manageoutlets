@@ -29,6 +29,7 @@ class GetOutletScreen extends StatelessWidget {
             redRadius, value.latitude, value.longitude, context);
         List<Distributor> distributors =
             await DistributorService().getDistributor();
+
         List<Category> categories = await CategoryService().getCatagory();
 
         return [outlets, distributors, categories, value];

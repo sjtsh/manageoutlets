@@ -204,7 +204,7 @@ class _NextScreenState extends State<NextScreen> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 12,
                 ),
               ],
