@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'backend/database.dart';
 
 class SplashScreen extends StatefulWidget {
-  final String loadingText;
   final String localhostText;
 
-  SplashScreen(this.loadingText, this.localhostText);
+  SplashScreen( this.localhostText);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -99,11 +98,6 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                     ],
                   ),
-                  Text(
-                    "${widget.loadingText}...",
-                    style: TextStyle(color: Colors.black.withOpacity(0.5)),
-                    ),
-
                   SizedBox(
                     height: 10,
                   ),

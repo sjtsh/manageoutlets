@@ -1,6 +1,6 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/container.dart' as hi;
 import 'package:manage_outlets/NextScreen.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
@@ -53,7 +53,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           const SizedBox(
             height: 12,
           ),
-          Container(
+          hi.Container(
             color: Colors.white,
             child: DropdownSearch<Distributor>(
                 showSearchBox: true,
@@ -81,7 +81,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 ...List.generate(widget.beats.length, (int index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: Container(
+                    child: hi.Container(
                       clipBehavior: Clip.hardEdge,
                       decoration: BoxDecoration(
                           color: Colors.white,
@@ -131,8 +131,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     )
                                   ],
                                 ),
-                                Expanded(child: Container()),
-                                Container(
+                                Expanded(child: hi.Container()),
+                                hi.Container(
                                   height: 20,
                                   width: 20,
                                   decoration: BoxDecoration(
@@ -148,7 +148,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     /// remove from list
                                     widget.removeBeat(widget.beats[index]);
                                   },
-                                  child: Container(
+                                  child: hi.Container(
                                     decoration: const BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: Colors.red,
@@ -176,7 +176,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                       (int index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: Container(
+                      child: hi.Container(
                         decoration: BoxDecoration(
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(12),
@@ -211,8 +211,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                   )
                                 ],
                               ),
-                              Expanded(child: Container()),
-                              Container(
+                              Expanded(child: hi.Container()),
+                              hi.Container(
                                 height: 20,
                                 width: 20,
                                 decoration: BoxDecoration(
@@ -235,7 +235,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
             ),
           ),
           Center(
-            child: Container(
+            child: hi.Container(
               clipBehavior: Clip.hardEdge,
               height: 50,
               decoration: BoxDecoration(
@@ -255,6 +255,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                       .selectedDropDownItem.distributorName.isNotEmpty) {
                     if ("Select Distributor" !=
                         widget.selectedDropDownItem.distributorName) {
+
                       if (!isDisabled) {
                         setState(() {
                           isDisabled = true;

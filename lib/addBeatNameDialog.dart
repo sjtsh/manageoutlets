@@ -105,14 +105,15 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                     ),
                     Expanded(
                       child: TextField(
+                        autofocus: true,
                         controller: widget.textController,
                         decoration: InputDecoration(
-                          errorText:
-                              validate == true ? 'Field Can\'t Be Empty' : null,
+                          errorText: validate == true
+                              ? 'Field Can\'t Be Empty'
+                              : null,
                           border: const OutlineInputBorder(),
-                          label: const Text("beat name"),
+                          label: const Text("Beat name"),
                         ),
-                        autofocus: true,
                       ),
                     ),
                     SizedBox(

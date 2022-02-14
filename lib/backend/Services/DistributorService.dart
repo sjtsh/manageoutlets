@@ -11,14 +11,15 @@ class DistributorService {
     Response res = await http.get(
       Uri.parse("$localhost/distributor"),
     );
+    print(res.body);
     if (res.statusCode == 200) {
       Map<String, dynamic> a = jsonDecode(res.body);
       List<Distributor> distributors = [];
-      for (String element in a.keys) {
+      for (var element in a.keys) {
         List<dynamic> beats = a[element]["beats"];
         distributors.add(
           Distributor(
-            int.parse(element),
+            int.parse(element.toString()),
             a[element]["name"],
             beats
                 .map((e) => Beat(

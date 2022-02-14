@@ -6,11 +6,9 @@ List<Color> colorIndex = [
   Colors.green,
   Colors.yellow,
   Colors.orange,
-  Colors.deepOrange,
   Colors.pink,
-  Colors.blue,
   Colors.purple,
-  Colors.blueGrey,
+  Colors.deepOrange,
   Colors.brown,
   Colors.teal,
   Colors.lightGreen,
@@ -20,7 +18,10 @@ List<Color> colorIndex = [
   Colors.lightGreenAccent,
   Colors.tealAccent,
   Colors.deepPurpleAccent,
-
+  Colors.lightBlueAccent,
+  Colors.redAccent,
+  Colors.deepOrangeAccent,
+  Colors.cyan,
 ];
 
 String logo = "assets/logo.svg";
