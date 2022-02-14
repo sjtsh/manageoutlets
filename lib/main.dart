@@ -8,6 +8,7 @@ import 'backend/shortestPath.dart';
 
 void main() {
   runApp(MyApp());
+  // CategoryService().getCatagory();
 }
 
 class MyApp extends StatefulWidget {
