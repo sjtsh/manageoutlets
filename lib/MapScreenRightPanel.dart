@@ -97,7 +97,6 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         color: Colors.white,
                         child: InkWell(
                           onTap: () {
-                            //single tap funtion
                           },
                           onDoubleTap: () {
                             // double tap function

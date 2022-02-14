@@ -2,6 +2,7 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hovering/hovering.dart';
 import 'package:manage_outlets/MergeMap.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/src/widgets/container.dart' as hi;
 import 'backend/Entities/OutletsListEntity.dart';
 import 'MergingScreen.dart';
 import 'backend/Entities/Outlet.dart';
+import 'merge/backButtonAlert.dart';
 
 class NextScreen extends StatefulWidget {
   final Beat beat;
@@ -27,6 +29,8 @@ class NextScreen extends StatefulWidget {
   @override
   State<NextScreen> createState() => _NextScreenState();
 }
+
+class TabIntent extends Intent {}
 
 class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
@@ -50,13 +54,37 @@ class _NextScreenState extends State<NextScreen> {
   int? categoadsuig;
 
   bool isMerging = false;
+  late FocusNode _textFocus;
+  late FocusNode _dropFocus1;
+  late FocusNode _dropFocus2;
+  int tabCounter = 0;
 
   @override
   void initState() {
     super.initState();
     List<Outlet> outlets = [];
+    List<Outlet> deactivateds = [];
     for (var element in widget.beat.outlet) {
-      outlets.add(Outlet(
+      Outlet outlet = Outlet(
+          imageURL: element.imageURL,
+          categoryID: element.categoryID,
+          categoryName: element.categoryName,
+          lng: element.lng,
+          lat: element.lat,
+          id: element.id,
+          outletName: element.outletName,
+          marker: element.marker,
+          beatID: element.beatID,
+          dateTime: element.dateTime,
+          md5: element.md5,
+          videoID: element.videoID,
+          videoName: element.videoName);
+      outlet.newcategoryID = element.newcategoryID;
+      outlets.add(outlet);
+    }
+
+    for (var element in widget.beat.deactivated ?? []) {
+      deactivateds.add(Outlet(
           imageURL: element.imageURL,
           categoryID: element.categoryID,
           categoryName: element.categoryName,
@@ -75,7 +103,11 @@ class _NextScreenState extends State<NextScreen> {
       widget.beat.beatName,
       outlets,
       id: widget.beat.id,
+      deactivated: deactivateds,
     );
+    _textFocus = FocusNode();
+    _dropFocus1 = FocusNode();
+    _dropFocus2 = FocusNode();
   }
 
   @override
@@ -121,7 +153,13 @@ class _NextScreenState extends State<NextScreen> {
                         isMerging = false;
                       });
                     } else {
-                      Navigator.pop(context);
+                      showDialog(
+                          context: context,
+                          builder: (_) {
+                            return BackButtonAlert();
+                          });
+
+                      // Navigator.pop(context);
                       print(tempBeat!.outlet.length.toString() +
                           " " +
                           widget.beat.outlet.length.toString());
@@ -369,7 +407,7 @@ class _NextScreenState extends State<NextScreen> {
                               child: Material(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
-                                  child: InkWell(
+                                  child: GestureDetector(
                                     onTap: () {
                                       setState(() {
                                         if (selectedOutlet
@@ -478,6 +516,7 @@ class _NextScreenState extends State<NextScreen> {
                                                         height: 50,
                                                         color: Colors.white,
                                                         child: TextField(
+                                                          autofocus: false,
                                                           controller:
                                                               controller,
                                                           onChanged:
@@ -675,30 +714,33 @@ class _NextScreenState extends State<NextScreen> {
                                                           return Scaffold(
                                                             body: Column(
                                                               children: [
-                                                                AppBar(
-                                                                  leading:
-                                                                      GestureDetector(
-                                                                    onTap: () {
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    },
-                                                                    child:
-                                                                        const Icon(
-                                                                      Icons
-                                                                          .arrow_back,
-                                                                      color: Colors
-                                                                          .black,
+                                                                Padding(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          right:
+                                                                              20,
+                                                                          left:
+                                                                              20),
+                                                                  child:
+                                                                      Container(
+                                                                    height: 60,
+                                                                    child: Row(
+                                                                      children: [
+                                                                        GestureDetector(
+                                                                          onTap:
+                                                                              () {
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child:
+                                                                              const Icon(
+                                                                            Icons.arrow_back,
+                                                                            color:
+                                                                                Colors.black,
+                                                                          ),
+                                                                        ),
+                                                                      ],
                                                                     ),
                                                                   ),
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  shadowColor:
-                                                                      Colors
-                                                                          .transparent,
-                                                                  foregroundColor:
-                                                                      Colors
-                                                                          .transparent,
                                                                 ),
                                                                 Expanded(
                                                                   child:
@@ -725,6 +767,65 @@ class _NextScreenState extends State<NextScreen> {
                                                                             .contain,
                                                                       ),
                                                                     ),
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets
+                                                                          .only(
+                                                                      right: 24,
+                                                                      left: 24,
+                                                                      top: 6),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      Expanded(
+                                                                          child:
+                                                                              Container()),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            60,
+                                                                        width:
+                                                                            300,
+                                                                        child:
+                                                                            TextField(
+                                                                          controller:
+                                                                              controller,
+                                                                          decoration:
+                                                                              const InputDecoration(border: OutlineInputBorder()),
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(
+                                                                        width:
+                                                                            12,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        height:
+                                                                            60,
+                                                                        width:
+                                                                            300,
+                                                                        child:
+                                                                            Container(
+                                                                          width:
+                                                                              200,
+                                                                          height:
+                                                                              50,
+                                                                          child:
+                                                                              Builder(builder: (context) {
+                                                                            return DropdownSearch<Category>(
+                                                                              showSearchBox: true,
+                                                                              mode: Mode.MENU,
+                                                                              items: widget.categories,
+                                                                              onChanged: (selected) {
+                                                                                setState(() {
+                                                                                  tempBeat!.outlet[i].newcategoryID = selected?.id;
+                                                                                });
+                                                                              },
+                                                                              selectedItem: ((tempBeat as Beat).outlet[i].newcategoryID == null) ? Category("Select category", 10000000) : widget.categories.firstWhere((e) => e.id == (tempBeat!).outlet[i].newcategoryID!),
+                                                                              dropdownSearchDecoration: InputDecoration(errorText: (tempBeat!.outlet[i].newcategoryID == null && !isValidate) ? "define category" : null, contentPadding: const EdgeInsets.fromLTRB(8, 0, 8, 0), border: OutlineInputBorder()),
+                                                                            );
+                                                                          }),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
                                                               ],
@@ -852,30 +953,32 @@ class _NextScreenState extends State<NextScreen> {
                                   ],
                                 ),
                               ),
-                              isMerging ? Container() : Positioned(
-                                right: 4,
-                                top: 4,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.red),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      selectedOutlet.remove(e);
-                                      setState(() {});
-                                    },
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.clear,
-                                        color: Colors.white,
-                                        size: 12,
+                              isMerging
+                                  ? Container()
+                                  : Positioned(
+                                      right: 4,
+                                      top: 4,
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.red),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            selectedOutlet.remove(e);
+                                            setState(() {});
+                                          },
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.clear,
+                                              color: Colors.white,
+                                              size: 12,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              )
+                                    )
                             ],
                           ),
                         )
@@ -915,227 +1018,283 @@ class _NextScreenState extends State<NextScreen> {
                           showDialog(
                               context: context,
                               builder: (_) {
-                                return Center(
-                                  child: Material(
-                                    child: Container(
-                                      height: 300,
-                                      width: 300,
-                                      color: Colors.white,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
+                                return Shortcuts(
+                                  shortcuts: {
+                                    LogicalKeySet(LogicalKeyboardKey.tab):
+                                        TabIntent(),
+                                  },
+                                  child: Actions(
+                                    actions: {
+                                      TabIntent:
+                                          CallbackAction(onInvoke: ((intent) {
+                                        print(tabCounter);
+                                        if (tabCounter == 0) {
+                                          print(tabCounter);
+
+                                          setState(() {
+                                            _textFocus.requestFocus();
+                                            tabCounter++;
+                                          });
+                                        } else if (tabCounter == 1) {
+                                          setState(() {
+                                            _dropFocus1.requestFocus();
+                                            tabCounter++;
+                                          });
+                                        } else {
+                                          setState(() {
+                                            _dropFocus2.requestFocus();
+                                            tabCounter = 0;
+                                          });
+                                        }
+                                      }))
+                                    },
+                                    child: Center(
+                                      child: Material(
+                                        child: Container(
+                                          height: 300,
+                                          width: 300,
+                                          color: Colors.white,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(12.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  "FILL THE REQUIREMENTS",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "FILL THE REQUIREMENTS",
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                        child: Container()),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: Icon(Icons.clear),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Focus(
+                                                  canRequestFocus: true,
+                                                  focusNode: _textFocus,
+                                                  child: TextField(
+                                                    controller: textController,
+                                                    decoration: const InputDecoration(
+                                                        border:
+                                                            OutlineInputBorder(),
+                                                        labelText:
+                                                            "Oulet Name (optional)"),
                                                   ),
                                                 ),
-                                                Expanded(child: Container()),
-                                                InkWell(
-                                                  onTap: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: Icon(Icons.clear),
+                                                const SizedBox(
+                                                  height: 12,
                                                 ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 10,
-                                            ),
-                                            TextField(
-                                              controller: textController,
-                                              decoration: const InputDecoration(
-                                                  border: OutlineInputBorder(),
-                                                  labelText:
-                                                      "Oulet Name (optional)"),
-                                            ),
-                                            const SizedBox(
-                                              height: 12,
-                                            ),
-                                            DropdownSearch(
-                                              showSearchBox: true,
-                                              items: List.generate(
-                                                  selectedOutlet.length,
-                                                  (index) =>
-                                                      selectedOutlet[index]
-                                                          .outletName),
-                                              selectedItem: outletName,
-                                              hint: "Outlet Name",
-                                              onChanged: (String? a) {
-                                                setState(() {
-                                                  outletName = a;
-                                                });
-                                              },
-                                            ),
-                                            const SizedBox(
-                                              height: 12,
-                                            ),
-                                            DropdownSearch(
-                                              selectedItem: category,
-                                              showSearchBox: true,
-                                              items: widget.categories,
-                                              hint: "Select Category",
-                                              onChanged: (Category? a) {
-                                                setState(() {
-                                                  category = a;
-                                                  categoadsuig = a?.id;
-                                                });
-                                              },
-                                            ),
-                                            Expanded(child: Container()),
-                                            GestureDetector(
-                                              onTap: () {
-                                                if (myID != null &&
-                                                    imageURL != null &&
-                                                    lat != null &&
-                                                    lng != null) {
-                                                  if (textController.text !=
-                                                          "" ||
-                                                      outletName != null) {
-                                                    if (category != null) {
-                                                      for (int i = 0;
-                                                          i <
-                                                              tempBeat!.outlet
-                                                                  .length;
-                                                          i++) {
-                                                        if ((tempBeat as Beat)
-                                                                .outlet[i]
-                                                                .id ==
-                                                            myID) {
-                                                          (tempBeat as Beat)
+                                                Focus(
+                                                  focusNode: _dropFocus1,
+                                                  canRequestFocus: true,
+                                                  child: DropdownSearch(
+                                                    showSearchBox: true,
+                                                    items: List.generate(
+                                                        selectedOutlet.length,
+                                                        (index) =>
+                                                            selectedOutlet[
+                                                                    index]
+                                                                .outletName),
+                                                    selectedItem: outletName,
+                                                    hint: "Outlet Name",
+                                                    onChanged: (String? a) {
+                                                      setState(() {
+                                                        outletName = a;
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  height: 12,
+                                                ),
+                                                // FOCUS
+                                                DropdownSearch(
+                                                  focusNode: _dropFocus2,
+                                                  selectedItem: category,
+                                                  showSearchBox: true,
+                                                  items: widget.categories,
+                                                  hint: "Select Category",
+                                                  onChanged: (Category? a) {
+                                                    setState(() {
+                                                      category = a;
+                                                      categoadsuig = a?.id;
+                                                    });
+                                                  },
+                                                ),
+                                                Expanded(child: Container()),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    if (myID != null &&
+                                                        imageURL != null &&
+                                                        lat != null &&
+                                                        lng != null) {
+                                                      if (textController.text !=
+                                                              "" ||
+                                                          outletName != null) {
+                                                        if (category != null) {
+                                                          for (int i = 0;
+                                                              i <
+                                                                  tempBeat!
+                                                                      .outlet
+                                                                      .length;
+                                                              i++) {
+                                                            if ((tempBeat
+                                                                        as Beat)
+                                                                    .outlet[i]
+                                                                    .id ==
+                                                                myID) {
+                                                              (tempBeat as Beat)
+                                                                      .outlet[i]
+                                                                      .categoryName =
+                                                                  (category!
+                                                                      .categoryName);
+                                                              (tempBeat as Beat)
+                                                                      .outlet[i]
+                                                                      .newcategoryID =
+                                                                  categoadsuig;
+                                                              (tempBeat as Beat)
                                                                   .outlet[i]
-                                                                  .categoryName =
-                                                              (category!
-                                                                  .categoryName);
-                                                          (tempBeat as Beat)
-                                                                  .outlet[i]
-                                                                  .newcategoryID =
-                                                              categoadsuig;
-                                                          (tempBeat as Beat)
-                                                                  .outlet[i]
-                                                                  .outletName =
-                                                              textController
+                                                                  .outletName = textController
                                                                           .text ==
                                                                       ""
                                                                   ? outletName!
                                                                   : textController
                                                                       .text;
-                                                          (tempBeat as Beat)
-                                                              .outlet[i]
-                                                              .lat = lat!;
-                                                          (tempBeat as Beat)
-                                                              .outlet[i]
-                                                              .lng = lng!;
-                                                          (tempBeat as Beat)
+                                                              (tempBeat as Beat)
                                                                   .outlet[i]
-                                                                  .imageURL =
-                                                              imageURL!;
-                                                          break;
-                                                        }
-                                                      }
-                                                      List dynamicList =
-                                                          selectedOutlet
-                                                              .where(
-                                                                  (element) =>
+                                                                  .lat = lat!;
+                                                              (tempBeat as Beat)
+                                                                  .outlet[i]
+                                                                  .lng = lng!;
+                                                              (tempBeat as Beat)
+                                                                      .outlet[i]
+                                                                      .imageURL =
+                                                                  imageURL!;
+                                                              break;
+                                                            }
+                                                          }
+                                                          List dynamicList =
+                                                              selectedOutlet
+                                                                  .where((element) =>
                                                                       element
                                                                           .id !=
                                                                       myID)
-                                                              .toList();
-                                                      for (var element
-                                                          in dynamicList) {
-                                                        if ((tempBeat as Beat)
-                                                                .deactivated ==
-                                                            null) {
-                                                          (tempBeat as Beat)
-                                                              .deactivated = [
-                                                            element
-                                                          ];
+                                                                  .toList();
+                                                          for (var element
+                                                              in dynamicList) {
+                                                            if ((tempBeat
+                                                                        as Beat)
+                                                                    .deactivated ==
+                                                                null) {
+                                                              (tempBeat as Beat)
+                                                                  .deactivated = [
+                                                                element
+                                                              ];
+                                                            } else {
+                                                              (tempBeat as Beat)
+                                                                  .deactivated
+                                                                  ?.add(
+                                                                      element);
+                                                            }
+                                                            (tempBeat as Beat)
+                                                                .outlet
+                                                                .remove(
+                                                                    element);
+                                                          }
+                                                          Navigator.pop(
+                                                              context);
+                                                          selectedOutlet = [];
+                                                          headerText =
+                                                              "SELECT THE PHOTO";
+                                                          chosenOutlet = null;
+                                                          myID = null;
+                                                          videoName = null;
+                                                          categoryName = null;
+                                                          categoadsuig = null;
+                                                          beatID = null;
+                                                          dateTime = null;
+                                                          outletName = null;
+                                                          lat = null;
+                                                          lng = null;
+                                                          imageURL = null;
+                                                          category = null;
+                                                          textController.text =
+                                                              "";
+                                                          setState(() {
+                                                            isMerging = false;
+                                                          });
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(SnackBar(
+                                                                  content: Text(
+                                                                      "Successful")));
                                                         } else {
-                                                          (tempBeat as Beat)
-                                                              .deactivated
-                                                              ?.add(element);
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(SnackBar(
+                                                                  content: Text(
+                                                                      "Select a category")));
                                                         }
-                                                        (tempBeat as Beat)
-                                                            .outlet
-                                                            .remove(element);
+                                                      } else {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(SnackBar(
+                                                                content: Text(
+                                                                    "Select or enter the outlet name")));
                                                       }
-                                                      Navigator.pop(context);
-                                                      selectedOutlet = [];
-                                                      headerText =
-                                                          "SELECT THE PHOTO";
-                                                      chosenOutlet = null;
-                                                      myID = null;
-                                                      videoName = null;
-                                                      categoryName = null;
-                                                      categoadsuig = null;
-                                                      beatID = null;
-                                                      dateTime = null;
-                                                      outletName = null;
-                                                      lat = null;
-                                                      lng = null;
-                                                      imageURL = null;
-                                                      category = null;
-                                                      textController.text = "";
-                                                      setState(() {
-                                                        isMerging = false;
-                                                      });
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(SnackBar(
-                                                              content: Text(
-                                                                  "Successful")));
                                                     } else {
                                                       ScaffoldMessenger.of(
                                                               context)
                                                           .showSnackBar(SnackBar(
                                                               content: Text(
-                                                                  "Select a category")));
+                                                                  "Soemthing went wrong")));
                                                     }
-                                                  } else {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(SnackBar(
-                                                            content: Text(
-                                                                "Select or enter the outlet name")));
-                                                  }
-                                                } else {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(SnackBar(
-                                                          content: Text(
-                                                              "Soemthing went wrong")));
-                                                }
-                                              },
-                                              child: Container(
-                                                height: 50,
-                                                decoration: BoxDecoration(
-                                                    color: Colors.green,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            6),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                          offset: const Offset(
-                                                              0, 2),
-                                                          spreadRadius: 2,
-                                                          blurRadius: 2,
-                                                          color: Colors.black
-                                                              .withOpacity(0.1))
-                                                    ]),
-                                                child: Center(
-                                                  child: Text(
-                                                    "CONFIRM",
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                                  },
+                                                  child: Container(
+                                                    height: 50,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.green,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                              offset:
+                                                                  const Offset(
+                                                                      0, 2),
+                                                              spreadRadius: 2,
+                                                              blurRadius: 2,
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(
+                                                                      0.1))
+                                                        ]),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "CONFIRM",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),

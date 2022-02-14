@@ -14,12 +14,9 @@ class DistributorService {
     print(res.body);
     if (res.statusCode == 200) {
       Map<String, dynamic> a = jsonDecode(res.body);
-      print(a);
       List<Distributor> distributors = [];
       for (var element in a.keys) {
-        print(a[element]["beats"]);
         List<dynamic> beats = a[element]["beats"];
-        print(beats);
         distributors.add(
           Distributor(
             int.parse(element.toString()),
@@ -34,7 +31,6 @@ class DistributorService {
           ),
         );
       }
-      print(distributors);
       return distributors;
     }
     return [];

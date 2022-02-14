@@ -93,14 +93,16 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                         ),
                         Expanded(child: Container()),
                         InkWell(
-                          onTap: (){
+                          onTap: () {
                             Navigator.pop(context);
                           },
                           child: Icon(Icons.clear),
                         ),
                       ],
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Expanded(
                       child: TextField(
                         autofocus: true,
@@ -114,27 +116,27 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Focus(
                       child: Container(
                         clipBehavior: Clip.hardEdge,
                         height: 50,
                         decoration: BoxDecoration(
                             color: Colors.green,
-                            borderRadius:
-                            BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(6),
                             boxShadow: [
                               BoxShadow(
                                   offset: const Offset(0, 2),
                                   spreadRadius: 2,
                                   blurRadius: 2,
-                                  color: Colors.black
-                                      .withOpacity(0.1))
+                                  color: Colors.black.withOpacity(0.1))
                             ]),
                         child: Material(
                           color: Colors.green,
                           child: InkWell(
-                            onTap: (){
+                            onTap: () {
                               setState(() {
                                 if (widget.textController.text == "") {
                                   validate = true;
@@ -154,7 +156,6 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                                     context,
                                     validate);
                               }
-
                             },
                             child: const Center(
                               child: Text(
