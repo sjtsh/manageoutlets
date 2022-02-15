@@ -18,10 +18,10 @@ import 'backend/shortestPath.dart';
 
 class MapScreen extends StatefulWidget {
   final List<Outlet>
-      outletLatLng; //this is the all of the outlets that is visible
+  outletLatLng; //this is the all of the outlets that is visible
   final double redRadius; //this radius is the max point of the slider
   final LatLng?
-      center; // this the point from which the latlng will be calculated
+  center; // this the point from which the latlng will be calculated
   final Function setTempRedRadius;
   final controller;
   final List<Outlet> bluegreyIndexes;
@@ -33,19 +33,19 @@ class MapScreen extends StatefulWidget {
   final Function setRemovePermPositions;
 
   MapScreen(
-    this.outletLatLng,
-    this.redRadius,
-    this.controller,
-    this.bluegreyIndexes,
-    this.redDistance,
-    this.setTempRedRadius,
-    this.center,
-    this.changeCenter,
-    this.distributors,
-    this.categories,
-    this.removePermPositions,
-    this.setRemovePermPositions,
-  );
+      this.outletLatLng,
+      this.redRadius,
+      this.controller,
+      this.bluegreyIndexes,
+      this.redDistance,
+      this.setTempRedRadius,
+      this.center,
+      this.changeCenter,
+      this.distributors,
+      this.categories,
+      this.removePermPositions,
+      this.setRemovePermPositions,
+      );
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -57,7 +57,7 @@ class AddButtonIntent extends Intent {}
 
 class _MapScreenState extends State<MapScreen> {
   LatLng?
-      removeCenter; // this the point from which the latlng will be calculated
+  removeCenter; // this the point from which the latlng will be calculated
 
   double redRemoveDistance = 0;
   bool _validate = false;
@@ -94,7 +94,7 @@ class _MapScreenState extends State<MapScreen> {
   List<Outlet> bluePositions = [];
   List<Outlet> removePositions = [];
   List<Outlet> rangeIndexes =
-      []; //temporary indexes, this one is according to the widget.center
+  []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
 
   bool removeActive = false;
@@ -162,9 +162,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    final _minusFocus = FocusNode();
-
     return Shortcuts(
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.numpadSubtract): MinusButtonIntent(),
@@ -174,9 +171,7 @@ class _MapScreenState extends State<MapScreen> {
         actions: {
           MinusButtonIntent: CallbackAction(
             onInvoke: (intent) {
-
               setState(() {
-                _minusFocus.requestFocus();
                 removeActive = !removeActive;
                 removeCenter = null;
                 setRemoveRedRadius(0.0);
@@ -203,7 +198,6 @@ class _MapScreenState extends State<MapScreen> {
                   children: [
                     Expanded(
                       child: MapLayoutBuilder(
-
                         controller: widget.controller,
                         builder: (context, transformer) {
                           redPositions = widget.outletLatLng;
@@ -231,26 +225,26 @@ class _MapScreenState extends State<MapScreen> {
                                 .entries
                                 .forEach((element) {
                               if (selectedOutlets
-                                      .contains(element.value.beatID) ||
+                                  .contains(element.value.beatID) ||
                                   widget.removePermPositions
                                       .contains(element.value)) {
                                 // bluePositions.add(element.value);
                               } else if (GeolocatorPlatform.instance
-                                      .distanceBetween(
-                                          element.value.lat,
-                                          element.value.lng,
-                                          (removeCenter?.latitude ?? 0),
-                                          (removeCenter?.longitude ?? 0)) <
+                                  .distanceBetween(
+                                  element.value.lat,
+                                  element.value.lng,
+                                  (removeCenter?.latitude ?? 0),
+                                  (removeCenter?.longitude ?? 0)) <
                                   redRemoveDistance) {
                                 if (!removePositions.contains(element.value)) {
                                   removePositions.add(element.value);
                                 }
                               } else if (GeolocatorPlatform.instance
-                                      .distanceBetween(
-                                          element.value.lat,
-                                          element.value.lng,
-                                          widget.center!.latitude,
-                                          widget.center!.longitude) <
+                                  .distanceBetween(
+                                  element.value.lat,
+                                  element.value.lng,
+                                  widget.center!.latitude,
+                                  widget.center!.longitude) <
                                   widget.redDistance) {
                                 if (widget.bluegreyIndexes
                                     .contains(element.value)) {
@@ -261,8 +255,8 @@ class _MapScreenState extends State<MapScreen> {
                                       .toList()
                                       .map(
                                         (pos) => _buildMarkerWidget(
-                                            pos, Colors.blueGrey, false),
-                                      ));
+                                        pos, Colors.blueGrey, false),
+                                  ));
                                 } else {
                                   redPositions.add(element.value);
                                   markerWidgets.addAll([
@@ -272,64 +266,64 @@ class _MapScreenState extends State<MapScreen> {
                                       .toList()
                                       .map(
                                         (pos) => _buildMarkerWidget(
-                                            pos, Colors.red, false),
-                                      ));
+                                        pos, Colors.red, false),
+                                  ));
                                 }
                               }
                             });
                           }
                           markerWidgets.addAll(
                             List.generate(
-                                    removePositions.length,
+                                removePositions.length,
                                     (e) => LatLng(removePositions[e].lat,
-                                        removePositions[e].lng))
+                                    removePositions[e].lng))
                                 .map(transformer.fromLatLngToXYCoords)
                                 .toList()
                                 .map(
                                   (pos) => _buildMarkerWidget(
-                                      pos, Colors.blue, false),
-                                ),
+                                  pos, Colors.blue, false),
+                            ),
                           );
                           for (int i = 0; i < blueIndexes.length; i++) {
                             markerWidgets.addAll(
                               List.generate(
-                                      blueIndexes[i].outlet.length,
+                                  blueIndexes[i].outlet.length,
                                       (e) => LatLng(
-                                          blueIndexes[i].outlet[e].lat,
-                                          blueIndexes[i].outlet[e].lng))
+                                      blueIndexes[i].outlet[e].lat,
+                                      blueIndexes[i].outlet[e].lng))
                                   .map(transformer.fromLatLngToXYCoords)
                                   .toList()
                                   .map(
                                     (pos) => _buildMarkerWidget(
-                                        pos,
-                                        colorIndex[colorIndex.length -
-                                            1 -
-                                            selectedDropDownItem.beats.length -
-                                            i],
-                                        false),
-                                  ),
+                                    pos,
+                                    colorIndex[colorIndex.length -
+                                        1 -
+                                        selectedDropDownItem.beats.length -
+                                        i],
+                                    false),
+                              ),
                             );
                           }
                           for (int i = 0;
-                              i < selectedDropDownItem.beats.length;
-                              i++) {
+                          i < selectedDropDownItem.beats.length;
+                          i++) {
                             markerWidgets.addAll(
                               List.generate(
-                                      selectedDropDownItem
-                                          .beats[i].outlet.length,
+                                  selectedDropDownItem
+                                      .beats[i].outlet.length,
                                       (e) => LatLng(
-                                          selectedDropDownItem
-                                              .beats[i].outlet[e].lat,
-                                          selectedDropDownItem
-                                              .beats[i].outlet[e].lng))
+                                      selectedDropDownItem
+                                          .beats[i].outlet[e].lat,
+                                      selectedDropDownItem
+                                          .beats[i].outlet[e].lng))
                                   .map(transformer.fromLatLngToXYCoords)
                                   .toList()
                                   .map(
                                     (pos) => _buildMarkerWidget(
-                                        pos,
-                                        colorIndex[colorIndex.length - 1 - i],
-                                        false),
-                                  ),
+                                    pos,
+                                    colorIndex[colorIndex.length - 1 - i],
+                                    false),
+                              ),
                             );
                           }
                           Widget? homeMarkerWidget;
@@ -344,7 +338,7 @@ class _MapScreenState extends State<MapScreen> {
 
                           if (removeCenter != null) {
                             final homeLocation =
-                                transformer.fromLatLngToXYCoords(removeCenter!);
+                            transformer.fromLatLngToXYCoords(removeCenter!);
 
                             removeMarkerWidget = _buildMarkerWidgetClear(
                                 homeLocation, Colors.black, true);
@@ -379,7 +373,7 @@ class _MapScreenState extends State<MapScreen> {
                                   .fromXYCoordsToLatLng(details.localPosition);
 
                               Offset clicked =
-                                  transformer.fromLatLngToXYCoords(location);
+                              transformer.fromLatLngToXYCoords(location);
                               if (!removeActive) {
                                 widget.changeCenter(location);
                               } else {
@@ -396,11 +390,10 @@ class _MapScreenState extends State<MapScreen> {
                               behavior: HitTestBehavior.opaque,
                               onPointerSignal: (event) {
                                 if (event is PointerScrollEvent) {
-                                  final
-                                  delta = event.scrollDelta;
+                                  final delta = event.scrollDelta;
 
-                                  widget.controller.zoom -= delta.dy / 50.0;
-                                 setState(() {});
+                                  widget.controller.zoom -= delta.dy / 1000.0;
+                                  setState(() {});
                                 }
                               },
                               child: Stack(
@@ -436,7 +429,6 @@ class _MapScreenState extends State<MapScreen> {
                                       },
                                       child: Focus(
                                         autofocus: true,
-                                        focusNode: _minusFocus,
                                         child: Container(
                                           height: 60,
                                           width: 60,
@@ -462,198 +454,198 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     removeActive
                         ? Column(
-                            children: [
-                              Text(
-                                "${removePositions.length.toString()} outlets found in ${redRemoveDistance.toStringAsFixed(2)}m",
-                                style: const TextStyle(fontSize: 20),
+                      children: [
+                        Text(
+                          "${removePositions.length.toString()} outlets found in ${redRemoveDistance.toStringAsFixed(2)}m",
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 12,
+                            ),
+                            const Text("0 m"),
+                            Expanded(
+                              child: Slider(
+                                  activeColor: Colors.green,
+                                  inactiveColor:
+                                  Colors.green.withOpacity(0.5),
+                                  thumbColor: Colors.green,
+                                  value: redRemoveDistance,
+                                  max: 1000,
+                                  min: 0,
+                                  label:
+                                  "${redRemoveDistance.toStringAsFixed(2)}",
+                                  onChanged: (double a) {
+                                    setState(() {
+                                      setRemoveRedRadius(a);
+                                    });
+                                  }),
+                            ),
+                            const Text("1000 m"),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                widget.setRemovePermPositions([
+                                  ...widget.removePermPositions,
+                                  ...removePositions
+                                ]);
+                              },
+                              child: Container(
+                                height: 50,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius:
+                                    BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          offset: const Offset(0, 2),
+                                          spreadRadius: 2,
+                                          blurRadius: 2,
+                                          color: Colors.black
+                                              .withOpacity(0.1))
+                                    ]),
+                                child: const Center(
+                                  child: Text(
+                                    "Remove",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 12,
-                                  ),
-                                  const Text("0 m"),
-                                  Expanded(
-                                    child: Slider(
-                                        activeColor: Colors.green,
-                                        inactiveColor:
-                                            Colors.green.withOpacity(0.5),
-                                        thumbColor: Colors.green,
-                                        value: redRemoveDistance,
-                                        max: 1000,
-                                        min: 0,
-                                        label:
-                                            "${redRemoveDistance.toStringAsFixed(2)}",
-                                        onChanged: (double a) {
-                                          setState(() {
-                                            setRemoveRedRadius(a);
-                                          });
-                                        }),
-                                  ),
-                                  const Text("1000 m"),
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  SizedBox(
-                                    width: 12,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      widget.setRemovePermPositions([
-                                        ...widget.removePermPositions,
-                                        ...removePositions
-                                      ]);
-                                    },
-                                    child: Container(
-                                      height: 50,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                offset: const Offset(0, 2),
-                                                spreadRadius: 2,
-                                                blurRadius: 2,
-                                                color: Colors.black
-                                                    .withOpacity(0.1))
-                                          ]),
-                                      child: const Center(
-                                        child: Text(
-                                          "Remove",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
                         : Column(
-                            children: [
-                              Text(
-                                "${redPositions.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 12,
+                      children: [
+                        Text(
+                          "${redPositions.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
+                          style: const TextStyle(fontSize: 20),
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 12,
+                            ),
+                            const Text("0 m"),
+                            Expanded(
+                              child: Slider(
+                                  activeColor: Colors.red,
+                                  inactiveColor:
+                                  Colors.red.withOpacity(0.5),
+                                  thumbColor: Colors.red,
+                                  value: widget.redDistance,
+                                  max: 2000,
+                                  min: 0,
+                                  label:
+                                  "${widget.redDistance.toStringAsFixed(2)}",
+                                  onChanged: (double a) {
+                                    setState(() {
+                                      widget.setTempRedRadius(a);
+                                    });
+                                  }),
+                            ),
+                            const Text("2000 m"),
+                            const SizedBox(
+                              width: 12,
+                            ),
+                            Container(
+                              clipBehavior: Clip.hardEdge,
+                              height: 50,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        offset: const Offset(0, 2),
+                                        spreadRadius: 2,
+                                        blurRadius: 2,
+                                        color:
+                                        Colors.black.withOpacity(0.1))
+                                  ]),
+                              child: RawMaterialButton(
+                                onPressed: () {
+                                  setState(() {
+                                    bluePositions = [];
+                                    rangeIndexes = [];
+                                    widget.setTempRedRadius(0.0);
+                                  });
+                                },
+                                child: const Center(
+                                  child: Text(
+                                    "CLEAR",
+                                    style: TextStyle(color: Colors.white),
                                   ),
-                                  const Text("0 m"),
-                                  Expanded(
-                                    child: Slider(
-                                        activeColor: Colors.red,
-                                        inactiveColor:
-                                            Colors.red.withOpacity(0.5),
-                                        thumbColor: Colors.red,
-                                        value: widget.redDistance,
-                                        max: 2000,
-                                        min: 0,
-                                        label:
-                                            "${widget.redDistance.toStringAsFixed(2)}",
-                                        onChanged: (double a) {
-                                          setState(() {
-                                            widget.setTempRedRadius(a);
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Focus(
+                              autofocus: true,
+                              child: Container(
+                                clipBehavior: Clip.hardEdge,
+                                height: 50,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius:
+                                    BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          offset: const Offset(0, 2),
+                                          spreadRadius: 2,
+                                          blurRadius: 2,
+                                          color: Colors.black
+                                              .withOpacity(0.1))
+                                    ]),
+                                child: RawMaterialButton(
+                                  onPressed: () {
+                                    TextEditingController textController =
+                                    TextEditingController();
+                                    if (redPositions.length != 0) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) {
+                                            return AddBeatDialogBox(
+                                                textController,
+                                                rangeIndexes,
+                                                blueIndexes,
+                                                redPositions,
+                                                widget.setTempRedRadius);
                                           });
-                                        }),
-                                  ),
-                                  const Text("2000 m"),
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  Container(
-                                    clipBehavior: Clip.hardEdge,
-                                    height: 50,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                        color: Colors.red,
-                                        borderRadius: BorderRadius.circular(12),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              offset: const Offset(0, 2),
-                                              spreadRadius: 2,
-                                              blurRadius: 2,
-                                              color:
-                                                  Colors.black.withOpacity(0.1))
-                                        ]),
-                                    child: RawMaterialButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          bluePositions = [];
-                                          rangeIndexes = [];
-                                          widget.setTempRedRadius(0.0);
-                                        });
-                                      },
-                                      child: const Center(
-                                        child: Text(
-                                          "CLEAR",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                          duration: Duration(
+                                              milliseconds: 500),
+                                          content: Text(
+                                              "Please select outlet")));
+                                    }
+                                  },
+                                  child: const Center(
+                                    child: Text(
+                                      "ADD",
+                                      style:
+                                      TextStyle(color: Colors.white),
                                     ),
                                   ),
-                                  SizedBox(
-                                    width: 12,
-                                  ),
-                                  Focus(
-                                    autofocus: true,
-                                    child: Container(
-                                      clipBehavior: Clip.hardEdge,
-                                      height: 50,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                          color: Colors.green,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                offset: const Offset(0, 2),
-                                                spreadRadius: 2,
-                                                blurRadius: 2,
-                                                color: Colors.black
-                                                    .withOpacity(0.1))
-                                          ]),
-                                      child: RawMaterialButton(
-                                        onPressed: () {
-                                          TextEditingController textController =
-                                              TextEditingController();
-                                          if (redPositions.length != 0) {
-                                            showDialog(
-                                                context: context,
-                                                builder: (_) {
-                                                  return AddBeatDialogBox(
-                                                      textController,
-                                                      rangeIndexes,
-                                                      blueIndexes,
-                                                      redPositions,
-                                                      widget.setTempRedRadius);
-                                                });
-                                          } else {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(const SnackBar(
-                                                    duration: Duration(
-                                                        milliseconds: 500),
-                                                    content: Text(
-                                                        "Please select outlet")));
-                                          }
-                                        },
-                                        child: const Center(
-                                          child: Text(
-                                            "ADD",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                     const SizedBox(
                       height: 12,
                     ),
