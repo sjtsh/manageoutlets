@@ -43,8 +43,20 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
+    return Container(
+      margin: EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+              offset: const Offset(0, 2),
+              spreadRadius: 2,
+              blurRadius: 2,
+              color: Colors.black.withOpacity(0.1))
+        ],
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -83,39 +95,38 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 ...List.generate(widget.beats.length, (int index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: hi.Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                                offset: const Offset(0, 2),
-                                spreadRadius: 2,
-                                blurRadius: 2,
-                                color: Colors.black.withOpacity(0.1))
-                          ]),
-                      child: Material(
-                        color: Colors.white,
-                        child: InkWell(
-                          onTap: () {},
-                          onDoubleTap: () {
-                            // double tap function
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (_) {
-                              return NextScreen(
-                                  widget.beats[index],
-                                  widget.categories,
-                                  widget.refresh,
-                                  widget.updateBeat);
-                            }));
-                          },
-                          child: Padding(
+                    child: GestureDetector(
+                      onTap: () {},
+                      onDoubleTap: () {
+                        // double tap function
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) {
+                          return NextScreen(
+                              widget.beats[index],
+                              widget.categories,
+                              widget.refresh,
+                              widget.updateBeat);
+                        }));
+                      },
+                      child: hi.Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                  offset: const Offset(0, 2),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  color: Colors.black.withOpacity(0.1))
+                            ]),
+                        child: Padding(
                             padding: const EdgeInsets.all(12.0),
                             child: Row(
                               children: [
                                 Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.start,
                                   children: [
                                     Text(widget.beats[index].beatName,
                                         style: const TextStyle(
@@ -142,7 +153,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                           widget.selectedDropDownItem.beats
                                               .length -
                                           index],
-                                      border: Border.all(color: Colors.black)),
+                                      border:
+                                          Border.all(color: Colors.black)),
                                 ),
                                 const SizedBox(
                                   width: 12,
@@ -166,11 +178,9 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                       ),
                                     ),
                                   ),
-                                )
+                                ),
                               ],
-                            ),
-                          ),
-                        ),
+                            ),),
                       ),
                     ),
                   );
@@ -220,10 +230,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 width: 20,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color:
-                                        colorIndex[colorIndex.length -
-                                            1 -
-                                            index],
+                                    color: colorIndex[
+                                        colorIndex.length - 1 - index],
                                     border: Border.all(color: Colors.black)),
                               ),
                               const SizedBox(
@@ -290,12 +298,13 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                   }
                 },
                 child: Center(
-                    child: isDisabled
-                        ? CircularProgressIndicator()
-                        : Text(
-                            "CONFIRM",
-                            style: TextStyle(color: Colors.white),
-                          )),
+                  child: isDisabled
+                      ? CircularProgressIndicator()
+                      : Text(
+                          "CONFIRM",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                ),
               ),
             ),
           ),
