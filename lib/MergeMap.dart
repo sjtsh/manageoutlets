@@ -160,7 +160,7 @@ class _MergeMapState extends State<MergeMap> {
               if (event is PointerScrollEvent) {
                 final delta = event.scrollDelta;
 
-                controller.zoom -= delta.dy / 50.0;
+                controller.zoom -= delta.dy / 1000.0;
                 setState(() {});
               }
             },

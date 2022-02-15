@@ -12,8 +12,6 @@ void main() {
   // CategoryService().getCatagory();
 }
 
-
-
 class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();

@@ -42,7 +42,6 @@ dependencies:
   dropdown_search: ^2.0.1
   dijkstra:
   hovering: ^1.0.4
-  flutter_improved_scrolling: ^0.0.3
 
 
 

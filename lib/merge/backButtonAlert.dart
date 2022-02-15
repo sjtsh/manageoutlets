@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 class BackButtonAlert extends StatelessWidget {
-  const BackButtonAlert({Key? key}) : super(key: key);
+  final String message;
+  final String GreyMesage;
+  final String RedMessage;
+
+  BackButtonAlert(this.message,this.GreyMesage,this.RedMessage);
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +19,8 @@ class BackButtonAlert extends StatelessWidget {
               width: 300,
               child: Column(
                 children: [
-                  const Text(
-                    "Your progress will not be saved",
+                   Text(
+                    message,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
@@ -37,15 +41,15 @@ class BackButtonAlert extends StatelessWidget {
                               Navigator.pop(context);
                             },
                             color: Colors.red,
-                            child: const Text(
-                              "Confirm",
+                            child: Text(
+                              GreyMesage,
                               style: TextStyle(color: Colors.white),
                             )),
                         MaterialButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text(
+                            child: Text(
                               "Cancel",
                             ))
                       ],
