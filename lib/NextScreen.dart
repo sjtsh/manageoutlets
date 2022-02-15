@@ -129,7 +129,10 @@ class _NextScreenState extends State<NextScreen> {
                 context: context,
                 builder: (_) {
                   return BackButtonAlert(
-                      "Your progress will not be saved", "Confirm", "Cancel");
+                      "Your progress will not be saved", "Confirm", "Cancel",
+                      () {
+                    Navigator.pop(context);
+                  });
                 });
           }))
         },
@@ -180,7 +183,9 @@ class _NextScreenState extends State<NextScreen> {
                                 return BackButtonAlert(
                                     "Your progress will not be saved",
                                     "Confirm",
-                                    "Cancel");
+                                    "Cancel", () {
+                                  Navigator.pop(context);
+                                });
                               });
                           widget.refresh();
                         }
@@ -678,5 +683,3 @@ class _NextScreenState extends State<NextScreen> {
     }
   }
 }
-
-

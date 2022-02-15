@@ -4,8 +4,9 @@ class BackButtonAlert extends StatelessWidget {
   final String message;
   final String GreyMesage;
   final String RedMessage;
+  final Function todo;
 
-  BackButtonAlert(this.message,this.GreyMesage,this.RedMessage);
+  BackButtonAlert(this.message, this.GreyMesage, this.RedMessage, this.todo);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class BackButtonAlert extends StatelessWidget {
               width: 300,
               child: Column(
                 children: [
-                   Text(
+                  Text(
                     message,
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
@@ -46,12 +47,13 @@ class BackButtonAlert extends StatelessWidget {
                               style: TextStyle(color: Colors.white),
                             )),
                         MaterialButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Cancel",
-                            ))
+                          onPressed: () {
+                          todo();
+                          },
+                          child: Text(
+                            "Cancel",
+                          ),
+                        ),
                       ],
                     ),
                   )

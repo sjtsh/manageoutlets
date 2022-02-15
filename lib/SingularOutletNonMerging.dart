@@ -6,6 +6,7 @@ import 'package:hovering/hovering.dart';
 import 'CompareInteractive.dart';
 import 'InteractiveImage.dart';
 import 'NextScreen.dart';
+import 'backButtonAlert.dart';
 import 'backend/Entities/Category.dart';
 import 'backend/Entities/Outlet.dart';
 import 'backend/Entities/OutletsListEntity.dart';
@@ -21,9 +22,16 @@ class SingularOutletNonMerging extends StatelessWidget {
   final Beat tempBeat;
   final int i;
 
-
-  SingularOutletNonMerging(this.selectedOutlet, this.tempOutlet,
-      this.controller, this.changeOutletSelectionStatus, this.isValidate, this.categories, this.setCategoryID, this.tempBeat, this.i);
+  SingularOutletNonMerging(
+      this.selectedOutlet,
+      this.tempOutlet,
+      this.controller,
+      this.changeOutletSelectionStatus,
+      this.isValidate,
+      this.categories,
+      this.setCategoryID,
+      this.tempBeat,
+      this.i);
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +72,7 @@ class SingularOutletNonMerging extends StatelessWidget {
                         activeColor: Colors.green,
                         value: selectedOutlet.contains(tempOutlet),
                         onChanged: (newValue) =>
-                            changeOutletSelectionStatus(selectedOutlet)),
+                            changeOutletSelectionStatus(tempOutlet)),
                     const SizedBox(
                       width: 10,
                     ),
@@ -129,16 +137,13 @@ class SingularOutletNonMerging extends StatelessWidget {
                             dropdownButtonSplashRadius: 1,
                             dropDownButton: SizedBox.shrink(),
                             items: categories,
-                            onChanged: (Category? category){
+                            onChanged: (Category? category) {
                               setCategoryID(category);
                             },
-                            selectedItem:
-                                (tempOutlet.newcategoryID ==
-                                        null)
-                                    ? Category("Select category", 10000000)
-                                    : categories.firstWhere((e) =>
-                                        e.id ==
-                                            tempOutlet.newcategoryID!),
+                            selectedItem: (tempOutlet.newcategoryID == null)
+                                ? Category("Select category", 10000000)
+                                : categories.firstWhere(
+                                    (e) => e.id == tempOutlet.newcategoryID!),
                             dropdownSearchDecoration: InputDecoration(
                                 errorText: (tempOutlet.newcategoryID == null &&
                                         !isValidate)
@@ -159,9 +164,13 @@ class SingularOutletNonMerging extends StatelessWidget {
                             context: context,
                             builder: (_) {
                               return BackButtonAlert(
-                                  "Do you want to deactivate this outlet?",
-                                  "CANCEL",
-                                  "REMOVE");
+                                "Do you want to deactivate this outlet?",
+                                "CANCEL",
+                                "REMOVE",
+                                  (){
+
+                                  }
+                              );
                             });
                       },
                       child: const Icon(
