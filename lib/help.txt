@@ -9,3 +9,130 @@ cross grne
 name, category
 chekcbox, is FA,
 
+
+                                                if (myID != null &&
+                                                    imageURL != null &&
+                                                    lat != null &&
+                                                    lng != null) {
+                                                  if (textController.text !=
+                                                      "" ||
+                                                      outletName != null) {
+                                                    if (category != null) {
+                                                      for (int i = 0;
+                                                      i <
+                                                          tempBeat!.outlet
+                                                              .length;
+                                                      i++) {
+                                                        if ((tempBeat as Beat)
+                                                            .outlet[i]
+                                                            .id ==
+                                                            myID) {
+                                                          (tempBeat as Beat)
+                                                              .outlet[i]
+                                                              .categoryName =
+                                                          (category!
+                                                              .categoryName);
+                                                          (tempBeat as Beat)
+                                                              .outlet[i]
+                                                              .newcategoryID =
+                                                              categoadsuig;
+                                                          (tempBeat as Beat)
+                                                              .outlet[i]
+                                                              .outletName =
+                                                          textController
+                                                              .text ==
+                                                              ""
+                                                              ? outletName!
+                                                              : textController
+                                                              .text;
+                                                          (tempBeat as Beat)
+                                                              .outlet[i]
+                                                              .lat = lat!;
+                                                          (tempBeat as Beat)
+                                                              .outlet[i]
+                                                              .lng = lng!;
+                                                          (tempBeat as Beat)
+                                                              .outlet[i]
+                                                              .imageURL =
+                                                          imageURL!;
+                                                          break;
+                                                        }
+                                                      }
+                                                      List dynamicList =
+                                                      selectedOutlet
+                                                          .where(
+                                                              (element) =>
+                                                          element
+                                                              .id !=
+                                                              myID)
+                                                          .toList();
+                                                      for (var element
+                                                      in dynamicList) {
+                                                        if ((tempBeat as Beat)
+                                                            .deactivated ==
+                                                            null) {
+                                                          (tempBeat as Beat)
+                                                              .deactivated = [
+                                                            element
+                                                          ];
+                                                        } else {
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .showSnackBar(SnackBar(
+                                                                  content: Text(
+                                                                      "Select a category")));
+                                                        }
+                                                      } else {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(SnackBar(
+                                                                content: Text(
+                                                                    "Select or enter the outlet name")));
+                                                      }
+                                                      Navigator.pop(context);
+                                                      selectedOutlet = [];
+                                                      headerText =
+                                                      "SELECT THE PHOTO";
+                                                      chosenOutlet = null;
+                                                      myID = null;
+                                                      videoName = null;
+                                                      categoryName = null;
+                                                      categoadsuig = null;
+                                                      beatID = null;
+                                                      dateTime = null;
+                                                      outletName = null;
+                                                      lat = null;
+                                                      lng = null;
+                                                      imageURL = null;
+                                                      category = null;
+                                                      textController.text = "";
+                                                      setState(() {
+                                                        isMerging = false;
+                                                      });
+                                                      ScaffoldMessenger.of(
+                                                          context)
+                                                          .showSnackBar(
+                                                          SnackBar(
+                                                              content: Text(
+                                                                  "Successful")));
+                                                    } else {
+                                                      ScaffoldMessenger.of(
+                                                          context)
+                                                          .showSnackBar(
+                                                          SnackBar(
+                                                              content: Text(
+                                                                  "Soemthing went wrong")));
+                                                    }
+                                                  } else {
+                                                    ScaffoldMessenger.of(
+                                                        context)
+                                                        .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            "Select or enter the outlet name")));
+                                                  }
+                                                } else {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          "Soemthing went wrong")));
+                                                }
