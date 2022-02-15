@@ -99,8 +99,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                       onTap: () {},
                       onDoubleTap: () {
                         // double tap function
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) {
+                        Navigator.push(context, MaterialPageRoute(builder: (_) {
                           return NextScreen(
                               widget.beats[index],
                               widget.categories,
@@ -121,66 +120,64 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                   color: Colors.black.withOpacity(0.1))
                             ]),
                         child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                  children: [
-                                    Text(widget.beats[index].beatName,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    Text(
-                                      "${widget.beats[index].outlet.length} Outlets",
-                                      style:
-                                          const TextStyle(color: Colors.grey),
-                                    )
-                                  ],
-                                ),
-                                Expanded(child: hi.Container()),
-                                hi.Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: colorIndex[colorIndex.length -
-                                          1 -
-                                          widget.selectedDropDownItem.beats
-                                              .length -
-                                          index],
-                                      border:
-                                          Border.all(color: Colors.black)),
-                                ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    /// remove from list
-                                    widget.removeBeat(widget.beats[index]);
-                                  },
-                                  child: hi.Container(
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.red,
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(3.0),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(widget.beats[index].beatName,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Text(
+                                    "${widget.beats[index].outlet.length} Outlets",
+                                    style: const TextStyle(color: Colors.grey),
+                                  )
+                                ],
+                              ),
+                              Expanded(child: hi.Container()),
+                              hi.Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: colorIndex[colorIndex.length -
+                                        1 -
+                                        widget
+                                            .selectedDropDownItem.beats.length -
+                                        index],
+                                    border: Border.all(color: Colors.black)),
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  /// remove from list
+                                  widget.removeBeat(widget.beats[index]);
+                                },
+                                child: hi.Container(
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red,
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(3.0),
+                                    child: Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                      size: 16,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   );

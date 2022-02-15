@@ -50,7 +50,7 @@ class BackButtonAlert extends StatelessWidget {
                               Navigator.pop(context);
                             },
                             child: Text(
-                              "Cancel",
+                              RedMessage,
                             ))
                       ],
                     ),

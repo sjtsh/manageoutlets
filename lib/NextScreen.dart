@@ -520,7 +520,7 @@ class _NextScreenState extends State<NextScreen> {
                                               showDialog(
                                                   context: context,
                                                   builder: (_) {
-                                                    return BackButtonAlert("Do you want to deactivate this outlet?", "CANCEL", "REMOVE");
+                                                    return BackButtonAlert("Do you want to deactivate this outlet?", "CONFIRM", "REMOVE");
                                                   });
                                             },
                                             child: const Icon(

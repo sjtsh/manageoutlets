@@ -434,235 +434,218 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                       ),
                     ),
-                    removeActive
-                        ? Container(
-                            margin: EdgeInsets.only(top: 12, left: 12),
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                    offset: const Offset(0, 2),
-                                    spreadRadius: 2,
-                                    blurRadius: 2,
-                                    color: Colors.black.withOpacity(0.1))
-                              ],
-                              borderRadius: BorderRadius.circular(12),
+                    Container(
+                      margin: EdgeInsets.only(top: 12, left: 12),
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              offset: const Offset(0, 2),
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              color: Colors.black.withOpacity(0.1))
+                        ],
+                        borderRadius: BorderRadius.circular(12),),
+                        child: removeActive
+                        ? Column(
+                          children: [
+                            Text(
+                              "${removePositions.length.toString()} outlets found in ${redRemoveDistance.toStringAsFixed(2)}m",
+                              style: const TextStyle(fontSize: 20),
                             ),
-                            child: Column(
+                            Row(
                               children: [
-                                Text(
-                                  "${removePositions.length.toString()} outlets found in ${redRemoveDistance.toStringAsFixed(2)}m",
-                                  style: const TextStyle(fontSize: 20),
+                                SizedBox(
+                                  width: 12,
                                 ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 12,
+                                const Text("0 m"),
+                                Expanded(
+                                  child: Slider(
+                                      activeColor: Colors.green,
+                                      inactiveColor:
+                                          Colors.green.withOpacity(0.5),
+                                      thumbColor: Colors.green,
+                                      value: redRemoveDistance,
+                                      max: 1000,
+                                      min: 0,
+                                      label:
+                                          "${redRemoveDistance.toStringAsFixed(2)}",
+                                      onChanged: (double a) {
+                                        setState(() {
+                                          setRemoveRedRadius(a);
+                                        });
+                                      }),
+                                ),
+                                const Text("1000 m"),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    widget.setRemovePermPositions([
+                                      ...widget.removePermPositions,
+                                      ...removePositions
+                                    ]);
+                                  },
+                                  child: Container(
+                                    height: 50,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        borderRadius:
+                                            BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: const Offset(0, 2),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              color: Colors.black
+                                                  .withOpacity(0.1))
+                                        ]),
+                                    child: const Center(
+                                      child: Text(
+                                        "Remove",
+                                        style:
+                                            TextStyle(color: Colors.white),
+                                      ),
                                     ),
-                                    const Text("0 m"),
-                                    Expanded(
-                                      child: Slider(
-                                          activeColor: Colors.green,
-                                          inactiveColor:
-                                              Colors.green.withOpacity(0.5),
-                                          thumbColor: Colors.green,
-                                          value: redRemoveDistance,
-                                          max: 1000,
-                                          min: 0,
-                                          label:
-                                              "${redRemoveDistance.toStringAsFixed(2)}",
-                                          onChanged: (double a) {
-                                            setState(() {
-                                              setRemoveRedRadius(a);
-                                            });
-                                          }),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )
+                        : Column(
+                          children: [
+                            Text(
+                              "${redPositions.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                const Text("0 m"),
+                                Expanded(
+                                  child: Slider(
+                                      activeColor: Colors.red,
+                                      inactiveColor:
+                                          Colors.red.withOpacity(0.5),
+                                      thumbColor: Colors.red,
+                                      value: widget.redDistance,
+                                      max: 2000,
+                                      min: 0,
+                                      label:
+                                          "${widget.redDistance.toStringAsFixed(2)}",
+                                      onChanged: (double a) {
+                                        setState(() {
+                                          widget.setTempRedRadius(a);
+                                        });
+                                      }),
+                                ),
+                                const Text("2000 m"),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                Container(
+                                  clipBehavior: Clip.hardEdge,
+                                  height: 50,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius:
+                                          BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            offset: const Offset(0, 2),
+                                            spreadRadius: 2,
+                                            blurRadius: 2,
+                                            color: Colors.black
+                                                .withOpacity(0.1))
+                                      ]),
+                                  child: RawMaterialButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        bluePositions = [];
+                                        rangeIndexes = [];
+                                        widget.setTempRedRadius(0.0);
+                                      });
+                                    },
+                                    child: const Center(
+                                      child: Text(
+                                        "CLEAR",
+                                        style:
+                                            TextStyle(color: Colors.white),
+                                      ),
                                     ),
-                                    const Text("1000 m"),
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        widget.setRemovePermPositions([
-                                          ...widget.removePermPositions,
-                                          ...removePositions
-                                        ]);
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Focus(
+                                  autofocus: true,
+                                  child: Container(
+                                    clipBehavior: Clip.hardEdge,
+                                    height: 50,
+                                    width: 100,
+                                    decoration: BoxDecoration(
+                                        color: Colors.green,
+                                        borderRadius:
+                                            BorderRadius.circular(12),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              offset: const Offset(0, 2),
+                                              spreadRadius: 2,
+                                              blurRadius: 2,
+                                              color: Colors.black
+                                                  .withOpacity(0.1))
+                                        ]),
+                                    child: RawMaterialButton(
+                                      onPressed: () {
+                                        TextEditingController
+                                            textController =
+                                            TextEditingController();
+                                        if (redPositions.length != 0) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (_) {
+                                                return AddBeatDialogBox(
+                                                    textController,
+                                                    rangeIndexes,
+                                                    blueIndexes,
+                                                    redPositions,
+                                                    widget
+                                                        .setTempRedRadius);
+                                              });
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  duration: Duration(
+                                                      milliseconds: 500),
+                                                  content: Text(
+                                                      "Please select outlet")));
+                                        }
                                       },
-                                      child: Container(
-                                        height: 50,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  offset: const Offset(0, 2),
-                                                  spreadRadius: 2,
-                                                  blurRadius: 2,
-                                                  color: Colors.black
-                                                      .withOpacity(0.1))
-                                            ]),
-                                        child: const Center(
-                                          child: Text(
-                                            "Remove",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
+                                      child: const Center(
+                                        child: Text(
+                                          "ADD",
+                                          style: TextStyle(
+                                              color: Colors.white),
                                         ),
                                       ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ],
                             ),
-                          )
-                        : Container(
-                            margin: EdgeInsets.only(top: 12, left: 12),
-                            padding: EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                    offset: const Offset(0, 2),
-                                    spreadRadius: 2,
-                                    blurRadius: 2,
-                                    color: Colors.black.withOpacity(0.1))
-                              ],
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "${redPositions.length.toString()} outlets found in ${widget.redDistance.toStringAsFixed(2)}m",
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    const Text("0 m"),
-                                    Expanded(
-                                      child: Slider(
-                                          activeColor: Colors.red,
-                                          inactiveColor:
-                                              Colors.red.withOpacity(0.5),
-                                          thumbColor: Colors.red,
-                                          value: widget.redDistance,
-                                          max: 2000,
-                                          min: 0,
-                                          label:
-                                              "${widget.redDistance.toStringAsFixed(2)}",
-                                          onChanged: (double a) {
-                                            setState(() {
-                                              widget.setTempRedRadius(a);
-                                            });
-                                          }),
-                                    ),
-                                    const Text("2000 m"),
-                                    const SizedBox(
-                                      width: 12,
-                                    ),
-                                    Container(
-                                      clipBehavior: Clip.hardEdge,
-                                      height: 50,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                          color: Colors.red,
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                offset: const Offset(0, 2),
-                                                spreadRadius: 2,
-                                                blurRadius: 2,
-                                                color: Colors.black
-                                                    .withOpacity(0.1))
-                                          ]),
-                                      child: RawMaterialButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            bluePositions = [];
-                                            rangeIndexes = [];
-                                            widget.setTempRedRadius(0.0);
-                                          });
-                                        },
-                                        child: const Center(
-                                          child: Text(
-                                            "CLEAR",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 12,
-                                    ),
-                                    Focus(
-                                      autofocus: true,
-                                      child: Container(
-                                        clipBehavior: Clip.hardEdge,
-                                        height: 50,
-                                        width: 100,
-                                        decoration: BoxDecoration(
-                                            color: Colors.green,
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  offset: const Offset(0, 2),
-                                                  spreadRadius: 2,
-                                                  blurRadius: 2,
-                                                  color: Colors.black
-                                                      .withOpacity(0.1))
-                                            ]),
-                                        child: RawMaterialButton(
-                                          onPressed: () {
-                                            TextEditingController
-                                                textController =
-                                                TextEditingController();
-                                            if (redPositions.length != 0) {
-                                              showDialog(
-                                                  context: context,
-                                                  builder: (_) {
-                                                    return AddBeatDialogBox(
-                                                        textController,
-                                                        rangeIndexes,
-                                                        blueIndexes,
-                                                        redPositions,
-                                                        widget
-                                                            .setTempRedRadius);
-                                                  });
-                                            } else {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(const SnackBar(
-                                                      duration: Duration(
-                                                          milliseconds: 500),
-                                                      content: Text(
-                                                          "Please select outlet")));
-                                            }
-                                          },
-                                          child: const Center(
-                                            child: Text(
-                                              "ADD",
-                                              style: TextStyle(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                          ],
+                        ),),
                     const SizedBox(
                       height: 12,
                     ),
