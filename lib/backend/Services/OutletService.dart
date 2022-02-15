@@ -15,7 +15,6 @@ class OutletService {
     );
     List<dynamic> a = jsonDecode(res.body);
     List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
-    print(outlets.length);
     return outlets;
   }
 }

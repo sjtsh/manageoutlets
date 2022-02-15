@@ -108,7 +108,6 @@ class _MapScreenState extends State<MapScreen> {
   void _changeDropDownValue(Distributor newValue) {
     setState(() {
       selectedDropDownItem = newValue;
-      print(selectedDropDownItem.beats);
     });
   }
 
@@ -204,9 +203,17 @@ class _MapScreenState extends State<MapScreen> {
                           redPositions = widget.outletLatLng;
                           final markerWidgets = [];
                           if (widget.center != null) {
-                            List<Outlet> selectedOutlets = [];
+                            List<String> selectedOutlets = [];
                             for (Beat beat in blueIndexes) {
-                              selectedOutlets.addAll(beat.outlet);
+                              for (var element in beat.outlet) {
+                                selectedOutlets.add(element.id);
+                              }
+                            }
+
+                            for (Beat beat in selectedDropDownItem.beats) {
+                              for (var element in beat.outlet) {
+                                selectedOutlets.add(element.id);
+                              }
                             }
 
                             redPositions = [];
@@ -217,7 +224,8 @@ class _MapScreenState extends State<MapScreen> {
                                 .asMap()
                                 .entries
                                 .forEach((element) {
-                              if (selectedOutlets.contains(element.value) ||
+                              if (selectedOutlets
+                                      .contains(element.value.beatID) ||
                                   widget.removePermPositions
                                       .contains(element.value)) {
                                 // bluePositions.add(element.value);
@@ -287,7 +295,34 @@ class _MapScreenState extends State<MapScreen> {
                                   .toList()
                                   .map(
                                     (pos) => _buildMarkerWidget(
-                                        pos, colorIndex[i], false),
+                                        pos,
+                                        colorIndex[colorIndex.length -
+                                            1 -
+                                            selectedDropDownItem.beats.length -
+                                            i],
+                                        false),
+                                  ),
+                            );
+                          }
+                          for (int i = 0;
+                              i < selectedDropDownItem.beats.length;
+                              i++) {
+                            markerWidgets.addAll(
+                              List.generate(
+                                      selectedDropDownItem
+                                          .beats[i].outlet.length,
+                                      (e) => LatLng(
+                                          selectedDropDownItem
+                                              .beats[i].outlet[e].lat,
+                                          selectedDropDownItem
+                                              .beats[i].outlet[e].lng))
+                                  .map(transformer.fromLatLngToXYCoords)
+                                  .toList()
+                                  .map(
+                                    (pos) => _buildMarkerWidget(
+                                        pos,
+                                        colorIndex[colorIndex.length - 1 - i],
+                                        false),
                                   ),
                             );
                           }
