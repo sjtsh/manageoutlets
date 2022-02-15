@@ -550,6 +550,10 @@ class _NextScreenState extends State<NextScreen> {
                                                           Category>(
                                                         showSearchBox: true,
                                                         mode: Mode.MENU,
+                                                        dropdownButtonSplashRadius:
+                                                            1,
+                                                        dropDownButton:
+                                                            SizedBox.shrink(),
                                                         items:
                                                             widget.categories,
                                                         onChanged: (selected) {
@@ -581,10 +585,8 @@ class _NextScreenState extends State<NextScreen> {
                                                                     !isValidate)
                                                                 ? "define category"
                                                                 : null,
-                                                            contentPadding:
-                                                                const EdgeInsets
-                                                                        .fromLTRB(
-                                                                    8, 0, 8, 0),
+                                                            suffixIcon: Icon(Icons
+                                                                .arrow_drop_down),
                                                             border:
                                                                 OutlineInputBorder()),
                                                       );
@@ -852,30 +854,32 @@ class _NextScreenState extends State<NextScreen> {
                                   ],
                                 ),
                               ),
-                              isMerging ? Container() : Positioned(
-                                right: 4,
-                                top: 4,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.red),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      selectedOutlet.remove(e);
-                                      setState(() {});
-                                    },
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.clear,
-                                        color: Colors.white,
-                                        size: 12,
+                              isMerging
+                                  ? Container()
+                                  : Positioned(
+                                      right: 4,
+                                      top: 4,
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.red),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            selectedOutlet.remove(e);
+                                            setState(() {});
+                                          },
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.clear,
+                                              color: Colors.white,
+                                              size: 12,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                              )
+                                    )
                             ],
                           ),
                         )

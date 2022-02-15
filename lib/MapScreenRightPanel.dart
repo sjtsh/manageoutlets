@@ -23,14 +23,16 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function refresh;
   final Function updateBeat;
 
-  MapScreenRightPanel(this.categories,
-      this.distributors,
-      this.beats,
-      this.removeBeat,
-      this.selectedDropDownItem,
-      this._changeDropDownValue,
-      this.refresh,
-      this.updateBeat,);
+  MapScreenRightPanel(
+    this.categories,
+    this.distributors,
+    this.beats,
+    this.removeBeat,
+    this.selectedDropDownItem,
+    this._changeDropDownValue,
+    this.refresh,
+    this.updateBeat,
+  );
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
@@ -41,8 +43,20 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
+    return Container(
+      margin: EdgeInsets.all(12),
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+              offset: const Offset(0, 2),
+              spreadRadius: 2,
+              blurRadius: 2,
+              color: Colors.black.withOpacity(0.1))
+        ],
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -81,91 +95,87 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 ...List.generate(widget.beats.length, (int index) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 12),
-                    child: hi.Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                                offset: const Offset(0, 2),
-                                spreadRadius: 2,
-                                blurRadius: 2,
-                                color: Colors.black.withOpacity(0.1))
-                          ]),
-                      child: Material(
-                        color: Colors.white,
-                        child: InkWell(
-                          onTap: () {
-                            //single tap funtion
-                          },
-                          onDoubleTap: () {
-                            // double tap function
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (_) {
-                                  return NextScreen(
-                                      widget.beats[index],
-                                      widget.categories,
-                                      widget.refresh,
-                                      widget.updateBeat);
-                                }));
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(widget.beats[index].beatName,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
-                                    const SizedBox(
-                                      height: 4,
-                                    ),
-                                    Text(
-                                      "${widget.beats[index].outlet
-                                          .length} Outlets",
-                                      style:
-                                      const TextStyle(color: Colors.grey),
-                                    )
-                                  ],
-                                ),
-                                Expanded(child: hi.Container()),
-                                hi.Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: colorIndex[index],
-                                      border: Border.all(color: Colors.black)),
-                                ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    /// remove from list
-                                    widget.removeBeat(widget.beats[index]);
-                                  },
-                                  child: hi.Container(
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.red,
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(3.0),
-                                      child: Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
+                    child: GestureDetector(
+                      onTap: () {
+                        //single tap funtion
+                      },
+                      onDoubleTap: () {
+                        // double tap function
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) {
+                          return NextScreen(
+                              widget.beats[index],
+                              widget.categories,
+                              widget.refresh,
+                              widget.updateBeat);
+                        }));
+                      },
+                      child: hi.Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                  offset: const Offset(0, 2),
+                                  spreadRadius: 2,
+                                  blurRadius: 2,
+                                  color: Colors.black.withOpacity(0.1))
+                            ]),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(widget.beats[index].beatName,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                  const SizedBox(
+                                    height: 4,
+                                  ),
+                                  Text(
+                                    "${widget.beats[index].outlet.length} Outlets",
+                                    style:
+                                        const TextStyle(color: Colors.grey),
+                                  )
+                                ],
+                              ),
+                              Expanded(child: hi.Container()),
+                              hi.Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: colorIndex[index],
+                                    border: Border.all(color: Colors.black)),
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  /// remove from list
+                                  widget.removeBeat(widget.beats[index]);
+                                },
+                                child: hi.Container(
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red,
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(3.0),
+                                    child: Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                      size: 16,
                                     ),
                                   ),
-                                )
-                              ],
-                            ),
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -174,7 +184,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 }),
                 ...List.generate(
                   widget.selectedDropDownItem.beats.length,
-                      (int index) {
+                  (int index) {
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 12),
                       child: hi.Container(
@@ -206,9 +216,9 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     height: 4,
                                   ),
                                   Text(
-                                    "${widget.selectedDropDownItem.beats[index]
-                                        .outlet.length} Outlets",
-                                    style: const TextStyle(color: Colors.white),
+                                    "${widget.selectedDropDownItem.beats[index].outlet.length} Outlets",
+                                    style:
+                                        const TextStyle(color: Colors.white),
                                   )
                                 ],
                               ),
@@ -218,8 +228,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 width: 20,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color:
-                                    colorIndex[widget.beats.length + index],
+                                    color: colorIndex[
+                                        widget.beats.length + index],
                                     border: Border.all(color: Colors.black)),
                               ),
                               const SizedBox(
@@ -251,8 +261,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                   ]),
               child: RawMaterialButton(
                 onPressed: () {
-                  if (
-                  widget
+                  if (widget
                       .selectedDropDownItem.distributorName.isNotEmpty) {
                     if ("Select Distributor" !=
                         widget.selectedDropDownItem.distributorName) {
@@ -262,21 +271,23 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                         });
                         BeatService()
                             .updateOutlets(widget.beats,
-                            widget.selectedDropDownItem.id, context)
+                                widget.selectedDropDownItem.id, context)
                             .then((value) {
                           setState(() {
                             isDisabled = false;
                           });
-                          while(Navigator.canPop(context)) {
+                          while (Navigator.canPop(context)) {
                             Navigator.pop(context);
                           }
-                          Navigator.push(context, MaterialPageRoute(builder: (_){
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (_) {
                             return GetOutletScreen(1000000);
                           }));
                         });
                       }
                     } else {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(const SnackBar(
                         content: Text("Select a distributor"),
                       ));
                     }
@@ -287,12 +298,13 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                   }
                 },
                 child: Center(
-                    child: isDisabled
-                        ? CircularProgressIndicator()
-                        : Text(
-                      "CONFIRM",
-                      style: TextStyle(color: Colors.white),
-                    )),
+                  child: isDisabled
+                      ? CircularProgressIndicator()
+                      : Text(
+                          "CONFIRM",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                ),
               ),
             ),
           ),
