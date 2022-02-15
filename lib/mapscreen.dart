@@ -396,7 +396,8 @@ class _MapScreenState extends State<MapScreen> {
                               behavior: HitTestBehavior.opaque,
                               onPointerSignal: (event) {
                                 if (event is PointerScrollEvent) {
-                                  final delta = event.scrollDelta;
+                                  final
+                                  delta = event.scrollDelta;
 
                                   widget.controller.zoom -= delta.dy / 50.0;
                                  setState(() {});
