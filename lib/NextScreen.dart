@@ -1101,6 +1101,7 @@ class _NextScreenState extends State<NextScreen> {
                                                   focusNode: _dropFocus1,
                                                   canRequestFocus: true,
                                                   child: DropdownSearch(
+
                                                     showSearchBox: true,
                                                     items: List.generate(
                                                         selectedOutlet.length,
