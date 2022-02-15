@@ -12,6 +12,7 @@ import 'package:flutter/src/widgets/container.dart' as hi;
 import 'DoneButton.dart';
 import 'InteractiveImage.dart';
 import 'SingularOutletNonMerging.dart';
+import 'backButtonAlert.dart';
 import 'backend/Entities/OutletsListEntity.dart';
 import 'MergingScreen.dart';
 import 'backend/Entities/Outlet.dart';
@@ -678,15 +679,4 @@ class _NextScreenState extends State<NextScreen> {
   }
 }
 
-class BackButtonAlert extends StatelessWidget {
-  final String a;
-  final String b;
-  final String c;
 
-  BackButtonAlert(this.a, this.b, this.c);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-  }
-}
