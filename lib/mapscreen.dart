@@ -108,7 +108,6 @@ class _MapScreenState extends State<MapScreen> {
   void _changeDropDownValue(Distributor newValue) {
     setState(() {
       selectedDropDownItem = newValue;
-      print(selectedDropDownItem.beats);
     });
   }
 
@@ -226,7 +225,6 @@ class _MapScreenState extends State<MapScreen> {
                               redPositions = [];
                               rangeIndexes = [];
                               removePositions = [];
-
                               widget.outletLatLng
                                   .asMap()
                                   .entries

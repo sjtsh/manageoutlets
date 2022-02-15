@@ -1,6 +1,7 @@
 import 'package:dijkstra/dijkstra.dart';
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
+import 'LocalHostScreen.dart';
 import 'MergeMap.dart';
 import 'GetOutletScreen.dart';
 import 'backend/Services/CategoryService.dart';
@@ -8,6 +9,7 @@ import 'backend/shortestPath.dart';
 
 void main() {
   runApp(MyApp());
+  // CategoryService().getCatagory();
 }
 
 class MyApp extends StatefulWidget {
@@ -24,7 +26,8 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.purple,
       ),
-      home: GetOutletScreen(1000000),
+      // home: GetOutletScreen(1000000),
+      home: LocalHostScreen(),
     );
   }
 }

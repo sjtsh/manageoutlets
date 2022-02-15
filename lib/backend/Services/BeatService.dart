@@ -58,7 +58,6 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["deactivated"] = "true";
       }
 
-      print(aJson);
       aJson["outlets"] = aJson["outlets"].toString();
       Response res = await http.put(
         Uri.parse("$localhost/beat/update"),
