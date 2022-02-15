@@ -162,6 +162,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    final _minusFocus = FocusNode();
+
     return Shortcuts(
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.numpadSubtract): MinusButtonIntent(),
@@ -171,7 +174,9 @@ class _MapScreenState extends State<MapScreen> {
         actions: {
           MinusButtonIntent: CallbackAction(
             onInvoke: (intent) {
+
               setState(() {
+                _minusFocus.requestFocus();
                 removeActive = !removeActive;
                 removeCenter = null;
                 setRemoveRedRadius(0.0);
@@ -198,6 +203,7 @@ class _MapScreenState extends State<MapScreen> {
                   children: [
                     Expanded(
                       child: MapLayoutBuilder(
+
                         controller: widget.controller,
                         builder: (context, transformer) {
                           redPositions = widget.outletLatLng;
@@ -392,8 +398,8 @@ class _MapScreenState extends State<MapScreen> {
                                 if (event is PointerScrollEvent) {
                                   final delta = event.scrollDelta;
 
-                                  widget.controller.zoom -= delta.dy / 1000.0;
-                                  setState(() {});
+                                  widget.controller.zoom -= delta.dy / 50.0;
+                                 setState(() {});
                                 }
                               },
                               child: Stack(
@@ -429,6 +435,7 @@ class _MapScreenState extends State<MapScreen> {
                                       },
                                       child: Focus(
                                         autofocus: true,
+                                        focusNode: _minusFocus,
                                         child: Container(
                                           height: 60,
                                           width: 60,
