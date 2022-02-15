@@ -1046,23 +1046,24 @@ class _NextScreenState extends State<NextScreen> {
                         isMerging = true;
                       });
                     } else if (chosenOutlet != null && isMerging) {
-                      setState(() {
-                        if (headerText == "SELECT THE PHOTO") {
-                          headerText = "SELECT THE LOCATION";
-                          myID ??= chosenOutlet?.id;
-                          videoName ??= chosenOutlet?.videoName;
-                          dateTime ??= chosenOutlet?.dateTime;
-                          imageURL = chosenOutlet?.imageURL;
-                          chosenOutlet = null;
-                        } else if (headerText == "SELECT THE LOCATION") {
-                          headerText = "SELECT THE LOCATION";
-                          myID ??= chosenOutlet?.id;
-                          videoName ??= chosenOutlet?.videoName;
-                          dateTime ??= chosenOutlet?.dateTime;
-                          lat = chosenOutlet?.lat;
-                          lng = chosenOutlet?.lng;
-                          chosenOutlet = null;
-                          showDialog(
+                      setState(
+                        () {
+                          if (headerText == "SELECT THE PHOTO") {
+                            headerText = "SELECT THE LOCATION";
+                            myID ??= chosenOutlet?.id;
+                            videoName ??= chosenOutlet?.videoName;
+                            dateTime ??= chosenOutlet?.dateTime;
+                            imageURL = chosenOutlet?.imageURL;
+                            chosenOutlet = null;
+                          } else if (headerText == "SELECT THE LOCATION") {
+                            headerText = "SELECT THE LOCATION";
+                            myID ??= chosenOutlet?.id;
+                            videoName ??= chosenOutlet?.videoName;
+                            dateTime ??= chosenOutlet?.dateTime;
+                            lat = chosenOutlet?.lat;
+                            lng = chosenOutlet?.lng;
+                            chosenOutlet = null;
+                            showDialog(
                               context: context,
                               builder: (_) {
                                 return Shortcuts(
@@ -1151,13 +1152,13 @@ class _NextScreenState extends State<NextScreen> {
                                                 Focus(
                                                   canRequestFocus: true,
                                                   focusNode: _dropFocus1,
-
                                                   child: DropdownSearch(
                                                     showSearchBox: true,
                                                     items: List.generate(
                                                         selectedOutlet.length,
                                                         (index) =>
-                                                            selectedOutlet[index]
+                                                            selectedOutlet[
+                                                                    index]
                                                                 .outletName),
                                                     selectedItem: outletName,
                                                     hint: "Outlet Name",
@@ -1353,9 +1354,11 @@ class _NextScreenState extends State<NextScreen> {
                                     ),
                                   ),
                                 );
-                              });
-                        }
-                      });
+                              },
+                            );
+                          }
+                        },
+                      );
                     }
                   },
                   child: hi.Container(
