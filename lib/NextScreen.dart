@@ -233,11 +233,9 @@ class _NextScreenState extends State<NextScreen> {
                               ? selectedOutlet.length
                               : tempBeat!.outlet.length, (i) {
                         if (isMerging) {
-                          return SingularOutlet(selectedOutlet[i], (Outlet a) {
-                            setState(() {
-                              chosenOutlet = a;
-                            });
-                          }, chosenOutlet: chosenOutlet);
+                          return SingularOutlet(
+                              selectedOutlet[i], setChosenOutlet,
+                              chosenOutlet: chosenOutlet);
                         } else {
                           TextEditingController controller =
                               TextEditingController();
@@ -246,23 +244,13 @@ class _NextScreenState extends State<NextScreen> {
                               selectedOutlet,
                               tempBeat!.outlet[i],
                               controller,
-                              (Outlet a) {
-                                setState(() {
-                                  if (selectedOutlet.contains(a)) {
-                                    selectedOutlet.remove(a);
-                                  } else {
-                                    selectedOutlet.add(a);
-                                  }
-                                });
-                              },
+                              changeOutletSelectionStatus,
                               isValidate,
                               widget.categories,
-                              (Category? selected) {
-                                tempBeat!.outlet[i].newcategoryID =
-                                    selected?.id;
-                              },
+                              setCategoryID,
                               tempBeat!,
-                              i);
+                              i,
+                              removeItemFunction);
                         }
                       }),
                     );
@@ -681,5 +669,40 @@ class _NextScreenState extends State<NextScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Select all name and categories")));
     }
+  }
+
+  changeOutletSelectionStatus(Outlet a) {
+    setState(() {
+      if (selectedOutlet.contains(a)) {
+        selectedOutlet.remove(a);
+      } else {
+        selectedOutlet.add(a);
+      }
+    });
+  }
+
+  setCategoryID(Category? selected, int i) {
+    tempBeat!.outlet[i].newcategoryID = selected?.id;
+  }
+
+  setChosenOutlet(Outlet a) {
+    setState(() {
+      chosenOutlet = a;
+    });
+  }
+
+  removeItemFunction(int i) {
+    setState(() {
+      selectedOutlet
+          .removeWhere((element) => tempBeat!.outlet[i].id == element.id);
+
+      if (widget.beat.deactivated != null) {
+        tempBeat?.deactivated!.add(tempBeat!.outlet[i]);
+      } else {
+        tempBeat?.deactivated = [tempBeat!.outlet[i]];
+      }
+
+      (tempBeat as Beat).outlet.remove(tempBeat!.outlet[i]);
+    });
   }
 }

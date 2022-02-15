@@ -21,6 +21,7 @@ class SingularOutletNonMerging extends StatelessWidget {
   final Function setCategoryID;
   final Beat tempBeat;
   final int i;
+  final Function removeItemFunction;
 
   SingularOutletNonMerging(
       this.selectedOutlet,
@@ -31,7 +32,8 @@ class SingularOutletNonMerging extends StatelessWidget {
       this.categories,
       this.setCategoryID,
       this.tempBeat,
-      this.i);
+      this.i,
+      this.removeItemFunction);
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +140,7 @@ class SingularOutletNonMerging extends StatelessWidget {
                             dropDownButton: SizedBox.shrink(),
                             items: categories,
                             onChanged: (Category? category) {
-                              setCategoryID(category);
+                              setCategoryID(category, i);
                             },
                             selectedItem: (tempOutlet.newcategoryID == null)
                                 ? Category("Select category", 10000000)
@@ -164,13 +166,11 @@ class SingularOutletNonMerging extends StatelessWidget {
                             context: context,
                             builder: (_) {
                               return BackButtonAlert(
-                                "Do you want to deactivate this outlet?",
-                                "CANCEL",
-                                "REMOVE",
-                                  (){
-
-                                  }
-                              );
+                                  "Do you want to deactivate this outlet?",
+                                  "CANCEL",
+                                  "REMOVE", () {
+                                removeItemFunction(i);
+                              });
                             });
                       },
                       child: const Icon(

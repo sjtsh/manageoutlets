@@ -22,13 +22,10 @@ class BackButtonAlert extends StatelessWidget {
                 children: [
                   Text(
                     message,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(
                     height: 8,
-                  ),
-                  const Text(
-                    "Are you sure to go back?",
                   ),
                   Expanded(child: Container()),
                   Padding(
@@ -38,8 +35,8 @@ class BackButtonAlert extends StatelessWidget {
                       children: [
                         MaterialButton(
                             onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                            Navigator.pop(context);
+                              todo();
                             },
                             color: Colors.red,
                             child: Text(
@@ -48,7 +45,7 @@ class BackButtonAlert extends StatelessWidget {
                             )),
                         MaterialButton(
                           onPressed: () {
-                          todo();
+                          Navigator.pop(context);
                           },
                           child: Text(
                             "Cancel",
