@@ -1129,8 +1129,12 @@ class _NextScreenState extends State<NextScreen> {
                                                 SizedBox(
                                                   height: 10,
                                                 ),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
                                                 Focus(
                                                   canRequestFocus: true,
+                                                  autofocus: true,
                                                   focusNode: _textFocus,
                                                   child: TextField(
                                                     controller: textController,
@@ -1145,16 +1149,15 @@ class _NextScreenState extends State<NextScreen> {
                                                   height: 12,
                                                 ),
                                                 Focus(
-                                                  focusNode: _dropFocus1,
                                                   canRequestFocus: true,
-                                                  child: DropdownSearch(
+                                                  focusNode: _dropFocus1,
 
+                                                  child: DropdownSearch(
                                                     showSearchBox: true,
                                                     items: List.generate(
                                                         selectedOutlet.length,
                                                         (index) =>
-                                                            selectedOutlet[
-                                                                    index]
+                                                            selectedOutlet[index]
                                                                 .outletName),
                                                     selectedItem: outletName,
                                                     hint: "Outlet Name",
@@ -1168,63 +1171,21 @@ class _NextScreenState extends State<NextScreen> {
                                                 const SizedBox(
                                                   height: 12,
                                                 ),
-                                                // FOCUS
-                                                DropdownSearch(
+                                                Focus(
+                                                  canRequestFocus: true,
                                                   focusNode: _dropFocus2,
-                                                  selectedItem: category,
-                                                  showSearchBox: true,
-                                                  items: widget.categories,
-                                                  hint: "Select Category",
-                                                  onChanged: (Category? a) {
-                                                    setState(() {
-                                                      category = a;
-                                                      categoadsuig = a?.id;
-                                                    });
-                                                  },
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                TextField(
-                                                  controller: textController,
-                                                  decoration: const InputDecoration(
-                                                      border:
-                                                          OutlineInputBorder(),
-                                                      labelText:
-                                                          "Oulet Name (optional)"),
-                                                ),
-                                                const SizedBox(
-                                                  height: 12,
-                                                ),
-                                                DropdownSearch(
-                                                  showSearchBox: true,
-                                                  items: List.generate(
-                                                      selectedOutlet.length,
-                                                      (index) =>
-                                                          selectedOutlet[index]
-                                                              .outletName),
-                                                  selectedItem: outletName,
-                                                  hint: "Outlet Name",
-                                                  onChanged: (String? a) {
-                                                    setState(() {
-                                                      outletName = a;
-                                                    });
-                                                  },
-                                                ),
-                                                const SizedBox(
-                                                  height: 12,
-                                                ),
-                                                DropdownSearch(
-                                                  selectedItem: category,
-                                                  showSearchBox: true,
-                                                  items: widget.categories,
-                                                  hint: "Select Category",
-                                                  onChanged: (Category? a) {
-                                                    setState(() {
-                                                      category = a;
-                                                      categoadsuig = a?.id;
-                                                    });
-                                                  },
+                                                  child: DropdownSearch(
+                                                    selectedItem: category,
+                                                    showSearchBox: true,
+                                                    items: widget.categories,
+                                                    hint: "Select Category",
+                                                    onChanged: (Category? a) {
+                                                      setState(() {
+                                                        category = a;
+                                                        categoadsuig = a?.id;
+                                                      });
+                                                    },
+                                                  ),
                                                 ),
                                                 Expanded(child: hi.Container()),
                                                 GestureDetector(
