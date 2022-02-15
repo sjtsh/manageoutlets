@@ -60,6 +60,7 @@ class _NextScreenState extends State<NextScreen> {
   late FocusNode _dropFocus2;
   int tabCounter = 0;
 
+
   @override
   void initState() {
     super.initState();
@@ -157,7 +158,10 @@ class _NextScreenState extends State<NextScreen> {
                       showDialog(
                           context: context,
                           builder: (_) {
-                            return BackButtonAlert("Your progress will not be saved","Confirm","Cancel");
+                            return BackButtonAlert(
+                                "Your progress will not be saved",
+                                "Confirm",
+                                "Cancel");
                           });
 
                       // Navigator.pop(context);
@@ -340,14 +344,14 @@ class _NextScreenState extends State<NextScreen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               border: Border.all(
-                                color: selectedOutlet
-                                        .contains(tempBeat!.outlet[i])
-                                    ? Colors.green
-                                    : Colors.transparent,
-                                width: selectedOutlet
-                                        .contains(tempBeat!.outlet[i])
-                                    ? 5
-                                    : 0,
+                                color:
+                                    selectedOutlet.contains(tempBeat!.outlet[i])
+                                        ? Colors.green
+                                        : Colors.transparent,
+                                width:
+                                    selectedOutlet.contains(tempBeat!.outlet[i])
+                                        ? 5
+                                        : 0,
                               ),
                               borderRadius: BorderRadius.circular(12),
                               boxShadow: [
@@ -359,18 +363,14 @@ class _NextScreenState extends State<NextScreen> {
                               ],
                             ),
                             child: GestureDetector(
-
                               onTap: () {
                                 setState(() {
                                   if (selectedOutlet
                                       .contains(tempBeat!.outlet[i])) {
-                                    selectedOutlet
-                                        .remove(tempBeat!.outlet[i]);
+                                    selectedOutlet.remove(tempBeat!.outlet[i]);
                                   } else {
-                                    selectedOutlet
-                                        .add(tempBeat!.outlet[i]);
+                                    selectedOutlet.add(tempBeat!.outlet[i]);
                                   }
-
                                 });
                               },
                               child: Stack(
@@ -520,7 +520,10 @@ class _NextScreenState extends State<NextScreen> {
                                               showDialog(
                                                   context: context,
                                                   builder: (_) {
-                                                    return BackButtonAlert("Do you want to deactivate this outlet?", "CONFIRM", "REMOVE");
+                                                    return BackButtonAlert(
+                                                        "Do you want to deactivate this outlet?",
+                                                        "CONFIRM",
+                                                        "REMOVE");
                                                   });
                                             },
                                             child: const Icon(
@@ -532,13 +535,45 @@ class _NextScreenState extends State<NextScreen> {
                                           ),
                                         ],
                                       ),
-                                      InteractiveImage(
-                                          selectedOutlet,
-                                          tempBeat!,
-                                          i,
-                                          controller,
-                                          widget.categories,
-                                          isValidate),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onDoubleTap: () {
+                                            Navigator.push(context, MaterialPageRoute(builder: (_) {
+                                              return InteractiveImage(
+                                                  selectedOutlet,
+                                                  tempBeat!,
+                                                  i,
+                                                  controller,
+                                                  widget.categories,
+                                                  isValidate);
+                                            }));
+                                          },
+                                          child: MouseRegion(
+                                            cursor: SystemMouseCursors.click,
+                                            child: InteractiveViewer(
+                                              minScale: 0.7,
+                                              maxScale: 3.1,
+                                              boundaryMargin: const EdgeInsets.all(20.0),
+                                              child: Container(
+                                                color: Colors.black.withOpacity(0.1),
+                                                child: Image.network(
+                                                  tempBeat!.outlet[i].videoName == null
+                                                      ? tempBeat!.outlet[i].imageURL
+                                                      : localhost +
+                                                      tempBeat!.outlet[i].imageURL,
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                     ],
                                   ),
                                   Positioned(
@@ -546,7 +581,7 @@ class _NextScreenState extends State<NextScreen> {
                                     bottom: 0,
                                     child: Padding(
                                       padding: const EdgeInsets.all(12.0),
-                                      child: hi.Container(
+                                      child: Container(
                                         width: 60,
                                         height: 30,
                                         decoration: BoxDecoration(
@@ -575,7 +610,7 @@ class _NextScreenState extends State<NextScreen> {
                                         ),
                                       ),
                                     ),
-                                  )
+                                  ),
                                 ],
                               ),
                             ),
@@ -669,7 +704,7 @@ class _NextScreenState extends State<NextScreen> {
                         .toList(),
                   ),
                 ),
-                hi.Container(
+                Container(
                   width: 500,
                   child: isMerging
                       ? MergeMap(selectedOutlet,
