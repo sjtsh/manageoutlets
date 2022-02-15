@@ -7,7 +7,7 @@ import 'backend/database.dart';
 class SplashScreen extends StatefulWidget {
   final String localhostText;
 
-  SplashScreen( this.localhostText);
+  SplashScreen(this.localhostText);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -22,49 +22,71 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: estimatedTime)).then((value) {
-      setState(() {
-        percentage += 10;
-      });
-      Future.delayed(Duration(seconds: estimatedTime)).then((value) {
+    Future
+        .delayed(Duration(seconds: estimatedTime))
+        .then((value) {
+      if (mounted) {
         setState(() {
           percentage += 10;
         });
         Future.delayed(Duration(seconds: estimatedTime)).then((value) {
-          setState(() {
-            percentage += 10;
-          });
-          Future.delayed(Duration(seconds: estimatedTime)).then((value) {
+          if (mounted) {
             setState(() {
               percentage += 10;
             });
             Future.delayed(Duration(seconds: estimatedTime)).then((value) {
-              setState(() {
-                percentage += 10;
-              });
-
-              Future.delayed(Duration(seconds: estimatedTime)).then((value) {
+              if (mounted) {
                 setState(() {
                   percentage += 10;
                 });
-
                 Future.delayed(Duration(seconds: estimatedTime)).then((value) {
-                  setState(() {
-                    percentage += 10;
-                  });
-
-                  Future.delayed(Duration(seconds: estimatedTime))
-                      .then((value) {
+                  if (mounted) {
                     setState(() {
                       percentage += 10;
                     });
-                  });
+                    Future.delayed(Duration(seconds: estimatedTime)).then((
+                        value) {
+                      if (mounted) {
+                        setState(() {
+                          percentage += 10;
+                        });
+
+                        Future.delayed(Duration(seconds: estimatedTime))
+                            .then((value) {
+                          if (mounted) {
+                            setState(() {
+                              percentage += 10;
+                            });
+
+                            Future.delayed(Duration(seconds: estimatedTime))
+                                .then((value) {
+                              if (mounted) {
+                                setState(() {
+                                  percentage += 10;
+                                });
+
+                                Future.delayed(
+                                    Duration(seconds: estimatedTime))
+                                    .then((value) {
+                                  if (mounted) {
+                                    setState(() {
+                                      percentage += 10;
+                                    });
+                                  }
+                                });
+                              }
+                            });
+                          }
+                        });
+                      }
+                    });
+                  }
                 });
-              });
+              }
             });
-          });
+          }
         });
-      });
+      }
     });
   }
 
@@ -111,7 +133,8 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
           ),
-          Text("Trying to run on " + widget.localhostText, style: TextStyle(color: Colors.black.withOpacity(0.5)),),
+          Text("Trying to run on " + widget.localhostText,
+            style: TextStyle(color: Colors.black.withOpacity(0.5)),),
           SizedBox(height: 12,),
         ],
       ),

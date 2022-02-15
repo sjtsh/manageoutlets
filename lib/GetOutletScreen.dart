@@ -10,6 +10,7 @@ import 'package:map/map.dart' as mp;
 import 'RedMapScreen.dart';
 import 'backend/Entities/Category.dart';
 import 'backend/Entities/Outlet.dart';
+import 'backend/Entities/OutletsListEntity.dart';
 import 'backend/Services/OutletService.dart';
 import 'package:latlng/latlng.dart';
 
@@ -25,7 +26,6 @@ class GetOutletScreen extends StatefulWidget {
 }
 
 class _GetOutletScreenState extends State<GetOutletScreen> {
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -38,10 +38,10 @@ class _GetOutletScreenState extends State<GetOutletScreen> {
         Map<String, List<Outlet>> a = {};
         for (int i = 0; i < outlets.length; i++) {
           if (outlets[i].beatID != null) {
-            if (a.keys.contains(outlets[i].beatID)) {
-              a[outlets[i].beatID]?.add(outlets[i]);
+            if (a.keys.contains((outlets[i].beatID).toString())) {
+              a[(outlets[i].beatID).toString()]?.add(outlets[i]);
             } else {
-              a[outlets[i].beatID!] = [outlets[i]];
+              a[(outlets[i].beatID).toString()] = [outlets[i]];
             }
           }
         }
@@ -49,9 +49,9 @@ class _GetOutletScreenState extends State<GetOutletScreen> {
         //75*200
         List<Distributor> distributors =
             await DistributorService().getDistributor();
-        for (var z in distributors) {
-          for (var element in z.beats) {
-            element.outlet = a[element.id] ?? [];
+        for (Distributor z in distributors) {
+          for (Beat element in z.beats) {
+            element.outlet = a[(element.id).toString()] ?? [];
           }
         }
         return [outlets, distributors, categories, value];
