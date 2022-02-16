@@ -327,33 +327,8 @@ class _MapScreenState extends State<MapScreen> {
                                     .map(
                                       (pos) => _buildMarkerWidget(
                                           pos,
-                                          colorIndex[colorIndex.length -
-                                              1 -
-                                              selectedDropDownItem
-                                                  .beats.length -
-                                              i],
-                                          false),
-                                    ),
-                              );
-                            }
-                            for (int i = 0;
-                                i < selectedDropDownItem.beats.length;
-                                i++) {
-                              markerWidgets.addAll(
-                                List.generate(
-                                        selectedDropDownItem
-                                            .beats[i].outlet.length,
-                                        (e) => LatLng(
-                                            selectedDropDownItem
-                                                .beats[i].outlet[e].lat,
-                                            selectedDropDownItem
-                                                .beats[i].outlet[e].lng))
-                                    .map(transformer.fromLatLngToXYCoords)
-                                    .toList()
-                                    .map(
-                                      (pos) => _buildMarkerWidget(
-                                          pos,
-                                          colorIndex[colorIndex.length - 1 - i],
+                                          blueIndexes[i].color ??
+                                              Colors.blueGrey,
                                           false),
                                     ),
                               );

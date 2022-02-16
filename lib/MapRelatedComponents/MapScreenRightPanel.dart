@@ -7,11 +7,13 @@ import 'package:manage_outlets/backend/Services/DistributorService.dart';
 import 'package:manage_outlets/backend/shortestPath.dart';
 
 import '../BeforeMapScreens/GetOutletScreen.dart';
+import '../DialogBox/backButtonAlert.dart';
 import '../backend/Entities/Distributor.dart';
 
 import '../backend/Entities/OutletsListEntity.dart';
 import '../backend/Services/BeatService.dart';
 import '../backend/database.dart';
+import 'PopUpColors.dart';
 
 class MapScreenRightPanel extends StatefulWidget {
   final List<Category> categories;
@@ -60,6 +62,43 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Text(
+            "Search",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          Container(
+            height: 50,
+            child: TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                hintText: " Outlet Name",
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 6,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.black.withOpacity(0.1)),
+                boxShadow: [
+                  BoxShadow(
+                      offset: Offset(0, 2),
+                      blurRadius: 2,
+                      color: Colors.black.withOpacity(0.1))
+                ]),
+            child: MaterialButton(
+                onPressed: () {}, child: Container(child: Text("Search"))),
+          ),
+
+          const SizedBox(
+            height: 12,
+          ),
           const Text(
             "Distributor",
             style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -140,25 +179,33 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 ],
                               ),
                               Expanded(child: hi.Container()),
-                              hi.Container(
+                              PopUpColor(hi.Container(
                                 height: 20,
                                 width: 20,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: colorIndex[colorIndex.length -
-                                        1 -
-                                        widget
-                                            .selectedDropDownItem.beats.length -
-                                        index],
+                                    color: widget.beats[index].color,
                                     border: Border.all(color: Colors.black)),
-                              ),
+                              ),),
+
                               const SizedBox(
                                 width: 12,
                               ),
                               GestureDetector(
                                 onTap: () {
                                   /// remove from list
-                                  widget.removeBeat(widget.beats[index]);
+                                  //  widget.removeBeat(widget.beats[index]);
+                                  showDialog(
+                                    builder: (_) {
+                                      return BackButtonAlert(
+                                          "Your progress will lost.",
+                                          "CONFIRM",
+                                          "CANCEL", () {
+                                        widget.removeBeat(widget.beats[index]);
+                                      });
+                                    },
+                                    context: context,
+                                  );
                                 },
                                 child: hi.Container(
                                   decoration: const BoxDecoration(
@@ -227,8 +274,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 width: 20,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: colorIndex[
-                                        colorIndex.length - 1 - index],
+                                    color: widget.selectedDropDownItem.beats[index].color,
                                     border: Border.all(color: Colors.black)),
                               ),
                               const SizedBox(
