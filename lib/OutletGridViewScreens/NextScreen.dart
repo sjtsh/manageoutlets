@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:hovering/hovering.dart';
 import 'package:manage_outlets/MergeRelatedComponents/MergeMap.dart';
 import 'package:manage_outlets/MergeRelatedComponents/MergeScreen.dart';
@@ -42,6 +43,7 @@ class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
   bool isValidate = true;
   String sortDropdownItem = "Distance";
+  final controller = ScrollController();
 
   List<Outlet> selectedOutlet = [];
 
@@ -211,25 +213,39 @@ class _NextScreenState extends State<NextScreen> {
                   child: Builder(builder: (context) {
                     double height = MediaQuery.of(context).size.height;
                     double width = MediaQuery.of(context).size.width;
-                    return GridView.count(
-                      crossAxisCount: 3,
-                      childAspectRatio: width / (height * 1.175),
-                      children: List.generate(tempBeat!.outlet.length, (i) {
-                        TextEditingController controller =
-                            TextEditingController();
-                        controller.text = tempBeat!.outlet[i].outletName;
-                        return SingularOutletNonMerging(
-                            selectedOutlet,
-                            tempBeat!.outlet[i],
-                            controller,
-                            changeOutletSelectionStatus,
-                            isValidate,
-                            widget.categories,
-                            setCategoryID,
-                            tempBeat!,
-                            i,
-                            removeItemFunction);
-                      }),
+                    return ImprovedScrolling(
+                      scrollController:controller ,
+                      enableKeyboardScrolling: true,
+                      keyboardScrollConfig: KeyboardScrollConfig(
+                        arrowsScrollAmount: 250.0,
+                        homeScrollDurationBuilder: (currentScrollOffset, minScrollOffset) {
+                          return const Duration(milliseconds: 100);
+                        },
+                        endScrollDurationBuilder: (currentScrollOffset, maxScrollOffset) {
+                          return const Duration(milliseconds: 2000);
+                        },
+                      ),
+                      child: GridView.count(
+                        controller: controller,
+                        crossAxisCount: 3,
+                        childAspectRatio: width / (height * 1.175),
+                        children: List.generate(tempBeat!.outlet.length, (i) {
+                          TextEditingController controller =
+                              TextEditingController();
+                          controller.text = tempBeat!.outlet[i].outletName;
+                          return SingularOutletNonMerging(
+                              selectedOutlet,
+                              tempBeat!.outlet[i],
+                              controller,
+                              changeOutletSelectionStatus,
+                              isValidate,
+                              widget.categories,
+                              setCategoryID,
+                              tempBeat!,
+                              i,
+                              removeItemFunction);
+                        }),
+                      ),
                     );
                   }),
                 ),
