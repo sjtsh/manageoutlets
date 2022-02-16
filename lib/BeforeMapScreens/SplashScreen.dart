@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'backend/database.dart';
+import '../backend/database.dart';
 
 class SplashScreen extends StatefulWidget {
   final String localhostText;

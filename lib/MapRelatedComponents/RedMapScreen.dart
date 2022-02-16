@@ -4,9 +4,10 @@ import 'package:google_static_maps_controller/google_static_maps_controller.dart
 import 'package:latlng/latlng.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 
-import 'backend/Entities/Distributor.dart';
-import 'backend/Entities/Outlet.dart';
+import '../backend/Entities/Distributor.dart';
+import '../backend/Entities/Outlet.dart';
 import 'mapscreen.dart';
+
 
 class RedMapScreen extends StatefulWidget {
   final List<Outlet>

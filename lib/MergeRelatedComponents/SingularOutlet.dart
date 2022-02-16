@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'backend/Entities/Outlet.dart';
-import 'backend/database.dart';
+import '../backend/Entities/Outlet.dart';
+import '../backend/database.dart';
 
 class SingularOutlet extends StatelessWidget {
   final Outlet? chosenOutlet;

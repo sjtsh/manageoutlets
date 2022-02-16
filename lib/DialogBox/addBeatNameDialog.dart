@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'backend/Entities/Outlet.dart';
-import 'backend/Entities/OutletsListEntity.dart';
-import 'backend/shortestPath.dart';
+import '../backend/Entities/Outlet.dart';
+import '../backend/Entities/OutletsListEntity.dart';
+import '../backend/shortestPath.dart';
 
 class AddBeatDialogBox extends StatefulWidget {
   final TextEditingController textController;

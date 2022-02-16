@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:manage_outlets/SplashScreen.dart';
+import 'package:manage_outlets/BeforeMapScreens/SplashScreen.dart';
 import 'package:manage_outlets/backend/Entities/Distributor.dart';
 import 'package:manage_outlets/backend/Services/CategoryService.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
 import 'package:map/map.dart' as mp;
 
-import 'RedMapScreen.dart';
-import 'backend/Entities/Category.dart';
-import 'backend/Entities/Outlet.dart';
-import 'backend/Entities/OutletsListEntity.dart';
-import 'backend/Services/OutletService.dart';
 import 'package:latlng/latlng.dart';
 
-import 'backend/database.dart';
+import '../MapRelatedComponents/RedMapScreen.dart';
+import '../backend/Entities/Category.dart';
+import '../backend/Entities/Outlet.dart';
+import '../backend/Entities/OutletsListEntity.dart';
+import '../backend/Services/OutletService.dart';
+import '../backend/database.dart';
+
 
 class GetOutletScreen extends StatefulWidget {
   final double redRadius;

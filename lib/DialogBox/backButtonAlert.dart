@@ -44,13 +44,12 @@ class BackButtonAlert extends StatelessWidget {
                               style: TextStyle(color: Colors.white),
                             )),
                         MaterialButton(
-                          onPressed: () {
-                          Navigator.pop(context);
-                          },
-                          child: Text(
-                            "Cancel",
-                          ),
-                        ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              RedMessage,
+                            ))
                       ],
                     ),
                   )

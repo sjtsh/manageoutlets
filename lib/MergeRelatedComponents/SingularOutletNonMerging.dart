@@ -4,12 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:hovering/hovering.dart';
 
 import 'CompareInteractive.dart';
-import 'InteractiveImage.dart';
-import 'NextScreen.dart';
-import 'backButtonAlert.dart';
-import 'backend/Entities/Category.dart';
-import 'backend/Entities/Outlet.dart';
-import 'backend/Entities/OutletsListEntity.dart';
+import '../OutletGridViewScreens/InteractiveImage.dart';
+import '../OutletGridViewScreens/NextScreen.dart';
+import '../DialogBox/backButtonAlert.dart';
+import '../backend/Entities/Category.dart';
+import '../backend/Entities/Outlet.dart';
+import '../backend/Entities/OutletsListEntity.dart';
+import '../backend/database.dart';
 
 class SingularOutletNonMerging extends StatelessWidget {
   final List<Outlet> selectedOutlet;
@@ -167,8 +168,8 @@ class SingularOutletNonMerging extends StatelessWidget {
                             builder: (_) {
                               return BackButtonAlert(
                                   "Do you want to deactivate this outlet?",
-                                  "CANCEL",
-                                  "REMOVE", () {
+                                  "REMOVE",
+                                  "CANCEL", () {
                                 removeItemFunction(i);
                               });
                             });
@@ -182,8 +183,35 @@ class SingularOutletNonMerging extends StatelessWidget {
                     ),
                   ],
                 ),
-                InteractiveImage(selectedOutlet, tempBeat, i, controller,
-                    categories, isValidate),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onDoubleTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) {
+                              return InteractiveImage(selectedOutlet, tempBeat,
+                                  i, controller, categories, isValidate);
+                            }));
+                          },
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: Container(
+                              color: Colors.black.withOpacity(0.1),
+                              child: Image.network(
+                                tempBeat.outlet[i].videoName == null
+                                    ? tempBeat.outlet[i].imageURL
+                                    : localhost + tempBeat.outlet[i].imageURL,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ]),
               Positioned(
                 right: 0,

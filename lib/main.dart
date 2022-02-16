@@ -1,11 +1,6 @@
 import 'package:dijkstra/dijkstra.dart';
 import 'package:flutter/material.dart';
-import 'package:manage_outlets/backend/Services/DistributorService.dart';
-import 'LocalHostScreen.dart';
-import 'MergeMap.dart';
-import 'GetOutletScreen.dart';
-import 'backend/Services/CategoryService.dart';
-import 'backend/shortestPath.dart';
+import 'BeforeMapScreens/LocalHostScreen.dart';
 
 void main() {
   runApp(MyApp());
