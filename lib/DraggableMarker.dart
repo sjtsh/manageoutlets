@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/MapRelatedComponents/mapscreen.dart';
 import 'package:map/map.dart';
+import 'package:latlng/latlng.dart';
 
 class DraggableMarker extends StatefulWidget {
   final MapTransformer? localTransformer;
   final bool isLarge;
   final Color color;
-  final Offset offset;
+  final LatLng latLng;
   final Function changeCenter;
   final GlobalKey stackKey;
 
-  DraggableMarker(this.localTransformer, this.isLarge, this.color, this.offset,
+  DraggableMarker(this.localTransformer, this.isLarge, this.color, this.latLng,
       this.changeCenter, this.stackKey);
 
   @override
@@ -18,27 +19,26 @@ class DraggableMarker extends StatefulWidget {
 }
 
 class _DraggableMarkerState extends State<DraggableMarker> {
-  late Offset pos;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    pos = widget.offset;
   }
 
   @override
   Widget build(BuildContext context) {
+    Offset? pos = widget.localTransformer?.fromLatLngToXYCoords(widget.latLng);
     return Positioned(
 
-      left: pos.dx - 16,
-      top: pos.dy - 16,
+      left: pos?.dx ?? 0 - 16,
+      top: pos?.dy ?? 0 - 16,
       width: widget.isLarge ? 50 : 24,
       height: widget.isLarge ? 50 : 24,
       child: Draggable(
         feedback: Icon(
           Icons.location_on,
-          color: widget.color,
+          color: Colors.blueGrey,
           size: 30,
         ),
         child: Icon(
@@ -55,8 +55,8 @@ class _DraggableMarkerState extends State<DraggableMarker> {
             double _x = dragDetails.offset.dx - parentPos.left; // 11.
             double _y = dragDetails.offset.dy - parentPos.top;
             pos = Offset(_x, _y);
-            widget.changeCenter(
-                widget.localTransformer?.fromXYCoordsToLatLng(Offset(_x, _y)));
+            // widget.changeCenter(
+            //     widget.localTransformer?.fromXYCoordsToLatLng(Offset(_x, _y)));
           });
         },
       ),
