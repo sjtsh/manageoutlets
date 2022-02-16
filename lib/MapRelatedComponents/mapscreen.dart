@@ -221,7 +221,6 @@ class _MapScreenState extends State<MapScreen> {
                               for (Beat beat in blueIndexes) {
                                 selectedOutlets.addAll(beat.outlet);
                               }
-
                               redPositions = [];
                               rangeIndexes = [];
                               removePositions = [];

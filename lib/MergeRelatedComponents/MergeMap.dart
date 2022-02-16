@@ -72,6 +72,8 @@ class _MergeMapState extends State<MergeMap> {
           ? LatLng(0, 0)
           : LatLng(centerOutlet.lat, centerOutlet.lng),
       zoom: widget.isMerge ? 19 : 17, //19
+
+
     );
   }
 
