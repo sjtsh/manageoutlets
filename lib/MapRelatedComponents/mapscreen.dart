@@ -148,14 +148,16 @@ class _MapScreenState extends State<MapScreen> {
       ),
     );
   }
-  Widget _buildDraggableMarkerWidget(transformer, element){
-    return DraggableMarker(
-        transformer,
-        true,
-        Colors.green,
-        element,
-        widget.changeCenter,
-        stackKey);
+
+  Widget _buildDraggableMarkerWidget(transformer, LatLng element, int i) {
+    return DraggableMarker(transformer, true, Colors.green, element,
+        (LatLng? latLng) {
+      if (latLng != null) {
+        setState(() {
+          pathPoints[i] = latLng;
+        });
+      }
+    }, stackKey);
   }
 
   Widget _buildMarkerWidgetClear(Offset pos, Color color, bool isLarge) {
@@ -366,8 +368,9 @@ class _MapScreenState extends State<MapScreen> {
                                   homeLocation, Colors.black, true);
                             }
 
-                            for (var element in pathPoints) {
-                              pathWidgets.add(_buildDraggableMarkerWidget(transformer, element));
+                            for (int i = 0; i < pathPoints.length; i++) {
+                              pathWidgets.add(_buildDraggableMarkerWidget(
+                                  transformer, pathPoints[i], i));
                             }
                             return GestureDetector(
                               behavior: HitTestBehavior.opaque,
@@ -397,11 +400,11 @@ class _MapScreenState extends State<MapScreen> {
                               onTapUp: (details) {
                                 if (!isPathPointChoosing) {
                                   LatLng location =
-                                  transformer.fromXYCoordsToLatLng(
-                                      details.localPosition);
+                                      transformer.fromXYCoordsToLatLng(
+                                          details.localPosition);
 
-                                  Offset clicked =
-                                  transformer.fromLatLngToXYCoords(location);
+                                  Offset clicked = transformer
+                                      .fromLatLngToXYCoords(location);
                                   if (!removeActive) {
                                     widget.changeCenter(location);
                                   } else {
@@ -413,10 +416,10 @@ class _MapScreenState extends State<MapScreen> {
                                   // print(
                                   //     '${details.localPosition.dx}, ${details.localPosition.dy}');
                                 } else {
-
                                   LatLng location =
-                                  transformer.fromXYCoordsToLatLng(
-                                      Offset(details.localPosition.dx-16, details.localPosition.dy-16));
+                                      transformer.fromXYCoordsToLatLng(Offset(
+                                          details.localPosition.dx - 16,
+                                          details.localPosition.dy - 16));
                                   setState(() {
                                     pathPoints.add(location);
                                   });

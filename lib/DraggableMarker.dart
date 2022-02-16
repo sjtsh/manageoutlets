@@ -8,18 +8,17 @@ class DraggableMarker extends StatefulWidget {
   final bool isLarge;
   final Color color;
   final LatLng latLng;
-  final Function changeCenter;
+  final Function changeOffset;
   final GlobalKey stackKey;
 
   DraggableMarker(this.localTransformer, this.isLarge, this.color, this.latLng,
-      this.changeCenter, this.stackKey);
+      this.changeOffset, this.stackKey);
 
   @override
   State<DraggableMarker> createState() => _DraggableMarkerState();
 }
 
 class _DraggableMarkerState extends State<DraggableMarker> {
-
   @override
   void initState() {
     // TODO: implement initState
@@ -30,7 +29,6 @@ class _DraggableMarkerState extends State<DraggableMarker> {
   Widget build(BuildContext context) {
     Offset? pos = widget.localTransformer?.fromLatLngToXYCoords(widget.latLng);
     return Positioned(
-
       left: pos?.dx ?? 0 - 16,
       top: pos?.dy ?? 0 - 16,
       width: widget.isLarge ? 50 : 24,
@@ -47,22 +45,19 @@ class _DraggableMarkerState extends State<DraggableMarker> {
           size: 30,
         ),
         onDragEnd: (dragDetails) {
-          // 10.
-          setState(() {
-            final parentPos = widget.stackKey.globalPaintBounds;
-            if (parentPos == null) return;
+          final parentPos = widget.stackKey.globalPaintBounds;
+          if (parentPos == null) return;
 
-            double _x = dragDetails.offset.dx - parentPos.left; // 11.
-            double _y = dragDetails.offset.dy - parentPos.top;
-            pos = Offset(_x, _y);
-            // widget.changeCenter(
-            //     widget.localTransformer?.fromXYCoordsToLatLng(Offset(_x, _y)));
-          });
+          double _x = dragDetails.offset.dx - parentPos.left; // 11.
+          double _y = dragDetails.offset.dy - parentPos.top;
+          widget.changeOffset(
+              widget.localTransformer?.fromXYCoordsToLatLng(Offset(_x, _y)));
         },
       ),
     );
   }
 }
+
 extension GlobalKeyExtension on GlobalKey {
   Rect? get globalPaintBounds {
     final renderObject = currentContext?.findRenderObject();
