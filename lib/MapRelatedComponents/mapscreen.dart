@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
+import 'package:manage_outlets/DraggableMarker.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
 import 'package:manage_outlets/DialogBox/addBeatNameDialog.dart';
@@ -58,9 +59,8 @@ class AddButtonIntent extends Intent {}
 class _MapScreenState extends State<MapScreen> {
   LatLng?
       removeCenter; // this the point from which the latlng will be calculated
-
+  GlobalKey stackKey = GlobalKey();
   double redRemoveDistance = 0;
-  bool _validate = false;
 
   void refresh() {
     setState(() {});
@@ -96,6 +96,7 @@ class _MapScreenState extends State<MapScreen> {
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
+  MapTransformer? localTransformer;
 
   bool removeActive = false;
 
@@ -144,6 +145,11 @@ class _MapScreenState extends State<MapScreen> {
         size: 30,
       ),
     );
+  }
+
+  Widget _buildDraggableMarkerWidget(Offset pos, Color color, bool isLarge) {
+    return DraggableMarker(
+        localTransformer, isLarge, color, pos, widget.changeCenter, stackKey);
   }
 
   Widget _buildMarkerWidgetClear(Offset pos, Color color, bool isLarge) {
@@ -214,13 +220,23 @@ class _MapScreenState extends State<MapScreen> {
                         child: MapLayoutBuilder(
                           controller: widget.controller,
                           builder: (context, transformer) {
+                            localTransformer = transformer;
                             redPositions = widget.outletLatLng;
                             final markerWidgets = [];
                             if (widget.center != null) {
-                              List<Outlet> selectedOutlets = [];
+                              List<String> selectedOutlets = [];
                               for (Beat beat in blueIndexes) {
-                                selectedOutlets.addAll(beat.outlet);
+                                for (var element in beat.outlet) {
+                                  selectedOutlets.add(element.id);
+                                }
                               }
+
+                              for (Beat beat in selectedDropDownItem.beats) {
+                                for (var element in beat.outlet) {
+                                  selectedOutlets.add(element.id);
+                                }
+                              }
+
                               redPositions = [];
                               rangeIndexes = [];
                               removePositions = [];
@@ -228,10 +244,11 @@ class _MapScreenState extends State<MapScreen> {
                                   .asMap()
                                   .entries
                                   .forEach((element) {
-                                if (selectedOutlets.contains(element.value) ||
+                                if (selectedOutlets
+                                        .contains(element.value.beatID) ||
                                     widget.removePermPositions
                                         .contains(element.value)) {
-                                  // bluePositions.add(element.value);
+                                  // bluePositions.add(element.value
                                 } else if (GeolocatorPlatform.instance
                                         .distanceBetween(
                                             element.value.lat,
@@ -301,7 +318,35 @@ class _MapScreenState extends State<MapScreen> {
                                     .toList()
                                     .map(
                                       (pos) => _buildMarkerWidget(
-                                          pos, colorIndex[i], false),
+                                          pos,
+                                          colorIndex[colorIndex.length -
+                                              1 -
+                                              selectedDropDownItem
+                                                  .beats.length -
+                                              i],
+                                          false),
+                                    ),
+                              );
+                            }
+                            for (int i = 0;
+                                i < selectedDropDownItem.beats.length;
+                                i++) {
+                              markerWidgets.addAll(
+                                List.generate(
+                                        selectedDropDownItem
+                                            .beats[i].outlet.length,
+                                        (e) => LatLng(
+                                            selectedDropDownItem
+                                                .beats[i].outlet[e].lat,
+                                            selectedDropDownItem
+                                                .beats[i].outlet[e].lng))
+                                    .map(transformer.fromLatLngToXYCoords)
+                                    .toList()
+                                    .map(
+                                      (pos) => _buildMarkerWidget(
+                                          pos,
+                                          colorIndex[colorIndex.length - 1 - i],
+                                          false),
                                     ),
                               );
                             }
@@ -311,7 +356,7 @@ class _MapScreenState extends State<MapScreen> {
                               final homeLocation = transformer
                                   .fromLatLngToXYCoords(widget.center!);
 
-                              homeMarkerWidget = _buildMarkerWidget(
+                              homeMarkerWidget = _buildDraggableMarkerWidget(
                                   homeLocation, Colors.black, true);
                             }
 
@@ -377,15 +422,23 @@ class _MapScreenState extends State<MapScreen> {
                                   }
                                 },
                                 child: Stack(
+                                  key: stackKey,
                                   children: [
-                                    Map(
-                                      controller: widget.controller,
-                                      builder: (context, x, y, z) {
-                                        final url =
-                                            'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
-                                        return CachedNetworkImage(
-                                          imageUrl: url,
-                                          fit: BoxFit.cover,
+                                    DragTarget(
+                                      builder: (BuildContext context,
+                                          List<Object?> candidateData,
+                                          List<dynamic> rejectedData) {
+
+                                        return Map(
+                                          controller: widget.controller,
+                                          builder: (context, x, y, z) {
+                                            final url =
+                                                'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
+                                            return CachedNetworkImage(
+                                              imageUrl: url,
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
                                         );
                                       },
                                     ),
