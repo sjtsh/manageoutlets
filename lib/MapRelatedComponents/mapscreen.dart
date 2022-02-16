@@ -302,7 +302,10 @@ class _MapScreenState extends State<MapScreen> {
                                     .toList()
                                     .map(
                                       (pos) => _buildMarkerWidget(
-                                          pos, colorIndex[i], false),
+                                          pos,
+                                          blueIndexes[i].color ??
+                                              Colors.blueGrey,
+                                          false),
                                     ),
                               );
                             }

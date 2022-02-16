@@ -61,9 +61,14 @@ class LocalHostScreen extends StatelessWidget {
                     if (controller.text != "") {
                       localhost = controller.text;
                     }
-                    Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      return GetOutletScreen(1000000);
-                    }));
+                    // Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    //   return GetOutletScreen(1000000);
+                    // }));
+                    Navigator.push(context,
+                    PageRouteBuilder(
+                        pageBuilder: (c, a1, a2) => GetOutletScreen(10000000000),
+                    transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                    transitionDuration: Duration(milliseconds: 500)));
                   },
                   child: Center(
                     child: Text(

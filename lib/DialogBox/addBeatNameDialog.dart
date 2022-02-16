@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:manage_outlets/backend/database.dart';
 
 import '../backend/Entities/Outlet.dart';
 import '../backend/Entities/OutletsListEntity.dart';
@@ -36,7 +37,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
       rangeIndexes = [];
       print(redPositions.length);
       blueIndexes.add(
-        Beat(textController.text, shortestPath(redPositions)),
+        Beat(textController.text, shortestPath(redPositions), color: colorIndex[widget.blueIndexes.length]),
       );
       setTempRedRadius(0.0);
       Navigator.pop(context);
