@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
+import 'package:manage_outlets/DraggableMarker.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
 import 'package:manage_outlets/DialogBox/addBeatNameDialog.dart';
@@ -58,9 +59,8 @@ class AddButtonIntent extends Intent {}
 class _MapScreenState extends State<MapScreen> {
   LatLng?
       removeCenter; // this the point from which the latlng will be calculated
-
+  GlobalKey stackKey = GlobalKey();
   double redRemoveDistance = 0;
-  bool _validate = false;
 
   void refresh() {
     setState(() {});
@@ -89,6 +89,9 @@ class _MapScreenState extends State<MapScreen> {
       // }).toList();
     });
   }
+
+  List<LatLng> pathPoints = [];
+  bool isPathPointChoosing = false;
 
   List<Outlet> redPositions = [];
   List<Outlet> bluePositions = [];
@@ -144,6 +147,11 @@ class _MapScreenState extends State<MapScreen> {
         size: 30,
       ),
     );
+  }
+
+  Widget _buildDraggableMarkerWidget(transformer, element) {
+    return DraggableMarker(transformer, true, Colors.green, element,
+        widget.changeCenter, stackKey);
   }
 
   Widget _buildMarkerWidgetClear(Offset pos, Color color, bool isLarge) {
@@ -214,12 +222,21 @@ class _MapScreenState extends State<MapScreen> {
                         child: MapLayoutBuilder(
                           controller: widget.controller,
                           builder: (context, transformer) {
+                            List<Widget> pathWidgets = [];
                             redPositions = widget.outletLatLng;
                             final markerWidgets = [];
                             if (widget.center != null) {
-                              List<Outlet> selectedOutlets = [];
+                              List<String> selectedOutlets = [];
                               for (Beat beat in blueIndexes) {
-                                selectedOutlets.addAll(beat.outlet);
+                                for (var element in beat.outlet) {
+                                  selectedOutlets.add(element.id);
+                                }
+                              }
+
+                              for (Beat beat in selectedDropDownItem.beats) {
+                                for (var element in beat.outlet) {
+                                  selectedOutlets.add(element.id);
+                                }
                               }
 
                               redPositions = [];
@@ -229,10 +246,11 @@ class _MapScreenState extends State<MapScreen> {
                                   .asMap()
                                   .entries
                                   .forEach((element) {
-                                if (selectedOutlets.contains(element.value) ||
+                                if (selectedOutlets
+                                        .contains(element.value.beatID) ||
                                     widget.removePermPositions
                                         .contains(element.value)) {
-                                  // bluePositions.add(element.value);
+                                  // bluePositions.add(element.value
                                 } else if (GeolocatorPlatform.instance
                                         .distanceBetween(
                                             element.value.lat,
@@ -319,12 +337,9 @@ class _MapScreenState extends State<MapScreen> {
                                   homeLocation, Colors.black, true);
                             }
 
-                            if (removeCenter != null) {
-                              final homeLocation = transformer
-                                  .fromLatLngToXYCoords(removeCenter!);
-
-                              removeMarkerWidget = _buildMarkerWidgetClear(
-                                  homeLocation, Colors.black, true);
+                            for (var element in pathPoints) {
+                              pathWidgets.add(_buildDraggableMarkerWidget(
+                                  transformer, element));
                             }
                             return GestureDetector(
                               behavior: HitTestBehavior.opaque,
@@ -352,23 +367,32 @@ class _MapScreenState extends State<MapScreen> {
                                 }
                               },
                               onTapUp: (details) {
-                                LatLng location =
-                                    transformer.fromXYCoordsToLatLng(
-                                        details.localPosition);
+                                if (!isPathPointChoosing) {
+                                  LatLng location =
+                                      transformer.fromXYCoordsToLatLng(
+                                          details.localPosition);
 
-                                Offset clicked =
-                                    transformer.fromLatLngToXYCoords(location);
-                                if (!removeActive) {
-                                  widget.changeCenter(location);
+                                  Offset clicked = transformer
+                                      .fromLatLngToXYCoords(location);
+                                  if (!removeActive) {
+                                    widget.changeCenter(location);
+                                  } else {
+                                    changeRemoveCenter(location);
+                                  }
+                                  // print(
+                                  //     '${location.latitude}, ${location.longitude}');
+                                  // print('${clicked.dx}, ${clicked.dy}');
+                                  // print(
+                                  //     '${details.localPosition.dx}, ${details.localPosition.dy}');
                                 } else {
-                                  changeRemoveCenter(location);
-                                  print("remove marker here");
+                                  LatLng location =
+                                      transformer.fromXYCoordsToLatLng(Offset(
+                                          details.localPosition.dx - 16,
+                                          details.localPosition.dy - 16));
+                                  setState(() {
+                                    pathPoints.add(location);
+                                  });
                                 }
-                                print(
-                                    '${location.latitude}, ${location.longitude}');
-                                print('${clicked.dx}, ${clicked.dy}');
-                                print(
-                                    '${details.localPosition.dx}, ${details.localPosition.dy}');
                               },
                               child: Listener(
                                 behavior: HitTestBehavior.opaque,
@@ -381,15 +405,22 @@ class _MapScreenState extends State<MapScreen> {
                                   }
                                 },
                                 child: Stack(
+                                  key: stackKey,
                                   children: [
-                                    Map(
-                                      controller: widget.controller,
-                                      builder: (context, x, y, z) {
-                                        final url =
-                                            'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
-                                        return CachedNetworkImage(
-                                          imageUrl: url,
-                                          fit: BoxFit.cover,
+                                    DragTarget(
+                                      builder: (BuildContext context,
+                                          List<Object?> candidateData,
+                                          List<dynamic> rejectedData) {
+                                        return Map(
+                                          controller: widget.controller,
+                                          builder: (context, x, y, z) {
+                                            final url =
+                                                'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
+                                            return CachedNetworkImage(
+                                              imageUrl: url,
+                                              fit: BoxFit.cover,
+                                            );
+                                          },
                                         );
                                       },
                                     ),
@@ -400,15 +431,18 @@ class _MapScreenState extends State<MapScreen> {
                                         ? removeMarkerWidget
                                         : Container(),
                                     ...markerWidgets,
+                                    ...pathWidgets,
                                     Positioned(
                                       bottom: 20,
                                       right: 20,
                                       child: GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            removeActive = !removeActive;
-                                            removeCenter = null;
-                                            setRemoveRedRadius(0.0);
+                                            // removeActive = !removeActive;
+                                            // removeCenter = null;
+                                            // setRemoveRedRadius(0.0);
+                                            isPathPointChoosing =
+                                                !isPathPointChoosing;
                                           });
                                         },
                                         child: Focus(
@@ -417,12 +451,12 @@ class _MapScreenState extends State<MapScreen> {
                                             height: 60,
                                             width: 60,
                                             decoration: BoxDecoration(
-                                                color: removeActive
+                                                color: isPathPointChoosing
                                                     ? Colors.green
                                                     : Colors.red,
                                                 shape: BoxShape.circle),
                                             child: Icon(
-                                              Icons.remove,
+                                              Icons.pattern_sharp,
                                               color: Colors.white,
                                             ),
                                           ),

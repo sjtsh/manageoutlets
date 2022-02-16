@@ -42,6 +42,7 @@ class BackIntent extends Intent {}
 class _NextScreenState extends State<NextScreen> {
   Beat? tempBeat;
   bool isValidate = true;
+  String sortDropdownItem = "Distance";
   final controller = ScrollController();
 
   List<Outlet> selectedOutlet = [];
@@ -146,11 +147,13 @@ class _NextScreenState extends State<NextScreen> {
                             context: context,
                             builder: (_) {
                               return BackButtonAlert(
-                                  "Your progress will not be saved",
-                                  "Confirm",
-                                  "Cancel", () {
-                                Navigator.pop(context);
-                              });
+                                "Your progress will not be saved",
+                                "Confirm",
+                                "Cancel",
+                                () {
+                                  Navigator.pop(context);
+                                },
+                              );
                             });
                         widget.refresh();
                       },
@@ -164,13 +167,36 @@ class _NextScreenState extends State<NextScreen> {
                     ),
                     Expanded(
                       child: Center(
-                        child: Text(
-                          "${(tempBeat as Beat).outlet.length} Outlets",
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "${(tempBeat as Beat).outlet.length} Outlets",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            DropdownButton(
+                              items: <String>["Distance", "Name", "Category"]
+                                  .map(
+                                    (e) => DropdownMenuItem(
+                                      child: Text(e),
+                                      value: e,
+                                    ),
+                                  )
+                                  .toList(),
+                              value: sortDropdownItem,
+                              onChanged: (String? a) {
+                                if (a != null) {
+                                  setState(() {
+                                    sortDropdownItem = a;
+                                  });
+                                }
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
