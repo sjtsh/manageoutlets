@@ -48,7 +48,7 @@ class Outlet {
       lng: double.parse(json["lng"]),
       md5: json["md5"],
       imageURL: json["imageURL"],
-      deactivated: json["deactivated"].toString().toLowerCase() == "false"? false:true,  //with capital F and T
+      deactivated: json["deactivated"] == "False" ? false:true,  //with capital F and T
     );
   }
 }

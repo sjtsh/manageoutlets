@@ -161,10 +161,6 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 ],
                               ),
                               Expanded(child: hi.Container()),
-                              // PopUpColor(
-                              //   changeColor,
-                              //   widget.beats[index].color ?? Colors.blueGrey,
-                              // ),
                           PopupMenuButton(
                             itemBuilder: (context) {
                               return List.generate(
