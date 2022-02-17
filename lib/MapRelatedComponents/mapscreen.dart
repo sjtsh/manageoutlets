@@ -107,6 +107,11 @@ class _MapScreenState extends State<MapScreen> {
     widget.controller.zoom += 0.5;
     setState(() {});
   }
+  void changeColor(Color newColor, int index) {
+    setState(() {
+      blueIndexes[index].color = newColor;
+    });
+  }
 
   Offset? _dragStart;
   double _scaleStart = 1.0;

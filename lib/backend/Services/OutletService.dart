@@ -13,8 +13,6 @@ class OutletService {
     Response res = await http.get(
       Uri.parse("$localhost/outlet"),
     );
-    print("hello");
-    print(res.body);
     List<dynamic> a = jsonDecode(res.body);
     List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
     return outlets;
