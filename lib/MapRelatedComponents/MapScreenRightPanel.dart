@@ -43,6 +43,12 @@ class MapScreenRightPanel extends StatefulWidget {
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
   bool isDisabled = false;
 
+  void changeColor(Color newColor, int index) {
+    setState(() {
+      widget.beats[index].color = newColor;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -179,15 +185,10 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 ],
                               ),
                               Expanded(child: hi.Container()),
-                              PopUpColor(hi.Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: widget.beats[index].color,
-                                    border: Border.all(color: Colors.black)),
-                              ),),
-
+                              PopUpColor(
+                                changeColor,
+                                widget.beats[index].color ?? Colors.blueGrey,
+                              ),
                               const SizedBox(
                                 width: 12,
                               ),
@@ -199,7 +200,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     builder: (_) {
                                       return BackButtonAlert(
                                           "Your progress will lost.",
-                                          "CONFIRM",
+                                          "REMOVE",
                                           "CANCEL", () {
                                         widget.removeBeat(widget.beats[index]);
                                       });
@@ -274,7 +275,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 width: 20,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: widget.selectedDropDownItem.beats[index].color,
+                                    color: widget.selectedDropDownItem
+                                        .beats[index].color,
                                     border: Border.all(color: Colors.black)),
                               ),
                               const SizedBox(
