@@ -24,6 +24,7 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function _changeDropDownValue;
   final Function refresh;
   final Function updateBeat;
+  final Function changeColor;
 
   MapScreenRightPanel(
     this.categories,
@@ -33,7 +34,7 @@ class MapScreenRightPanel extends StatefulWidget {
     this.selectedDropDownItem,
     this._changeDropDownValue,
     this.refresh,
-    this.updateBeat,
+    this.updateBeat, this.changeColor,
   );
 
   @override
@@ -43,11 +44,6 @@ class MapScreenRightPanel extends StatefulWidget {
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
   bool isDisabled = false;
 
-  void changeColor(Color newColor, int index) {
-    setState(() {
-      widget.beats[index].color = newColor;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,10 +181,44 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 ],
                               ),
                               Expanded(child: hi.Container()),
-                              PopUpColor(
-                                changeColor,
-                                widget.beats[index].color ?? Colors.blueGrey,
-                              ),
+                              // PopUpColor(
+                              //   changeColor,
+                              //   widget.beats[index].color ?? Colors.blueGrey,
+                              // ),
+                          PopupMenuButton(
+                            itemBuilder: (context) {
+                              return List.generate(
+                                  colorIndex.length,
+                                      (index) => PopupMenuItem(
+                                    child: Center(
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: colorIndex[index],
+                                            border: Border.all(color: Colors.black)),
+                                      ),
+                                    ),
+                                        value: colorIndex[index],
+                                  ));
+                            },
+                            initialValue: widget.beats[index].color,
+                            onSelected: (Color value) {
+                              widget.changeColor(value, index);
+                              // widget.refresh();
+                            },
+
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: widget.beats[index].color,
+                                  border: Border.all(color: Colors.black)),
+                            ),
+                            tooltip: "Show colors",
+                          ),
                               const SizedBox(
                                 width: 12,
                               ),

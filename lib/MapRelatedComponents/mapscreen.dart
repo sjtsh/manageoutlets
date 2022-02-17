@@ -79,6 +79,11 @@ class _MapScreenState extends State<MapScreen> {
   List<Outlet> nearbyOutlets = []; // this is from the green slider
   int currentNumberOfNearbyOutlets = 0;
 
+  void changeColor(Color newColor, int index) {
+    setState(() {
+      blueIndexes[index].color = newColor;
+    });
+  }
   changeSelectedNearbyOutlets(int newValue) {
     currentNumberOfNearbyOutlets = newValue;
     nearbyOutlets = List.generate(currentNumberOfNearbyOutlets, (int index) {
@@ -592,6 +597,7 @@ class _MapScreenState extends State<MapScreen> {
                   _changeDropDownValue,
                   refresh,
                   updateBeat,
+                  changeColor,
                 ),
               ),
             ],
