@@ -25,10 +25,59 @@ List<Outlet> shortestPath(List<Outlet> outlets1) {
   while (outlets.isNotEmpty) {
     int? changingHead;
     double? mini;
-    outlets.asMap().entries.forEach((element) {
-        mini ??= Geolocator.distanceBetween(headNode.lat,
-            headNode.lng, element.value.lat, element.value.lng);
-        changingHead ??= element.key;
+    outlets
+        .asMap()
+        .entries
+        .forEach((element) {
+      mini ??= Geolocator.distanceBetween(headNode.lat,
+          headNode.lng, element.value.lat, element.value.lng);
+      changingHead ??= element.key;
+      if (mini! >
+          Geolocator.distanceBetween(headNode.lat, headNode.lng,
+              element.value.lat, element.value.lng)) {
+        changingHead = element.key;
+        mini = Geolocator.distanceBetween(headNode.lat, headNode.lng,
+            element.value.lat, element.value.lng);
+      }
+    });
+    head = changingHead!;
+    headNode = outlets[changingHead!];
+    sorted.add(headNode);
+    outlets.removeAt(head);
+  }
+
+  return sorted;
+}
+
+List<Outlet> shortestPathWithHead(List<Outlet> outlets1, LatLng latLng) {
+  List<Outlet> outlets = outlets1;
+  int head = 0;
+  double minDistance = Geolocator.distanceBetween(
+      latLng.latitude, latLng.longitude, outlets1[0].lat, outlets1[0].lng);
+
+  for (int i = 0; i < outlets.length; i ++) {
+    double a = Geolocator.distanceBetween(
+        latLng.latitude, latLng.longitude, outlets[i].lat, outlets[i].lng);
+    if (a < minDistance) {
+      minDistance = a;
+      head = i;
+    }
+  }
+
+  Outlet headNode = outlets[head];
+  outlets.removeAt(head);
+
+  List<Outlet> sorted = [headNode];
+  while (outlets.isNotEmpty) {
+    int? changingHead;
+    double? mini;
+    outlets
+        .asMap()
+        .entries
+        .forEach((element) {
+      mini ??= Geolocator.distanceBetween(headNode.lat,
+          headNode.lng, element.value.lat, element.value.lng);
+      changingHead ??= element.key;
       if (mini! >
           Geolocator.distanceBetween(headNode.lat, headNode.lng,
               element.value.lat, element.value.lng)) {
