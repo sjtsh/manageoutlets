@@ -147,6 +147,7 @@ class _MapScreenState extends State<MapScreen> {
   void findOutletsInPolygon() {
     redPositions.addAll(nearbyOutlets);
     nearbyOutlets = [];
+    List<int> removables = [];
     for (int z = 0; z < redPositions.length; z++) {
       var x = redPositions[z].lat, y = redPositions[z].lng;
 
@@ -163,9 +164,14 @@ class _MapScreenState extends State<MapScreen> {
       }
       if (inside) {
         nearbyOutlets.add(redPositions[z]);
-        redPositions.removeAt(z);
+        removables.add(z);
       }
     }
+
+    for (var e in removables.reversed) {
+      redPositions.removeAt(e);
+    }
+
     setState(() {});
   }
 
@@ -188,6 +194,7 @@ class _MapScreenState extends State<MapScreen> {
         (LatLng? latLng) {
       if (latLng != null) {
         pathPoints[i] = latLng;
+        findOutletsInPolygon();
         setState(() {});
       }
     }, stackKey);
@@ -376,7 +383,7 @@ class _MapScreenState extends State<MapScreen> {
                                     .toList()
                                     .map(
                                       (pos) => _buildMarkerWidget(
-                                          pos, Colors.black, false),
+                                          pos, Colors.blue, false),
                                     ),
                               );
                             }
@@ -435,27 +442,16 @@ class _MapScreenState extends State<MapScreen> {
                                   } else {
                                     changeRemoveCenter(location);
                                   }
-                                  // print(
-                                  //     '${location.latitude}, ${location.longitude}');
-                                  // print('${clicked.dx}, ${clicked.dy}');
-                                  // print(
-                                  //     '${details.localPosition.dx}, ${details.localPosition.dy}');
                                 } else {
                                   LatLng location =
                                       transformer.fromXYCoordsToLatLng(Offset(
-                                          details.localPosition.dx - 16,
-                                          details.localPosition.dy - 16));
+                                          details.localPosition.dx,
+                                          details.localPosition.dy));
                                   if (widget.outletLatLng.isNotEmpty) {
-                                    List<Outlet> a = [];
-                                    a.addAll(widget.outletLatLng);
                                     pathPoints.add(location);
                                     findOutletsInPolygon();
                                     setState(() {});
-                                  } else {
-                                    // pathPoints.add(PathPoint(
-                                    //     latLng: location, sortedOutlet: []));
-                                    // setState(() {});
-                                  }
+                                  } else {}
                                 }
                               },
                               child: Listener(
@@ -470,7 +466,6 @@ class _MapScreenState extends State<MapScreen> {
                                 child: Stack(
                                   key: stackKey,
                                   children: [
-
                                     Map(
                                       controller: widget.controller,
                                       builder: (context, x, y, z) {
@@ -546,9 +541,9 @@ class _MapScreenState extends State<MapScreen> {
                             nearbyOutlets, changeSelectedNearbyOutlets, () {
                             setState(() {
                               bluePositions = [];
-                              rangeIndexes = [];
+                              // rangeIndexes = [];
                               pathPoints = [];
-                              widget.setTempRedRadius(0.0);
+                              // widget.setTempRedRadius(0.0);
                               currentNumberOfNearbyOutlets = 0;
                               nearbyOutlets = [];
                             });

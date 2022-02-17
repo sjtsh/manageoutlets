@@ -28,31 +28,48 @@ class _DraggableMarkerState extends State<DraggableMarker> {
   @override
   Widget build(BuildContext context) {
     Offset? pos = widget.localTransformer?.fromLatLngToXYCoords(widget.latLng);
+    double size = 20;
     return Positioned(
-      left: pos?.dx ?? 0 - 16,
-      top: pos?.dy ?? 0 - 16,
-      width: widget.isLarge ? 50 : 24,
-      height: widget.isLarge ? 50 : 24,
-      child: Draggable(
-        feedback: Icon(
-          Icons.location_on,
-          color: Colors.blueGrey,
-          size: 30,
-        ),
-        child: Icon(
-          Icons.location_on,
-          color: widget.color,
-          size: 30,
-        ),
-        onDragEnd: (dragDetails) {
-          final parentPos = widget.stackKey.globalPaintBounds;
-          if (parentPos == null) return;
+      left: pos?.dx ?? 0,
+      top: pos?.dy ?? 0,
 
-          double _x = dragDetails.offset.dx - parentPos.left; // 11.
-          double _y = dragDetails.offset.dy - parentPos.top;
-          widget.changeOffset(
-              widget.localTransformer?.fromXYCoordsToLatLng(Offset(_x, _y)));
-        },
+      width: widget.isLarge ? size : 24,
+      height: widget.isLarge ? size : 24,
+      child: Stack(
+      clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            top: -size/2,
+            left: -size/2,
+            child: Draggable(
+              feedback: Container(
+                height: size,
+                width: size,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.pink,
+                ),
+              ),
+              child: Container(
+                height: size,
+                width: size,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.pink,
+                ),
+              ),
+              onDragEnd: (dragDetails) {
+                final parentPos = widget.stackKey.globalPaintBounds;
+                if (parentPos == null) return;
+
+                double _x = dragDetails.offset.dx - parentPos.left;
+                double _y = dragDetails.offset.dy - parentPos.top;
+                widget.changeOffset(widget.localTransformer
+                    ?.fromXYCoordsToLatLng(Offset(_x, _y)));
+              },
+            ),
+          )
+        ],
       ),
     );
   }

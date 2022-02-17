@@ -65,6 +65,7 @@ class _GetOutletScreenState extends State<GetOutletScreen> {
           Position position = snapshot.data[3];
           final controller = mp.MapController(
             location: LatLng(position.latitude, position.longitude),
+            // location: LatLng(26.778922, 86.0968118),
             zoom: 17,
           );
           return RedMapScreen(
