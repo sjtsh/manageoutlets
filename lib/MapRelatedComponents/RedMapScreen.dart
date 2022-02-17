@@ -48,6 +48,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
   }
 
   setTempRedRadius(double a) {
+    print( widget.outletLatLng.length);
     setState(() {
       redDistance = a;
     });
@@ -55,7 +56,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
       myOutlets = widget.outletLatLng.where((element) {
         return GeolocatorPlatform.instance.distanceBetween(
                 element.lat, element.lng, center!.latitude, center!.longitude) <
-            redDistance && isDeactivated;
+            redDistance && element.deactivated == isDeactivated;
       }).toList();
     }
   }
@@ -67,7 +68,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
       myOutlets = widget.outletLatLng.where((element) {
         return GeolocatorPlatform.instance.distanceBetween(
                 element.lat, element.lng, center!.latitude, center!.longitude) <
-            redDistance && isDeactivated;
+            redDistance && element.deactivated == isDeactivated;
       }).toList();
     });
   }
