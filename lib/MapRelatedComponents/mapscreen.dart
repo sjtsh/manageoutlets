@@ -62,53 +62,21 @@ class MinusButtonIntent extends Intent {}
 class AddButtonIntent extends Intent {}
 
 class _MapScreenState extends State<MapScreen> {
-  LatLng?
-      removeCenter; // this the point from which the latlng will be calculated
   GlobalKey stackKey = GlobalKey();
-  double redRemoveDistance = 0;
   List<Outlet> redPositions = [];
-  List<Outlet> bluePositions = [];
-  List<Outlet> removePositions = [];
   List<Outlet> rangeIndexes =
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
-  bool removeActive = false;
+
 
   //ALL THESE ARE FOR GREEN SLIDERS
   List<LatLng> pathPoints = [];
   bool isPathPointChoosing = false;
   List<Outlet> nearbyOutlets = []; // this is from the green slider
-  int currentNumberOfNearbyOutlets = 0;
 
-  changeSelectedNearbyOutlets(int newValue) {
-    currentNumberOfNearbyOutlets = newValue;
-    nearbyOutlets = List.generate(currentNumberOfNearbyOutlets, (int index) {
-      return Outlet(
-          id: "0",
-          categoryID: 1,
-          categoryName: "",
-          outletName: "",
-          lat: 0,
-          lng: 0,
-          imageURL: "");
-    });
-    setState(() {});
-  }
 
   void refresh() {
     setState(() {});
-  }
-
-  setRemoveRedRadius(double a) {
-    setState(() {
-      redRemoveDistance = a;
-    });
-  }
-
-  changeRemoveCenter(LatLng location) {
-    setState(() {
-      removeCenter = LatLng(location.latitude, location.longitude);
-    });
   }
 
   Distributor selectedDropDownItem = Distributor(
@@ -198,20 +166,6 @@ class _MapScreenState extends State<MapScreen> {
         setState(() {});
       }
     }, stackKey);
-  }
-
-  Widget _buildMarkerWidgetClear(Offset pos, Color color, bool isLarge) {
-    return Positioned(
-      left: pos.dx - 16,
-      top: pos.dy - 16,
-      width: isLarge ? 50 : 24,
-      height: isLarge ? 50 : 24,
-      child: Icon(
-        Icons.clear,
-        color: color,
-        size: 30,
-      ),
-    );
   }
 
   @override
