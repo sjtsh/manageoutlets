@@ -58,7 +58,6 @@ class MapScreen extends StatefulWidget {
 }
 
 class MinusButtonIntent extends Intent {}
-
 class AddButtonIntent extends Intent {}
 
 class _MapScreenState extends State<MapScreen> {
@@ -226,13 +225,14 @@ class _MapScreenState extends State<MapScreen> {
             },
           ),
           AddButtonIntent: CallbackAction(onInvoke: (intent) {
-            TextEditingController textController = TextEditingController();
             showDialog(
                 context: context,
                 builder: (_) {
+                  TextEditingController textController = TextEditingController();
                   return AddBeatDialogBox(textController, rangeIndexes,
                       blueIndexes, redPositions, widget.setTempRedRadius);
                 });
+
           }),
         },
         child: Scaffold(
