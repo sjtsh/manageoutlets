@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:manage_outlets/DraggableMarker.dart';
+import 'package:manage_outlets/MapRelatedComponents/SearchOutlets.dart';
 import 'package:manage_outlets/ShapePainteer.dart';
 import 'package:manage_outlets/Sliders/BlueSlider.dart';
 import 'package:manage_outlets/Sliders/GreenSlider.dart';
@@ -68,11 +69,10 @@ class _MapScreenState extends State<MapScreen> {
   List<Outlet> redPositions = [];
   List<Outlet> bluePositions = [];
   List<Outlet> removePositions = [];
-  List<Outlet> rangeIndexes =
-      []; //temporary indexes, this one is according to the widget.center
+  List<Outlet> rangeIndexes = []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
   bool removeActive = false;
-
+  List<Outlet> search = [];
   //ALL THESE ARE FOR GREEN SLIDERS
   List<LatLng> pathPoints = [];
   bool isPathPointChoosing = false;
@@ -94,7 +94,8 @@ class _MapScreenState extends State<MapScreen> {
           outletName: "",
           lat: 0,
           lng: 0,
-          imageURL: "");
+          imageURL: "",
+      deactivated: false);
     });
     setState(() {});
   }
@@ -476,6 +477,7 @@ class _MapScreenState extends State<MapScreen> {
                                   key: stackKey,
                                   children: [
 
+
                                     Map(
                                       controller: widget.controller,
                                       builder: (context, x, y, z) {
@@ -530,7 +532,7 @@ class _MapScreenState extends State<MapScreen> {
                                                     ? Colors.green
                                                     : Colors.red,
                                                 shape: BoxShape.circle),
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.pattern_sharp,
                                               color: Colors.white,
                                             ),
@@ -538,6 +540,29 @@ class _MapScreenState extends State<MapScreen> {
                                         ),
                                       ),
                                     ),
+                                    // Positioned(
+                                    //     top: 20,
+                                    //     left: 20,
+                                    //     child: Container(
+                                    //       height: 50,
+                                    //       width:300,
+                                    //       color: Colors.white,
+                                    //       child: TextField(
+                                    //         decoration: InputDecoration(
+                                    //           prefixIcon: Icon(Icons.search),
+                                    //           hintText: " Outlet Name",
+                                    //           border: OutlineInputBorder(),
+                                    //
+                                    //         ),
+                                    //         onChanged: (text){
+                                    //           SearchOutlets(widget.bluegreyIndexes);
+                                    //         },
+                                    //       ),
+                                    //     ),),
+                                    IconButton(onPressed: (){
+                                      print(widget.bluegreyIndexes);
+                                      showSearch(context: context, delegate: SearchOutlets(widget.outletLatLng),);
+                                    }, icon: Icon(Icons.search)),
                                   ],
                                 ),
                               ),

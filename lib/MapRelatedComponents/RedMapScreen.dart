@@ -30,13 +30,21 @@ class _RedMapScreenState extends State<RedMapScreen> {
   double redDistance = 0;
   LatLng? center; // this the point from which the latlng will be calculated
   List<Outlet> myOutlets = [];
-
+  bool isDeactivated = false;
   List<Outlet> removePermPositions = [];
 
   setRemovePermPositions(List<Outlet> removePositions) {
     setState(() {
       removePermPositions = removePositions;
     });
+  }
+
+  changeDeactivated(bool isDeactivated){
+    setTempRedRadius(0);
+    setState(() {
+      this.isDeactivated = isDeactivated;
+    });
+
   }
 
   setTempRedRadius(double a) {
@@ -47,7 +55,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
       myOutlets = widget.outletLatLng.where((element) {
         return GeolocatorPlatform.instance.distanceBetween(
                 element.lat, element.lng, center!.latitude, center!.longitude) <
-            redDistance;
+            redDistance && isDeactivated;
       }).toList();
     }
   }
@@ -59,7 +67,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
       myOutlets = widget.outletLatLng.where((element) {
         return GeolocatorPlatform.instance.distanceBetween(
                 element.lat, element.lng, center!.latitude, center!.longitude) <
-            redDistance;
+            redDistance && isDeactivated;
       }).toList();
     });
   }

@@ -16,6 +16,7 @@ class Outlet {
   String? md5;
   String imageURL;
   Marker? marker;
+  bool deactivated;
 
   Outlet(
       {required this.id,
@@ -30,7 +31,8 @@ class Outlet {
       required this.lng,
       this.md5,
       required this.imageURL,
-      this.marker});
+        // this.deactivated,
+      this.marker, required this.deactivated});
 
   factory Outlet.fromJson(Map<String, dynamic> json) {
     return Outlet(
@@ -46,6 +48,7 @@ class Outlet {
       lng: double.parse(json["lng"]),
       md5: json["md5"],
       imageURL: json["imageURL"],
+      deactivated: json["deactivated"].toString().toLowerCase() == "false"? false:true,  //with capital F and T
     );
   }
 }

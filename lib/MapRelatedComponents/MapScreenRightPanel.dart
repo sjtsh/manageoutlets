@@ -64,26 +64,6 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Search",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Container(
-            height: 50,
-            child: TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: " Outlet Name",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 6,
-          ),
           Container(
             decoration: BoxDecoration(
                 color: Colors.white,
