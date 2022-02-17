@@ -74,6 +74,9 @@ class _MapScreenState extends State<MapScreen> {
   bool isPathPointChoosing = false;
   List<Outlet> nearbyOutlets = []; // this is from the green slider
 
+  changeColor(){
+  }
+
   void refresh() {
     setState(() {});
   }
