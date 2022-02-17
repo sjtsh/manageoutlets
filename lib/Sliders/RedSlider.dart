@@ -6,12 +6,10 @@ class RedSlider extends StatelessWidget {
   final redPositions;
   final redDistance;
   final Function setTempRedRadius;
-  final rangeIndexes;
-  final blueIndexes;
   final Function clearFunction;
 
   RedSlider(this.redPositions, this.redDistance, this.setTempRedRadius,
-      this.rangeIndexes, this.blueIndexes, this.clearFunction);
+      this.clearFunction);
 
   @override
   Widget build(BuildContext context) {
@@ -87,53 +85,53 @@ class RedSlider extends StatelessWidget {
               SizedBox(
                 width: 12,
               ),
-              Focus(
-                autofocus: true,
-                child: Container(
-                  clipBehavior: Clip.hardEdge,
-                  height: 50,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                            offset: const Offset(0, 2),
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            color: Colors.black.withOpacity(0.1))
-                      ]),
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      TextEditingController textController =
-                          TextEditingController();
-                      if (redPositions.length != 0) {
-                        showDialog(
-                            context: context,
-                            builder: (_) {
-                              return AddBeatDialogBox(
-                                  textController,
-                                  rangeIndexes,
-                                  blueIndexes,
-                                  redPositions,
-                                  setTempRedRadius);
-                            });
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                duration: Duration(milliseconds: 500),
-                                content: Text("Please select outlet")));
-                      }
-                    },
-                    child: const Center(
-                      child: Text(
-                        "ADD",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+              // Focus(
+              //   autofocus: true,
+              //   child: Container(
+              //     clipBehavior: Clip.hardEdge,
+              //     height: 50,
+              //     width: 100,
+              //     decoration: BoxDecoration(
+              //         color: Colors.green,
+              //         borderRadius: BorderRadius.circular(12),
+              //         boxShadow: [
+              //           BoxShadow(
+              //               offset: const Offset(0, 2),
+              //               spreadRadius: 2,
+              //               blurRadius: 2,
+              //               color: Colors.black.withOpacity(0.1))
+              //         ]),
+              //     child: RawMaterialButton(
+              //       onPressed: () {
+              //         TextEditingController textController =
+              //             TextEditingController();
+              //         if (redPositions.length != 0) {
+              //           showDialog(
+              //               context: context,
+              //               builder: (_) {
+              //                 return AddBeatDialogBox(
+              //                     textController,
+              //                     rangeIndexes,
+              //                     blueIndexes,
+              //                     redPositions,
+              //                     setTempRedRadius);
+              //               });
+              //         } else {
+              //           ScaffoldMessenger.of(context).showSnackBar(
+              //               const SnackBar(
+              //                   duration: Duration(milliseconds: 500),
+              //                   content: Text("Please select outlet")));
+              //         }
+              //       },
+              //       child: const Center(
+              //         child: Text(
+              //           "ADD",
+              //           style: TextStyle(color: Colors.white),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ],

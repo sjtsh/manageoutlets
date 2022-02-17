@@ -24,6 +24,7 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function _changeDropDownValue;
   final Function refresh;
   final Function updateBeat;
+  final Function changeColor;
 
   MapScreenRightPanel(
     this.categories,
@@ -33,7 +34,7 @@ class MapScreenRightPanel extends StatefulWidget {
     this.selectedDropDownItem,
     this._changeDropDownValue,
     this.refresh,
-    this.updateBeat,
+    this.updateBeat, this.changeColor,
   );
 
   @override
@@ -42,6 +43,7 @@ class MapScreenRightPanel extends StatefulWidget {
 
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
   bool isDisabled = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -62,26 +64,6 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Search",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-          Container(
-            height: 50,
-            child: TextField(
-              decoration: InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: " Outlet Name",
-                border: OutlineInputBorder(),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 6,
-          ),
           Container(
             decoration: BoxDecoration(
                 color: Colors.white,
@@ -179,15 +161,44 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 ],
                               ),
                               Expanded(child: hi.Container()),
-                              PopUpColor(hi.Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: widget.beats[index].color,
-                                    border: Border.all(color: Colors.black)),
-                              ),),
+                              // PopUpColor(
+                              //   changeColor,
+                              //   widget.beats[index].color ?? Colors.blueGrey,
+                              // ),
+                          PopupMenuButton(
+                            itemBuilder: (context) {
+                              return List.generate(
+                                  colorIndex.length,
+                                      (index) => PopupMenuItem(
+                                    child: Center(
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: colorIndex[index],
+                                            border: Border.all(color: Colors.black)),
+                                      ),
+                                    ),
+                                        value: colorIndex[index],
+                                  ));
+                            },
+                            initialValue: widget.beats[index].color,
+                            onSelected: (Color value) {
+                              widget.changeColor(value, index);
+                              // widget.refresh();
+                            },
 
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: widget.beats[index].color,
+                                  border: Border.all(color: Colors.black)),
+                            ),
+                            tooltip: "Show colors",
+                          ),
                               const SizedBox(
                                 width: 12,
                               ),
@@ -199,7 +210,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                     builder: (_) {
                                       return BackButtonAlert(
                                           "Your progress will lost.",
-                                          "CONFIRM",
+                                          "REMOVE",
                                           "CANCEL", () {
                                         widget.removeBeat(widget.beats[index]);
                                       });
@@ -274,7 +285,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 width: 20,
                                 decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: widget.selectedDropDownItem.beats[index].color,
+                                    color: widget.selectedDropDownItem
+                                        .beats[index].color,
                                     border: Border.all(color: Colors.black)),
                               ),
                               const SizedBox(

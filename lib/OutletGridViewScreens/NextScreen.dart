@@ -72,7 +72,7 @@ class _NextScreenState extends State<NextScreen> {
           dateTime: element.dateTime,
           md5: element.md5,
           videoID: element.videoID,
-          videoName: element.videoName);
+          videoName: element.videoName, deactivated: element.deactivated);
       outlet.newcategoryID = element.newcategoryID;
       outlets.add(outlet);
     }
@@ -91,13 +91,16 @@ class _NextScreenState extends State<NextScreen> {
           dateTime: element.dateTime,
           md5: element.md5,
           videoID: element.videoID,
-          videoName: element.videoName));
+          videoName: element.videoName,
+          deactivated: element.deativated));
+
     }
     tempBeat = Beat(
       widget.beat.beatName,
       outlets,
       id: widget.beat.id,
       deactivated: deactivateds,
+      color: widget.beat.color
     );
   }
 

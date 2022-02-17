@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:manage_outlets/DraggableMarker.dart';
+import 'package:manage_outlets/MapRelatedComponents/SearchOutlets.dart';
 import 'package:manage_outlets/ShapePainteer.dart';
 import 'package:manage_outlets/Sliders/BlueSlider.dart';
 import 'package:manage_outlets/Sliders/GreenSlider.dart';
@@ -68,12 +69,10 @@ class _MapScreenState extends State<MapScreen> {
       []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
 
-
   //ALL THESE ARE FOR GREEN SLIDERS
   List<LatLng> pathPoints = [];
   bool isPathPointChoosing = false;
   List<Outlet> nearbyOutlets = []; // this is from the green slider
-
 
   void refresh() {
     setState(() {});
@@ -180,17 +179,16 @@ class _MapScreenState extends State<MapScreen> {
           MinusButtonIntent: CallbackAction(
             onInvoke: (intent) {
               setState(() {
-                removeActive = !removeActive;
-                removeCenter = null;
-                setRemoveRedRadius(0.0);
+                isPathPointChoosing = !isPathPointChoosing;
               });
             },
           ),
           AddButtonIntent: CallbackAction(onInvoke: (intent) {
-            TextEditingController textController = TextEditingController();
             showDialog(
                 context: context,
                 builder: (_) {
+                  TextEditingController textController =
+                      TextEditingController();
                   return AddBeatDialogBox(textController, rangeIndexes,
                       blueIndexes, redPositions, widget.setTempRedRadius);
                 });
@@ -241,7 +239,6 @@ class _MapScreenState extends State<MapScreen> {
 
                               redPositions = [];
                               rangeIndexes = [];
-                              removePositions = [];
                               widget.outletLatLng
                                   .asMap()
                                   .entries
@@ -251,17 +248,6 @@ class _MapScreenState extends State<MapScreen> {
                                     widget.removePermPositions
                                         .contains(element.value)) {
                                   // bluePositions.add(element.value
-                                } else if (GeolocatorPlatform.instance
-                                        .distanceBetween(
-                                            element.value.lat,
-                                            element.value.lng,
-                                            (removeCenter?.latitude ?? 0),
-                                            (removeCenter?.longitude ?? 0)) <
-                                    redRemoveDistance) {
-                                  if (!removePositions
-                                      .contains(element.value)) {
-                                    removePositions.add(element.value);
-                                  }
                                 } else if (GeolocatorPlatform.instance
                                         .distanceBetween(
                                             element.value.lat,
@@ -297,18 +283,6 @@ class _MapScreenState extends State<MapScreen> {
                                 }
                               });
                             }
-                            markerWidgets.addAll(
-                              List.generate(
-                                      removePositions.length,
-                                      (e) => LatLng(removePositions[e].lat,
-                                          removePositions[e].lng))
-                                  .map(transformer.fromLatLngToXYCoords)
-                                  .toList()
-                                  .map(
-                                    (pos) => _buildMarkerWidget(
-                                        pos, Colors.blue, false),
-                                  ),
-                            );
                             for (int i = 0; i < blueIndexes.length; i++) {
                               markerWidgets.addAll(
                                 List.generate(
@@ -391,10 +365,8 @@ class _MapScreenState extends State<MapScreen> {
 
                                   Offset clicked = transformer
                                       .fromLatLngToXYCoords(location);
-                                  if (!removeActive) {
+                                  if (!isPathPointChoosing) {
                                     widget.changeCenter(location);
-                                  } else {
-                                    changeRemoveCenter(location);
                                   }
                                 } else {
                                   LatLng location =
@@ -457,7 +429,7 @@ class _MapScreenState extends State<MapScreen> {
                                       child: GestureDetector(
                                         onTap: () {
                                           setState(() {
-                                            // removeActive = !removeActive;
+                                            // isPathPointChoosing = !isPathPointChoosing;
                                             // removeCenter = null;
                                             // setRemoveRedRadius(0.0);
                                             isPathPointChoosing =
@@ -474,7 +446,7 @@ class _MapScreenState extends State<MapScreen> {
                                                     ? Colors.green
                                                     : Colors.red,
                                                 shape: BoxShape.circle),
-                                            child: Icon(
+                                            child: const Icon(
                                               Icons.pattern_sharp,
                                               color: Colors.white,
                                             ),
@@ -482,6 +454,35 @@ class _MapScreenState extends State<MapScreen> {
                                         ),
                                       ),
                                     ),
+                                    // Positioned(
+                                    //     top: 20,
+                                    //     left: 20,
+                                    //     child: Container(
+                                    //       height: 50,
+                                    //       width:300,
+                                    //       color: Colors.white,
+                                    //       child: TextField(
+                                    //         decoration: InputDecoration(
+                                    //           prefixIcon: Icon(Icons.search),
+                                    //           hintText: " Outlet Name",
+                                    //           border: OutlineInputBorder(),
+                                    //
+                                    //         ),
+                                    //         onChanged: (text){
+                                    //           SearchOutlets(widget.bluegreyIndexes);
+                                    //         },
+                                    //       ),
+                                    //     ),),
+                                    IconButton(
+                                        onPressed: () {
+                                          print(widget.bluegreyIndexes);
+                                          showSearch(
+                                            context: context,
+                                            delegate: SearchOutlets(
+                                                widget.outletLatLng),
+                                          );
+                                        },
+                                        icon: Icon(Icons.search)),
                                   ],
                                 ),
                               ),
@@ -492,38 +493,27 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                     isPathPointChoosing
                         ? GreenSlider(
-                            nearbyOutlets, changeSelectedNearbyOutlets, () {
+                            () {
+                              setState(() {
+                                pathPoints = [];
+                                nearbyOutlets = [];
+                              });
+                            },
+                            nearbyOutlets,
+                            redPositions,
+                            rangeIndexes,
+                            blueIndexes,
+                            widget.setTempRedRadius,
+                          )
+                        : RedSlider(redPositions, widget.redDistance,
+                            widget.setTempRedRadius, () {
                             setState(() {
-                              bluePositions = [];
-                              // rangeIndexes = [];
+                              rangeIndexes = [];
                               pathPoints = [];
-                              // widget.setTempRedRadius(0.0);
-                              currentNumberOfNearbyOutlets = 0;
+                              widget.setTempRedRadius(0.0);
                               nearbyOutlets = [];
                             });
-                          })
-                        : removeActive
-                            ? BlueSlider(
-                                removePositions,
-                                redRemoveDistance,
-                                widget.removePermPositions,
-                                setRemoveRedRadius,
-                                widget.setRemovePermPositions)
-                            : RedSlider(
-                                redPositions,
-                                widget.redDistance,
-                                widget.setTempRedRadius,
-                                rangeIndexes,
-                                blueIndexes, () {
-                                setState(() {
-                                  bluePositions = [];
-                                  rangeIndexes = [];
-                                  pathPoints = [];
-                                  currentNumberOfNearbyOutlets = 0;
-                                  widget.setTempRedRadius(0.0);
-                                  nearbyOutlets = [];
-                                });
-                              }),
+                          }),
                     const SizedBox(
                       height: 12,
                     ),
@@ -531,16 +521,19 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ),
               Expanded(
-                  flex: 1,
-                  child: MapScreenRightPanel(
-                      widget.categories,
-                      widget.distributors,
-                      blueIndexes,
-                      removeBeat,
-                      selectedDropDownItem,
-                      _changeDropDownValue,
-                      refresh,
-                      updateBeat)),
+                flex: 1,
+                child: MapScreenRightPanel(
+                  widget.categories,
+                  widget.distributors,
+                  blueIndexes,
+                  removeBeat,
+                  selectedDropDownItem,
+                  _changeDropDownValue,
+                  refresh,
+                  updateBeat,
+                  changeColor,
+                ),
+              ),
             ],
           ),
         ),
