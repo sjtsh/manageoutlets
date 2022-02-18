@@ -38,7 +38,8 @@ class MapScreen extends StatefulWidget {
   final List<Category> categories;
   final List<Outlet> removePermPositions;
   final Function setRemovePermPositions;
-
+final Function changeDeactivated;
+final bool isDeactivated;
   MapScreen(
     this.outletLatLng,
     this.redRadius,
@@ -52,6 +53,8 @@ class MapScreen extends StatefulWidget {
     this.categories,
     this.removePermPositions,
     this.setRemovePermPositions,
+      this.changeDeactivated,
+      this.isDeactivated
   );
 
   @override
@@ -537,6 +540,8 @@ class _MapScreenState extends State<MapScreen> {
                   refresh,
                   updateBeat,
                   changeColor,
+                  widget.changeDeactivated,
+                  widget.isDeactivated
                 ),
               ),
             ],

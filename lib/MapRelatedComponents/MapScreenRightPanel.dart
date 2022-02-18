@@ -25,6 +25,8 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function refresh;
   final Function updateBeat;
   final Function changeColor;
+  final Function changeDeactivated;
+  final bool isDeactivated;
 
   MapScreenRightPanel(
     this.categories,
@@ -34,7 +36,10 @@ class MapScreenRightPanel extends StatefulWidget {
     this.selectedDropDownItem,
     this._changeDropDownValue,
     this.refresh,
-    this.updateBeat, this.changeColor,
+    this.updateBeat,
+      this.changeColor,
+      this.changeDeactivated,
+       this.isDeactivated
   );
 
   @override
@@ -64,18 +69,19 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.black.withOpacity(0.1)),
-                boxShadow: [
-                  BoxShadow(
-                      offset: Offset(0, 2),
-                      blurRadius: 2,
-                      color: Colors.black.withOpacity(0.1))
-                ]),
-            child: MaterialButton(
-                onPressed: () {}, child: Container(child: Text("Search"))),
+          Row(
+            children: [
+              const Text(
+                "Show disabled",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Expanded(child: Container()),
+              Switch(onChanged: (bool value) {
+                widget.changeDeactivated(value);
+
+              },value : widget.isDeactivated,
+                 ),
+            ],
           ),
 
           const SizedBox(
@@ -205,7 +211,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                   showDialog(
                                     builder: (_) {
                                       return BackButtonAlert(
-                                          "Your progress will lost.",
+                                          "Your progress will be lost.",
                                           "REMOVE",
                                           "CANCEL", () {
                                         widget.removeBeat(widget.beats[index]);

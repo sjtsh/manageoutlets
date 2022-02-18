@@ -77,7 +77,7 @@ class _NextScreenState extends State<NextScreen> {
       outlets.add(outlet);
     }
 
-    for (var element in widget.beat.deactivated ?? []) {
+    for (Outlet element in widget.beat.deactivated ?? []) {
       deactivateds.add(Outlet(
           imageURL: element.imageURL,
           categoryID: element.categoryID,
@@ -92,7 +92,7 @@ class _NextScreenState extends State<NextScreen> {
           md5: element.md5,
           videoID: element.videoID,
           videoName: element.videoName,
-          deactivated: element.deativated));
+          deactivated: element.deactivated));
 
     }
     tempBeat = Beat(
