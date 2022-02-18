@@ -6,76 +6,68 @@ import '../backend/Entities/Outlet.dart';
 import '../backend/Entities/OutletsListEntity.dart';
 import '../backend/shortestPath.dart';
 
-class AddBeatDialogBox extends StatefulWidget {
-  final TextEditingController textController;
-  final List<Outlet> rangeIndexes;
-  final List<Beat> blueIndexes;
-  final List<Outlet> redPositions;
-  final Function refresh;
-  final Function addBeat;
+class RenameBeatNameDialog extends StatefulWidget {
+final String oldBeatName;
+final Function renameBeat;
 
-  AddBeatDialogBox(this.textController, this.rangeIndexes, this.blueIndexes,
-      this.redPositions, this.refresh, this.addBeat);
+  RenameBeatNameDialog(this.oldBeatName, this.renameBeat);
+
 
   @override
-  State<AddBeatDialogBox> createState() => _AddBeatDialogBoxState();
+  State<RenameBeatNameDialog> createState() => _RenameBeatNameDialogState();
 }
 
-class AddtoBeatIntent extends Intent {}
 
-class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
+class _RenameBeatNameDialogState extends State<RenameBeatNameDialog> {
   bool validate = false;
+  TextEditingController textEditingController = TextEditingController();
 
-  toBeatList(rangeIndexes, blueIndexes, textController,
-      List<Outlet> redPositions, context, validate, Function refresh) {
-    if (textController.text == "") {
-      validate = true;
-    } else {
-      validate = false;
-    }
 
-    if (validate == false) {
-      if(redPositions.isNotEmpty){
-        rangeIndexes = [];
-        widget.addBeat(
-          Beat(textController.text, shortestPath(redPositions),
-              color: colorIndex[widget.blueIndexes.length]),
-        );
-        // setTempRedRadius(0.0);
-        refresh();
-        Navigator.pop(context);
-      }
-    }
-  }
+  // toBeatList(rangeIndexes, blueIndexes, textController,
+  //     List<Outlet> redPositions, context, validate, Function refresh) {
+  //   if (textController.text == "") {
+  //     validate = true;
+  //   } else {
+  //     validate = false;
+  //   }
+  //
+  //   if (validate == false) {
+  //     if(redPositions.isNotEmpty){
+  //       rangeIndexes = [];
+  //       widget.addBeat(
+  //         Beat(textController.text, shortestPath(redPositions),
+  //             color: colorIndex[widget.blueIndexes.length]),
+  //       );
+  //       // setTempRedRadius(0.0);
+  //       refresh();
+  //       Navigator.pop(context);
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    textEditingController.text = widget.oldBeatName;
     return Shortcuts(
-      shortcuts: {LogicalKeySet(LogicalKeyboardKey.enter): AddtoBeatIntent()},
+      shortcuts: {LogicalKeySet(LogicalKeyboardKey.enter): RenameBeat()},
       child: Actions(
         actions: {
-          AddtoBeatIntent: CallbackAction(onInvoke: (intent) {
-            print("Added");
+        RenameBeat: CallbackAction(onInvoke: (intent) {
+          if (textEditingController.text == "") {
+            validate = true;
+            print(validate.toString() + " on level 1");
+          } else {
+            validate = false;
+          }
 
-            setState(() {
-              if (widget.textController.text == "") {
-                validate = true;
-                print(validate.toString() + " on level 1");
-              } else {
-                validate = false;
-              }
-            });
 
-            if (validate == false) {
-              toBeatList(
-                  widget.rangeIndexes,
-                  widget.blueIndexes,
-                  widget.textController,
-                  widget.redPositions,
-                  context,
-                  validate, widget.refresh);
-            }
-          }),
+          if (validate == false) {
+            widget.renameBeat(widget.oldBeatName, textEditingController.text);
+            Navigator.pop(context);
+
+          }
+
+      })
         },
         child: Center(
           child: Material(
@@ -90,7 +82,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                     Row(
                       children: [
                         Text(
-                          "ADD BEAT NAME",
+                          "RENAME BEAT NAME",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
@@ -110,7 +102,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                     Expanded(
                       child: TextField(
                         autofocus: true,
-                        controller: widget.textController,
+                        controller: textEditingController,
                         decoration: InputDecoration(
                           errorText: validate == true
                               ? 'Field Can\'t Be Empty'
@@ -141,23 +133,19 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                           color: Colors.green,
                           child: InkWell(
                             onTap: () {
-                              setState(() {
-                                if (widget.textController.text == "") {
+
+                                if (textEditingController.text == "") {
                                   validate = true;
                                   print(validate.toString() + " on level 1");
                                 } else {
                                   validate = false;
                                 }
-                              });
+
 
                               if (validate == false) {
-                                toBeatList(
-                                    widget.rangeIndexes,
-                                    widget.blueIndexes,
-                                    widget.textController,
-                                    widget.redPositions,
-                                    context,
-                                    validate, widget.refresh);
+                                widget.renameBeat(widget.oldBeatName, textEditingController.text);
+                                Navigator.pop(context);
+
                               }
                             },
                             child: const Center(
@@ -179,4 +167,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
       ),
     );
   }
+}
+
+class RenameBeat extends Intent {
 }

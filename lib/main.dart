@@ -4,6 +4,7 @@ import 'package:dijkstra/dijkstra.dart';
 import 'package:flutter/material.dart';
 import 'package:manage_outlets/backend/Services/OutletService.dart';
 import 'BeforeMapScreens/LocalHostScreen.dart';
+import 'backend/shortestPath.dart';
 
 void main() {
   runApp(MyApp());

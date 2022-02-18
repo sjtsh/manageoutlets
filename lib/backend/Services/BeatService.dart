@@ -37,7 +37,7 @@ class BeatService {
             element.imageURL.toString();
         aJson["outlets"][element.id.toString()]["deactivated"] = "false";
       }
-
+      int counter = 0;
       for (Outlet element in (element.deactivated ?? [])) {
         aJson["outlets"][element.id.toString()] = {};
         aJson["outlets"][element.id.toString()]["videoID"] =
@@ -56,7 +56,9 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["imageURL"] =
             element.imageURL.toString();
         aJson["outlets"][element.id.toString()]["deactivated"] = "true";
-      }
+        counter++;
+        }
+        print("$counter found as deactivated");
 
       aJson["outlets"] = aJson["outlets"].toString();
       Response res = await http.put(

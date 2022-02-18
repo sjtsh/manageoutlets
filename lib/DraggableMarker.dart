@@ -28,7 +28,7 @@ class _DraggableMarkerState extends State<DraggableMarker> {
   @override
   Widget build(BuildContext context) {
     Offset? pos = widget.localTransformer?.fromLatLngToXYCoords(widget.latLng);
-    double size = 20;
+    double size = 15;
     return Positioned(
       left: pos?.dx ?? 0,
       top: pos?.dy ?? 0,
@@ -39,25 +39,28 @@ class _DraggableMarkerState extends State<DraggableMarker> {
       clipBehavior: Clip.none,
         children: [
           Positioned(
-            top: -size/2,
-            left: -size/2,
+            top: -size/6,
+            left: -size/6,
             child: Draggable(
-              feedback: Container(
-                height: size,
-                width: size,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.pink,
-                ),
-              ),
-              child: Container(
-                height: size,
-                width: size,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.pink,
-                ),
-              ),
+               feedback: Image.asset("assets/draggable_marker.png", height: 16, width: 16,),
+               // Container(
+              //   height: size,
+              //   width: size,
+              //   decoration: const BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     color: Colors.red,
+              //
+              //   ),
+              // ),
+               child: Image.asset("assets/draggable_marker.png", height: 16, width: 16,),
+              // Container(
+              //   height: size,
+              //   width: size,
+              //   decoration: const BoxDecoration(
+              //     shape: BoxShape.circle,
+              //     color: Colors.black,
+              //   ),
+              // ),
               onDragEnd: (dragDetails) {
                 final parentPos = widget.stackKey.globalPaintBounds;
                 if (parentPos == null) return;
@@ -81,7 +84,7 @@ extension GlobalKeyExtension on GlobalKey {
     var translation = renderObject?.getTransformTo(null).getTranslation();
     if (translation != null && renderObject?.paintBounds != null) {
       return renderObject!.paintBounds
-          .shift(Offset(translation.x, translation.y));
+          .shift(Offset(translation.x -7.5, translation.y -7.5));
     } else {
       return null;
     }

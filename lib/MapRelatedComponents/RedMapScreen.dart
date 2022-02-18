@@ -31,13 +31,14 @@ class _RedMapScreenState extends State<RedMapScreen> {
   List<Outlet> myOutlets = [];
   bool isDeactivated = false;
   List<Outlet> removePermPositions = [];
+  List<String> permDeactivateIDs = [];
 
   setRemovePermPositions(List<Outlet> removePositions) {
     setState(() {
       removePermPositions = removePositions;
     });
   }
-//hatauna parne
+
   changeDeactivated(bool isDeactivated) {
     setState(() {
       this.isDeactivated = isDeactivated;
@@ -54,27 +55,31 @@ class _RedMapScreenState extends State<RedMapScreen> {
         }
       }).toList();
     });
+
+
+
   }
-  // yeha samma
+
 
   setTempRedRadius(double a) {
-    print(widget.outletLatLng.length);
     setState(() {
       redDistance = a;
     });
     if (center != null) {
-      myOutlets = widget.outletLatLng.where((element) {
-        if (isDeactivated) {
+      if (isDeactivated) {
+        myOutlets = widget.outletLatLng.where((element) {
           return GeolocatorPlatform.instance.distanceBetween(element.lat,
                   element.lng, center!.latitude, center!.longitude) <
               redDistance;
-        } else {
+        }).toList();
+      } else {
+        myOutlets = widget.outletLatLng.where((element) {
           return GeolocatorPlatform.instance.distanceBetween(element.lat,
                       element.lng, center!.latitude, center!.longitude) <
                   redDistance &&
-              element.deactivated == isDeactivated;
-        }
-      }).toList();
+              !isDeactivated;
+        }).toList();
+      }
     }
   }
 
@@ -82,18 +87,30 @@ class _RedMapScreenState extends State<RedMapScreen> {
     setState(() {
       removePermPositions = [];
       center = LatLng(location.latitude, location.longitude);
-      myOutlets = widget.outletLatLng.where((element) {
-        if (isDeactivated) {
+      if (isDeactivated) {
+        myOutlets = widget.outletLatLng.where((element) {
           return GeolocatorPlatform.instance.distanceBetween(element.lat,
-              element.lng, center!.latitude, center!.longitude) <
+                  element.lng, center!.latitude, center!.longitude) <
               redDistance;
-        } else {
+        }).toList();
+      } else {
+        myOutlets = widget.outletLatLng.where((element) {
           return GeolocatorPlatform.instance.distanceBetween(element.lat,
-              element.lng, center!.latitude, center!.longitude) <
-              redDistance &&
-              element.deactivated == isDeactivated;
+                      element.lng, center!.latitude, center!.longitude) <
+                  redDistance &&
+              !isDeactivated;
+        }).toList();
+      }
+    });
+  }
+
+  setDeactivated(List<String> a) {
+    setState(() {
+      for (int i = 0; i < myOutlets.length; i++) {
+        if (a.contains(myOutlets[i].id)) {
+          myOutlets[i].deactivated = true;
         }
-      }).toList();
+      }
     });
   }
 
@@ -123,7 +140,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
         widget.categories,
         removePermPositions,
         setRemovePermPositions,
-        changeDeactivated,
-        isDeactivated);
+        isDeactivated,
+        changeDeactivated, setDeactivated);
   }
 }

@@ -11,6 +11,7 @@ List<Outlet> shortestPath(List<Outlet> outlets1) {
   List<Outlet> outlets = outlets1;
   int head = 0;
 
+
   for (var element in outlets) {
     if (outlets[head].lat > element.lat) {
       head = outlets.indexOf(element);
@@ -25,10 +26,13 @@ List<Outlet> shortestPath(List<Outlet> outlets1) {
   while (outlets.isNotEmpty) {
     int? changingHead;
     double? mini;
+    double? total1 = 0;
+
     outlets
         .asMap()
         .entries
         .forEach((element) {
+
       mini ??= Geolocator.distanceBetween(headNode.lat,
           headNode.lng, element.value.lat, element.value.lng);
       changingHead ??= element.key;
@@ -38,8 +42,13 @@ List<Outlet> shortestPath(List<Outlet> outlets1) {
         changingHead = element.key;
         mini = Geolocator.distanceBetween(headNode.lat, headNode.lng,
             element.value.lat, element.value.lng);
+
+        total1= total1!+ mini!;
       }
+  print(total1);
+
     });
+
     head = changingHead!;
     headNode = outlets[changingHead!];
     sorted.add(headNode);
@@ -84,6 +93,7 @@ List<Outlet> shortestPathWithHead(List<Outlet> outlets1, LatLng latLng) {
         changingHead = element.key;
         mini = Geolocator.distanceBetween(headNode.lat, headNode.lng,
             element.value.lat, element.value.lng);
+
       }
     });
     head = changingHead!;

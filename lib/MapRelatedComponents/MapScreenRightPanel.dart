@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart' as hi;
+import 'package:manage_outlets/DialogBox/renameBeatNameDialog.dart';
 import 'package:manage_outlets/OutletGridViewScreens/NextScreen.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
@@ -25,8 +26,9 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function refresh;
   final Function updateBeat;
   final Function changeColor;
-  final Function changeDeactivated;
   final bool isDeactivated;
+  final Function changeDeactivated;
+  final Function renameBeat;
 
   MapScreenRightPanel(
     this.categories,
@@ -36,10 +38,8 @@ class MapScreenRightPanel extends StatefulWidget {
     this.selectedDropDownItem,
     this._changeDropDownValue,
     this.refresh,
-    this.updateBeat,
-      this.changeColor,
-      this.changeDeactivated,
-       this.isDeactivated
+    this.updateBeat, this.changeColor, this.isDeactivated, this.changeDeactivated,
+      this.renameBeat
   );
 
   @override
@@ -53,8 +53,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(12),
-      padding: EdgeInsets.all(12),
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -72,15 +72,13 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           Row(
             children: [
               const Text(
-                "Show disabled",
+                "Show Disabled",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Expanded(child: Container()),
-              Switch(onChanged: (bool value) {
-                widget.changeDeactivated(value);
-
-              },value : widget.isDeactivated,
-                 ),
+              Switch(value: widget.isDeactivated, onChanged: (bool a){
+                widget.changeDeactivated(a);
+              })
             ],
           ),
 
@@ -201,8 +199,27 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                             ),
                             tooltip: "Show colors",
                           ),
+                              const SizedBox(width: 12,),
+                              GestureDetector(
+                                onTap: (){
+                                  showDialog(context: context, builder: (_){
+                                    return RenameBeatNameDialog(widget.beats[index].beatName, widget.renameBeat);
+                                  });
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.white,
+                                      border: Border.all(color: Colors.black)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Icon(Icons.edit, size: 12,),
+                                  ),
+                                ),
+                              ),
+
                               const SizedBox(
-                                width: 12,
+                                width: 16,
                               ),
                               GestureDetector(
                                 onTap: () {
@@ -356,10 +373,10 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 },
                 child: Center(
                   child: isDisabled
-                      ? CircularProgressIndicator()
-                      : Text(
+                      ? const CircularProgressIndicator()
+                      : const Text(
                           "CONFIRM",
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Colors.white),
                         ),
                 ),
               ),
