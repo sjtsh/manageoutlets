@@ -37,7 +37,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
       removePermPositions = removePositions;
     });
   }
-
+//hatauna parne
   changeDeactivated(bool isDeactivated) {
     setState(() {
       this.isDeactivated = isDeactivated;
@@ -55,6 +55,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
       }).toList();
     });
   }
+  // yeha samma
 
   setTempRedRadius(double a) {
     print(widget.outletLatLng.length);
