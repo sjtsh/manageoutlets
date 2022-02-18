@@ -25,6 +25,8 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function refresh;
   final Function updateBeat;
   final Function changeColor;
+  final bool isDeactivated;
+  final Function changeDeactivated;
 
   MapScreenRightPanel(
     this.categories,
@@ -34,7 +36,7 @@ class MapScreenRightPanel extends StatefulWidget {
     this.selectedDropDownItem,
     this._changeDropDownValue,
     this.refresh,
-    this.updateBeat, this.changeColor,
+    this.updateBeat, this.changeColor, this.isDeactivated, this.changeDeactivated,
   );
 
   @override
@@ -64,18 +66,26 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.black.withOpacity(0.1)),
-                boxShadow: [
-                  BoxShadow(
-                      offset: Offset(0, 2),
-                      blurRadius: 2,
-                      color: Colors.black.withOpacity(0.1))
-                ]),
-            child: MaterialButton(
-                onPressed: () {}, child: Container(child: Text("Search"))),
+          Row(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.black.withOpacity(0.1)),
+                    boxShadow: [
+                      BoxShadow(
+                          offset: Offset(0, 2),
+                          blurRadius: 2,
+                          color: Colors.black.withOpacity(0.1))
+                    ]),
+                child: MaterialButton(
+                    onPressed: () {}, child: Container(child: Text("Search"))),
+              ),
+              Expanded(child: Container()),
+              Switch(value: widget.isDeactivated, onChanged: (bool a){
+                widget.changeDeactivated(a);
+              })
+            ],
           ),
 
           const SizedBox(

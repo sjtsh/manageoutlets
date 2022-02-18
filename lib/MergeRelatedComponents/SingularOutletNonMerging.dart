@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hovering/hovering.dart';
 
 import 'CompareInteractive.dart';
@@ -12,7 +13,7 @@ import '../backend/Entities/Outlet.dart';
 import '../backend/Entities/OutletsListEntity.dart';
 import '../backend/database.dart';
 
-class SingularOutletNonMerging extends StatelessWidget {
+class SingularOutletNonMerging extends StatefulWidget {
   final List<Outlet> selectedOutlet;
   final Outlet tempOutlet;
   final TextEditingController controller;
@@ -23,6 +24,7 @@ class SingularOutletNonMerging extends StatelessWidget {
   final Beat tempBeat;
   final int i;
   final Function removeItemFunction;
+  final Function stopScroll;
 
   SingularOutletNonMerging(
       this.selectedOutlet,
@@ -34,7 +36,18 @@ class SingularOutletNonMerging extends StatelessWidget {
       this.setCategoryID,
       this.tempBeat,
       this.i,
-      this.removeItemFunction);
+      this.removeItemFunction,
+      this.stopScroll);
+
+  @override
+  State<SingularOutletNonMerging> createState() =>
+      _SingularOutletNonMergingState();
+}
+
+
+class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
+
+  int numberOfTurns = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +58,10 @@ class SingularOutletNonMerging extends StatelessWidget {
         decoration: BoxDecoration(
           color: Colors.white,
           border: Border.all(
-            color: selectedOutlet.contains(tempOutlet)
+            color: widget.selectedOutlet.contains(widget.tempOutlet)
                 ? Colors.green
                 : Colors.transparent,
-            width: selectedOutlet.contains(tempOutlet) ? 5 : 0,
+            width: widget.selectedOutlet.contains(widget.tempOutlet) ? 5 : 0,
           ),
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
@@ -61,7 +74,7 @@ class SingularOutletNonMerging extends StatelessWidget {
         ),
         child: GestureDetector(
           onTap: () {
-            changeOutletSelectionStatus(tempOutlet);
+            widget.changeOutletSelectionStatus(widget.tempOutlet);
           },
           child: Stack(
             children: [
@@ -73,56 +86,34 @@ class SingularOutletNonMerging extends StatelessWidget {
                     ),
                     Checkbox(
                         activeColor: Colors.green,
-                        value: selectedOutlet.contains(tempOutlet),
-                        onChanged: (newValue) =>
-                            changeOutletSelectionStatus(tempOutlet)),
+                        value:
+                            widget.selectedOutlet.contains(widget.tempOutlet),
+                        onChanged: (newValue) => widget
+                            .changeOutletSelectionStatus(widget.tempOutlet)),
                     const SizedBox(
                       width: 10,
                     ),
                     Expanded(
-                      child: HoverWidget(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 50,
-                            color: Colors.white,
-                            child: TextField(
-                              autofocus: false,
-                              controller: controller,
-                              onChanged: (String? text) {
-                                tempOutlet.outletName = text ?? "";
-                              },
-                              decoration: InputDecoration(
-                                errorText:
-                                    (controller.text == "" && !isValidate)
-                                        ? 'Field Can\'t Be Empty'
-                                        : null,
-                                border: const OutlineInputBorder(),
-                              ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 50,
+                          color: Colors.white,
+                          child: TextField(
+                            autofocus: true,
+                            controller: widget.controller,
+                            onChanged: (String? text) {
+                              widget.tempOutlet.outletName = text ?? "";
+                            },
+                            decoration: InputDecoration(
+                              errorText: (widget.controller.text == "" &&
+                                      !widget.isValidate)
+                                  ? 'Field Can\'t Be Empty'
+                                  : null,
+                              border: const OutlineInputBorder(),
                             ),
                           ),
                         ),
-                        hoverChild: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            height: 50,
-                            color: Colors.grey.shade200,
-                            child: TextField(
-                              controller: controller,
-                              onChanged: (String? text) {
-                                tempOutlet.outletName = text ?? "";
-                              },
-                              decoration: InputDecoration(
-                                errorText:
-                                    (controller.text == "" && !isValidate)
-                                        ? 'Field Can\'t Be Empty'
-                                        : null,
-                                border: const OutlineInputBorder(),
-                              ),
-                            ),
-                          ),
-                        ),
-                        onHover: (PointerEnterEvent event) {},
                       ),
                     ),
 
@@ -139,19 +130,28 @@ class SingularOutletNonMerging extends StatelessWidget {
                             mode: Mode.MENU,
                             dropdownButtonSplashRadius: 1,
                             dropDownButton: SizedBox.shrink(),
-                            items: categories,
+                            items: widget.categories,
                             onChanged: (Category? category) {
-                              setCategoryID(category, i);
+                              widget.setCategoryID(category, widget.i);
                             },
-                            selectedItem: (tempOutlet.newcategoryID == null)
+                            dropdownBuilder:
+                                (BuildContext context, Category? category) {
+                              return Text(
+                                category?.categoryName ?? "",
+                                style: TextStyle(fontSize: 12),
+                              );
+                            },
+                            selectedItem: (widget.tempOutlet.newcategoryID ==
+                                    null)
                                 ? Category("Select category", 10000000)
-                                : categories.firstWhere(
-                                    (e) => e.id == tempOutlet.newcategoryID!),
+                                : widget.categories.firstWhere((e) =>
+                                    e.id == widget.tempOutlet.newcategoryID!),
                             dropdownSearchDecoration: InputDecoration(
-                                errorText: (tempOutlet.newcategoryID == null &&
-                                        !isValidate)
-                                    ? "define category"
-                                    : null,
+                                errorText:
+                                    (widget.tempOutlet.newcategoryID == null &&
+                                            !widget.isValidate)
+                                        ? "define category"
+                                        : null,
                                 suffixIcon: Icon(Icons.arrow_drop_down),
                                 border: OutlineInputBorder()),
                           );
@@ -170,7 +170,7 @@ class SingularOutletNonMerging extends StatelessWidget {
                                   "Do you want to deactivate this outlet?",
                                   "REMOVE",
                                   "CANCEL", () {
-                                removeItemFunction(i);
+                                widget.removeItemFunction(widget.i);
                               });
                             });
                       },
@@ -187,23 +187,33 @@ class SingularOutletNonMerging extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: GestureDetector(
-                          onDoubleTap: () {
-                            Navigator.push(context,
-                                MaterialPageRoute(builder: (_) {
-                              return InteractiveImage(selectedOutlet, tempBeat,
-                                  i, controller, categories, isValidate);
-                            }));
-                          },
-                          child: MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: Container(
-                              color: Colors.black.withOpacity(0.1),
-                              child: Image.network(
-                                tempBeat.outlet[i].videoName == null
-                                    ? tempBeat.outlet[i].imageURL
-                                    : localhost + tempBeat.outlet[i].imageURL,
-                                fit: BoxFit.contain,
+                        child: RotatedBox(
+                        quarterTurns: numberOfTurns,
+                          child: Container(
+                            color: Colors.black.withOpacity(0.1),
+                            child: MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              onHover: (PointerHoverEvent a) {
+                                widget.stopScroll(false);
+                                // await Future.delayed(Duration(seconds: 5));
+                                // widget.stopScroll(true);
+                              },
+                              onExit: (PointerExitEvent a) {
+                                widget.stopScroll(true);
+                              },
+                              child: InteractiveViewer(
+                              maxScale: 1000,
+                                child: Image.network(
+                                  widget.tempBeat.outlet[widget.i]
+                                              .videoName ==
+                                          null
+                                      ? widget
+                                          .tempBeat.outlet[widget.i].imageURL
+                                      : localhost +
+                                          widget.tempBeat.outlet[widget.i]
+                                              .imageURL,
+                                  fit: BoxFit.contain,
+                                ),
                               ),
                             ),
                           ),
@@ -222,7 +232,7 @@ class SingularOutletNonMerging extends StatelessWidget {
                     width: 60,
                     height: 30,
                     decoration: BoxDecoration(
-                      color: tempOutlet.videoName == null
+                      color: widget.tempOutlet.videoName == null
                           ? Colors.red
                           : Colors.green,
                       borderRadius: BorderRadius.circular(12),
@@ -232,8 +242,36 @@ class SingularOutletNonMerging extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(
-                        tempOutlet.videoName == null ? "FA" : "SC",
+                        widget.tempOutlet.videoName == null ? "FA" : "SC",
                         style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+              ),Positioned(
+                left: 0,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: GestureDetector(
+                    onTap: (){
+                    setState(() {
+
+                      numberOfTurns++;
+                    });
+                    },
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(color: Colors.black.withOpacity(0.1))
+                        ],
+                      ),
+                      child: Center(
+                        child: Icon(Icons.rotate_90_degrees_ccw_sharp),
                       ),
                     ),
                   ),

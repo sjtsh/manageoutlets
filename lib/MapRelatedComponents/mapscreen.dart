@@ -38,6 +38,9 @@ class MapScreen extends StatefulWidget {
   final List<Category> categories;
   final List<Outlet> removePermPositions;
   final Function setRemovePermPositions;
+  final bool isDeactivated;
+  final Function changeDeactivated;
+  final Function setDeactivated;
 
   MapScreen(
     this.outletLatLng,
@@ -52,6 +55,9 @@ class MapScreen extends StatefulWidget {
     this.categories,
     this.removePermPositions,
     this.setRemovePermPositions,
+    this.isDeactivated,
+    this.changeDeactivated,
+    this.setDeactivated
   );
 
   @override
@@ -74,11 +80,17 @@ class _MapScreenState extends State<MapScreen> {
   bool isPathPointChoosing = false;
   List<Outlet> nearbyOutlets = []; // this is from the green slider
 
-  changeColor(){
-  }
-
   void refresh() {
     setState(() {});
+  }
+
+  addBeat(Beat newBeat) {
+    setState(() {
+      blueIndexes.add(newBeat);
+      isPathPointChoosing = !isPathPointChoosing;
+      pathPoints = [];
+      nearbyOutlets = [];
+    });
   }
 
   Distributor selectedDropDownItem = Distributor(
@@ -98,6 +110,8 @@ class _MapScreenState extends State<MapScreen> {
       blueIndexes.remove(formerBeat);
       blueIndexes.add(newBeat);
     });
+
+     widget.setDeactivated(List.generate(newBeat.deactivated?.length ?? 0, (index) => newBeat.deactivated![index].id));
   }
 
   removeBeat(Beat beat) {
@@ -110,6 +124,7 @@ class _MapScreenState extends State<MapScreen> {
     widget.controller.zoom += 0.5;
     setState(() {});
   }
+
   void changeColor(Color newColor, int index) {
     setState(() {
       blueIndexes[index].color = newColor;
@@ -120,7 +135,14 @@ class _MapScreenState extends State<MapScreen> {
   double _scaleStart = 1.0;
 
   void findOutletsInPolygon() {
-    redPositions.addAll(nearbyOutlets);
+    List<String> selectedOutlets = [];
+    for (Beat beat in blueIndexes) {
+      for (var element in beat.outlet) {
+        selectedOutlets.add(element.id);
+      }
+    }
+    redPositions.addAll(nearbyOutlets
+        .where((element) => !selectedOutlets.contains(element.id)));
     nearbyOutlets = [];
     List<int> removables = [];
     for (int z = 0; z < redPositions.length; z++) {
@@ -198,7 +220,7 @@ class _MapScreenState extends State<MapScreen> {
                   TextEditingController textController =
                       TextEditingController();
                   return AddBeatDialogBox(textController, rangeIndexes,
-                      blueIndexes, redPositions, widget.setTempRedRadius);
+                      blueIndexes, redPositions, refresh, addBeat);
                 });
           }),
         },
@@ -244,15 +266,24 @@ class _MapScreenState extends State<MapScreen> {
                                   selectedOutlets.add(element.id);
                                 }
                               }
-
                               redPositions = [];
                               rangeIndexes = [];
                               widget.outletLatLng
                                   .asMap()
                                   .entries
                                   .forEach((element) {
-                                if (selectedOutlets
-                                        .contains(element.value.beatID) ||
+                                if (element.value.deactivated) {
+                                  markerWidgets.addAll([
+                                    LatLng(element.value.lat, element.value.lng)
+                                  ]
+                                      .map(transformer.fromLatLngToXYCoords)
+                                      .toList()
+                                      .map(
+                                        (pos) => _buildMarkerWidget(
+                                            pos, Colors.brown, false),
+                                      ));
+                                } else if (selectedOutlets
+                                        .contains(element.value.id) ||
                                     widget.removePermPositions
                                         .contains(element.value)) {
                                   // bluePositions.add(element.value
@@ -275,6 +306,20 @@ class _MapScreenState extends State<MapScreen> {
                                           (pos) => _buildMarkerWidget(
                                               pos, Colors.blueGrey, false),
                                         ));
+                                  } else if (nearbyOutlets
+                                      .contains(element.value)) {
+                                    markerWidgets.addAll(
+                                      [
+                                        LatLng(element.value.lat,
+                                            element.value.lng)
+                                      ]
+                                          .map(transformer.fromLatLngToXYCoords)
+                                          .toList()
+                                          .map(
+                                            (pos) => _buildMarkerWidget(
+                                                pos, Colors.blue, false),
+                                          ),
+                                    );
                                   } else {
                                     redPositions.add(element.value);
                                     markerWidgets.addAll([
@@ -306,20 +351,6 @@ class _MapScreenState extends State<MapScreen> {
                                           blueIndexes[i].color ??
                                               Colors.blueGrey,
                                           false),
-                                    ),
-                              );
-                            }
-                            for (int i = 0; i < nearbyOutlets.length; i++) {
-                              markerWidgets.addAll(
-                                [
-                                  LatLng(nearbyOutlets[i].lat,
-                                      nearbyOutlets[i].lng)
-                                ]
-                                    .map(transformer.fromLatLngToXYCoords)
-                                    .toList()
-                                    .map(
-                                      (pos) => _buildMarkerWidget(
-                                          pos, Colors.blue, false),
                                     ),
                               );
                             }
@@ -483,7 +514,6 @@ class _MapScreenState extends State<MapScreen> {
                                     //     ),),
                                     IconButton(
                                         onPressed: () {
-                                          print(widget.bluegreyIndexes);
                                           showSearch(
                                             context: context,
                                             delegate: SearchOutlets(
@@ -512,7 +542,14 @@ class _MapScreenState extends State<MapScreen> {
                             rangeIndexes,
                             blueIndexes,
                             widget.setTempRedRadius,
-                          )
+                            refresh,
+                            () {
+                              setState(() {
+                                pathPoints = [];
+                                nearbyOutlets = [];
+                              });
+                            },
+                            addBeat)
                         : RedSlider(redPositions, widget.redDistance,
                             widget.setTempRedRadius, () {
                             setState(() {
@@ -531,16 +568,17 @@ class _MapScreenState extends State<MapScreen> {
               Expanded(
                 flex: 1,
                 child: MapScreenRightPanel(
-                  widget.categories,
-                  widget.distributors,
-                  blueIndexes,
-                  removeBeat,
-                  selectedDropDownItem,
-                  _changeDropDownValue,
-                  refresh,
-                  updateBeat,
-                  changeColor,
-                ),
+                    widget.categories,
+                    widget.distributors,
+                    blueIndexes,
+                    removeBeat,
+                    selectedDropDownItem,
+                    _changeDropDownValue,
+                    refresh,
+                    updateBeat,
+                    changeColor,
+                    widget.isDeactivated,
+                    widget.changeDeactivated),
               ),
             ],
           ),

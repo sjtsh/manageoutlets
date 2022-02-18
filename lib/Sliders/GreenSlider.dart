@@ -11,8 +11,11 @@ class GreenSlider extends StatelessWidget {
   final List<Outlet> rangeIndexes;
   final List<Beat> blueIndexes;
   final Function setTempRedRadius;
+  final Function refresh;
+  final Function emptyNearbyOutlets;
+  final Function addBeat;
 
-  GreenSlider(this.clearFunction, this.focusedOutlets, this.visibleOutlets, this.rangeIndexes, this.blueIndexes, this.setTempRedRadius);
+  GreenSlider(this.clearFunction, this.focusedOutlets, this.visibleOutlets, this.rangeIndexes, this.blueIndexes, this.setTempRedRadius, this.refresh, this.emptyNearbyOutlets, this.addBeat);
 
   @override
   Widget build(BuildContext context) {
@@ -33,9 +36,10 @@ class GreenSlider extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "${focusedOutlets.length.toString()} outlets in $visibleOutlets selected",
+            "${focusedOutlets.length.toString()} outlets in ${visibleOutlets.length} selected",
             style: const TextStyle(fontSize: 20),
           ),
+          SizedBox(height: 12,),
           Row(
             children: [
               Expanded(
@@ -87,9 +91,10 @@ class GreenSlider extends StatelessWidget {
                       ]),
                   child: RawMaterialButton(
                     onPressed: () {
+                      emptyNearbyOutlets();
                       TextEditingController textController =
                           TextEditingController();
-                      if (visibleOutlets.isNotEmpty) {
+                      if (focusedOutlets.isNotEmpty) {
                         showDialog(
                             context: context,
                             builder: (_) {
@@ -97,8 +102,8 @@ class GreenSlider extends StatelessWidget {
                                   textController,
                                   rangeIndexes,
                                   blueIndexes,
-                                  visibleOutlets,
-                                  setTempRedRadius);
+                                  focusedOutlets,
+                                  refresh, addBeat);
                             });
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(

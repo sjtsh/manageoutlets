@@ -11,10 +11,11 @@ class AddBeatDialogBox extends StatefulWidget {
   final List<Outlet> rangeIndexes;
   final List<Beat> blueIndexes;
   final List<Outlet> redPositions;
-  final Function setTempRedRadius;
+  final Function refresh;
+  final Function addBeat;
 
   AddBeatDialogBox(this.textController, this.rangeIndexes, this.blueIndexes,
-      this.redPositions, this.setTempRedRadius);
+      this.redPositions, this.refresh, this.addBeat);
 
   @override
   State<AddBeatDialogBox> createState() => _AddBeatDialogBoxState();
@@ -25,8 +26,8 @@ class AddtoBeatIntent extends Intent {}
 class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
   bool validate = false;
 
-  toBeatList(rangeIndexes, blueIndexes, textController, setTempRedRadius,
-      redPositions, context, validate) {
+  toBeatList(rangeIndexes, blueIndexes, textController,
+      List<Outlet> redPositions, context, validate, Function refresh) {
     if (textController.text == "") {
       validate = true;
     } else {
@@ -34,13 +35,16 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
     }
 
     if (validate == false) {
-      rangeIndexes = [];
-      print(redPositions.length);
-      blueIndexes.add(
-        Beat(textController.text, shortestPath(redPositions), color: colorIndex[widget.blueIndexes.length]),
-      );
-      setTempRedRadius(0.0);
-      Navigator.pop(context);
+      if(redPositions.isNotEmpty){
+        rangeIndexes = [];
+        widget.addBeat(
+          Beat(textController.text, shortestPath(redPositions),
+              color: colorIndex[widget.blueIndexes.length]),
+        );
+        // setTempRedRadius(0.0);
+        refresh();
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -67,10 +71,9 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                   widget.rangeIndexes,
                   widget.blueIndexes,
                   widget.textController,
-                  widget.setTempRedRadius,
                   widget.redPositions,
                   context,
-                  validate);
+                  validate, widget.refresh);
             }
           }),
         },
@@ -152,10 +155,9 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                                     widget.rangeIndexes,
                                     widget.blueIndexes,
                                     widget.textController,
-                                    widget.setTempRedRadius,
                                     widget.redPositions,
                                     context,
-                                    validate);
+                                    validate, widget.refresh);
                               }
                             },
                             child: const Center(

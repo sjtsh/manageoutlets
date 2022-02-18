@@ -28,7 +28,7 @@ class _DraggableMarkerState extends State<DraggableMarker> {
   @override
   Widget build(BuildContext context) {
     Offset? pos = widget.localTransformer?.fromLatLngToXYCoords(widget.latLng);
-    double size = 20;
+    double size = 15;
     return Positioned(
       left: pos?.dx ?? 0,
       top: pos?.dy ?? 0,
@@ -47,7 +47,7 @@ class _DraggableMarkerState extends State<DraggableMarker> {
                 width: size,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.pink,
+                  color: Colors.black,
                 ),
               ),
               child: Container(
@@ -55,7 +55,7 @@ class _DraggableMarkerState extends State<DraggableMarker> {
                 width: size,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.pink,
+                  color: Colors.black,
                 ),
               ),
               onDragEnd: (dragDetails) {
@@ -81,7 +81,7 @@ extension GlobalKeyExtension on GlobalKey {
     var translation = renderObject?.getTransformTo(null).getTranslation();
     if (translation != null && renderObject?.paintBounds != null) {
       return renderObject!.paintBounds
-          .shift(Offset(translation.x, translation.y));
+          .shift(Offset(translation.x -7.5, translation.y -7.5));
     } else {
       return null;
     }

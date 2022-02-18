@@ -11,6 +11,7 @@ import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
 import 'package:flutter/src/widgets/container.dart' as hi;
 import '../MergeRelatedComponents/SingularOutlet.dart';
+import '../backend/shortestPath.dart';
 import 'DoneButton.dart';
 import 'InteractiveImage.dart';
 import '../MergeRelatedComponents/SingularOutletNonMerging.dart';
@@ -44,12 +45,19 @@ class _NextScreenState extends State<NextScreen> {
   bool isValidate = true;
   String sortDropdownItem = "Distance";
   final controller = ScrollController();
+  bool scrollable = true;
 
   List<Outlet> selectedOutlet = [];
 
   refreshNext() {
     setState(() {
       selectedOutlet = [];
+    });
+  }
+
+  stopScroll(bool myBool) {
+    setState(() {
+      scrollable = myBool;
     });
   }
 
@@ -72,7 +80,8 @@ class _NextScreenState extends State<NextScreen> {
           dateTime: element.dateTime,
           md5: element.md5,
           videoID: element.videoID,
-          videoName: element.videoName, deactivated: element.deactivated);
+          videoName: element.videoName,
+          deactivated: element.deactivated);
       outlet.newcategoryID = element.newcategoryID;
       outlets.add(outlet);
     }
@@ -93,15 +102,11 @@ class _NextScreenState extends State<NextScreen> {
           videoID: element.videoID,
           videoName: element.videoName,
           deactivated: element.deativated));
-
     }
-    tempBeat = Beat(
-      widget.beat.beatName,
-      outlets,
-      id: widget.beat.id,
-      deactivated: deactivateds,
-      color: widget.beat.color
-    );
+    tempBeat = Beat(widget.beat.beatName, outlets,
+        id: widget.beat.id,
+        deactivated: deactivateds,
+        color: widget.beat.color);
   }
 
   @override
@@ -125,263 +130,268 @@ class _NextScreenState extends State<NextScreen> {
           }))
         },
         child: Scaffold(
-          body: Column(
+          body: Builder(builder: (context) {
+            double height = MediaQuery.of(context).size.height;
+            double width = MediaQuery.of(context).size.width;
+            return myCompleteWidget();
+          }),
+        ),
+      ),
+    );
+  }
+
+  Widget myCompleteWidget() {
+    return Column(
+      children: [
+        hi.Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                  offset: const Offset(0, 2),
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  color: Colors.black.withOpacity(0.1))
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              hi.Container(
-                padding: EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        offset: const Offset(0, 2),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        color: Colors.black.withOpacity(0.1))
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 12,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) {
-                              return BackButtonAlert(
-                                "Your progress will not be saved",
-                                "Confirm",
-                                "Cancel",
-                                () {
-                                  Navigator.pop(context);
-                                },
-                              );
-                            });
-                        widget.refresh();
-                      },
-                      child: const Focus(
-                        autofocus: true,
-                        child: Icon(
-                          Icons.arrow_back,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: Row(
-                          children: [
-                            Text(
-                              "${(tempBeat as Beat).outlet.length} Outlets",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            SizedBox(width: 12),
-                            DropdownButton(
-                              items: <String>["Distance", "Name", "Category"]
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      child: Text(e),
-                                      value: e,
-                                    ),
-                                  )
-                                  .toList(),
-                              value: sortDropdownItem,
-                              onChanged: (String? a) {
-                                if (a != null) {
-                                  setState(() {
-                                    sortDropdownItem = a;
-                                  });
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    DoneButton(doneFunction),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                  ],
+              SizedBox(
+                width: 12,
+              ),
+              GestureDetector(
+                onTap: () {
+                  showDialog(
+                      context: context,
+                      builder: (_) {
+                        return BackButtonAlert(
+                          "Your progress will not be saved",
+                          "Confirm",
+                          "Cancel",
+                          () {
+                            Navigator.pop(context);
+                          },
+                        );
+                      });
+                  widget.refresh();
+                },
+                child: const Focus(
+                  autofocus: true,
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Builder(builder: (context) {
-                    double height = MediaQuery.of(context).size.height;
-                    double width = MediaQuery.of(context).size.width;
-                    return ImprovedScrolling(
-                      scrollController:controller ,
-                      enableKeyboardScrolling: true,
-                      keyboardScrollConfig: KeyboardScrollConfig(
-                        arrowsScrollAmount: 250.0,
-                        homeScrollDurationBuilder: (currentScrollOffset, minScrollOffset) {
-                          return const Duration(milliseconds: 100);
-                        },
-                        endScrollDurationBuilder: (currentScrollOffset, maxScrollOffset) {
-                          return const Duration(milliseconds: 2000);
-                        },
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${(tempBeat as Beat).outlet.length} Outlets",
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
                       ),
-                      child: GridView.count(
-                        controller: controller,
-                        crossAxisCount: 3,
-                        childAspectRatio: width / (height * 1.175),
-                        children: List.generate(tempBeat!.outlet.length, (i) {
-                          TextEditingController controller =
-                              TextEditingController();
-                          controller.text = tempBeat!.outlet[i].outletName;
-                          return SingularOutletNonMerging(
-                              selectedOutlet,
-                              tempBeat!.outlet[i],
-                              controller,
-                              changeOutletSelectionStatus,
-                              isValidate,
-                              widget.categories,
-                              setCategoryID,
-                              tempBeat!,
-                              i,
-                              removeItemFunction);
-                        }),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-              hi.Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
-                  boxShadow: [
-                    BoxShadow(
-                        offset: const Offset(0, -2),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        color: Colors.black.withOpacity(0.1))
-                  ],
-                  // border: const Border(
-                  //   top: BorderSide(
-                  //     color: Colors.black,
-                  //     width: 10,
-                  //   ),
-                  // ),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: selectedOutlet
+                      SizedBox(width: 12),
+                      DropdownButton(
+                        items: <String>["Distance", "Name", "Category"]
                             .map(
-                              (e) => Stack(
-                                children: [
-                                  hi.Container(
-                                    width: 200,
-                                    margin: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                          e.videoName == null
-                                              ? e.imageURL
-                                              : localhost + e.imageURL,
-                                        ),
-                                        fit: BoxFit.fitHeight,
-                                      ),
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: Colors.white,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          offset: const Offset(0, -2),
-                                          spreadRadius: 2,
-                                          blurRadius: 2,
-                                          color: Colors.black.withOpacity(0.1),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 4,
-                                    top: 4,
-                                    child: Container(
-                                      height: 20,
-                                      width: 20,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.red),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          selectedOutlet.remove(e);
-                                          setState(() {});
-                                        },
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.clear,
-                                            color: Colors.white,
-                                            size: 12,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                              (e) => DropdownMenuItem(
+                                child: Text(e),
+                                value: e,
                               ),
                             )
                             .toList(),
+                        value: sortDropdownItem,
+                        onChanged: (String? a) {
+                          if (a != null) {
+                            sortDropdownItem = a;
+                            if (a == "Distance") {
+                              tempBeat?.outlet =
+                                  shortestPath(tempBeat!.outlet);
+                            } else if (a == "Name") {
+                              tempBeat?.outlet.sort((a, b) =>
+                                  a.outletName.compareTo(b.outletName));
+                            } else if (a == "Category") {
+                              tempBeat?.outlet.sort((a, b) => a.categoryID
+                                  .compareTo(b.newcategoryID ?? 0));
+                            }
+                            setState(() {});
+                          }
+                        },
                       ),
-                    ),
-                    hi.Container(
-                      width: 500,
-                      child: MergeMap(tempBeat!.outlet, selectedOutlet, false),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if ((selectedOutlet.length > 1)) {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (_) {
-                            return MergeScreen(
-                              widget.beat,
-                              widget.categories,
-                              refreshNext,
-                              selectedOutlet,
-                              tempBeat!,
-                            );
-                          }));
-                        }
-                      },
-                      child: hi.Container(
-                        color: (selectedOutlet.length <= 1)
-                            ? Colors.blueGrey
-                            : Colors.green,
-                        width: 100,
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                "MERGE",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              Icon(
-                                Icons.arrow_forward_outlined,
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
+              ),
+              DoneButton(doneFunction),
+              const SizedBox(
+                width: 12,
               ),
             ],
           ),
         ),
-      ),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Builder(builder: (context) {
+              double height = MediaQuery.of(context).size.height;
+              double width = MediaQuery.of(context).size.width;
+              return GridView.count(
+                physics: scrollable ? null : NeverScrollableScrollPhysics(),
+                controller: controller,
+                crossAxisCount: 3,
+                childAspectRatio: width / (height * 1.175),
+                children: List.generate(tempBeat!.outlet.length, (i) {
+                  TextEditingController controller = TextEditingController();
+                  controller.text = tempBeat!.outlet[i].outletName;
+                  return SingularOutletNonMerging(
+                      selectedOutlet,
+                      tempBeat!.outlet[i],
+                      controller,
+                      changeOutletSelectionStatus,
+                      isValidate,
+                      widget.categories,
+                      setCategoryID,
+                      tempBeat!,
+                      i,
+                      removeItemFunction,
+                      stopScroll);
+                }),
+              );
+            }),
+          ),
+        ),
+        hi.Container(
+          height: 200,
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.5),
+            boxShadow: [
+              BoxShadow(
+                  offset: const Offset(0, -2),
+                  spreadRadius: 2,
+                  blurRadius: 2,
+                  color: Colors.black.withOpacity(0.1))
+            ],
+            // border: const Border(
+            //   top: BorderSide(
+            //     color: Colors.black,
+            //     width: 10,
+            //   ),
+            // ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: selectedOutlet
+                      .map(
+                        (e) => Stack(
+                          children: [
+                            hi.Container(
+                              width: 200,
+                              margin: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    e.videoName == null
+                                        ? e.imageURL
+                                        : localhost + e.imageURL,
+                                  ),
+                                  fit: BoxFit.fitHeight,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    offset: const Offset(0, -2),
+                                    spreadRadius: 2,
+                                    blurRadius: 2,
+                                    color: Colors.black.withOpacity(0.1),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Positioned(
+                              right: 4,
+                              top: 4,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle, color: Colors.red),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    selectedOutlet.remove(e);
+                                    setState(() {});
+                                  },
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.clear,
+                                      color: Colors.white,
+                                      size: 12,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+              hi.Container(
+                width: 500,
+                child: MergeMap(tempBeat!.outlet, selectedOutlet, false),
+              ),
+              GestureDetector(
+                onTap: () {
+                  if ((selectedOutlet.length > 1)) {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) {
+                      return MergeScreen(
+                        widget.beat,
+                        widget.categories,
+                        refreshNext,
+                        selectedOutlet,
+                        tempBeat!,
+                      );
+                    }));
+                  }
+                },
+                child: hi.Container(
+                  color: (selectedOutlet.length <= 1)
+                      ? Colors.blueGrey
+                      : Colors.green,
+                  width: 100,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          "MERGE",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_outlined,
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -428,7 +438,7 @@ class _NextScreenState extends State<NextScreen> {
       selectedOutlet
           .removeWhere((element) => tempBeat!.outlet[i].id == element.id);
 
-      if (widget.beat.deactivated != null) {
+      if (tempBeat!.deactivated != null) {
         tempBeat?.deactivated!.add(tempBeat!.outlet[i]);
       } else {
         tempBeat?.deactivated = [tempBeat!.outlet[i]];

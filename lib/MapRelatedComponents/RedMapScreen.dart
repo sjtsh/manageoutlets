@@ -8,7 +8,6 @@ import '../backend/Entities/Distributor.dart';
 import '../backend/Entities/Outlet.dart';
 import 'mapscreen.dart';
 
-
 class RedMapScreen extends StatefulWidget {
   final List<Outlet>
       outletLatLng; //this is the all of the outlets including invisible ones
@@ -32,6 +31,7 @@ class _RedMapScreenState extends State<RedMapScreen> {
   List<Outlet> myOutlets = [];
   bool isDeactivated = false;
   List<Outlet> removePermPositions = [];
+  List<String> permDeactivateIDs = [];
 
   setRemovePermPositions(List<Outlet> removePositions) {
     setState(() {
@@ -39,25 +39,44 @@ class _RedMapScreenState extends State<RedMapScreen> {
     });
   }
 
-  changeDeactivated(bool isDeactivated){
-    setTempRedRadius(0);
-    setState(() {
-      this.isDeactivated = isDeactivated;
-    });
-
+  changeDeactivated(bool isDeactivated) {
+    this.isDeactivated = isDeactivated;
+    if (isDeactivated) {
+      myOutlets = widget.outletLatLng.where((element) {
+        return GeolocatorPlatform.instance.distanceBetween(
+                element.lat, element.lng, center!.latitude, center!.longitude) <
+            redDistance;
+      }).toList();
+    } else {
+      myOutlets = widget.outletLatLng.where((element) {
+        return GeolocatorPlatform.instance.distanceBetween(element.lat,
+                    element.lng, center!.latitude, center!.longitude) <
+                redDistance &&
+            !isDeactivated;
+      }).toList();
+    }
+    setState(() {});
   }
 
   setTempRedRadius(double a) {
-    print( widget.outletLatLng.length);
     setState(() {
       redDistance = a;
     });
     if (center != null) {
-      myOutlets = widget.outletLatLng.where((element) {
-        return GeolocatorPlatform.instance.distanceBetween(
-                element.lat, element.lng, center!.latitude, center!.longitude) <
-            redDistance && element.deactivated == isDeactivated;
-      }).toList();
+      if (isDeactivated) {
+        myOutlets = widget.outletLatLng.where((element) {
+          return GeolocatorPlatform.instance.distanceBetween(element.lat,
+                  element.lng, center!.latitude, center!.longitude) <
+              redDistance;
+        }).toList();
+      } else {
+        myOutlets = widget.outletLatLng.where((element) {
+          return GeolocatorPlatform.instance.distanceBetween(element.lat,
+                      element.lng, center!.latitude, center!.longitude) <
+                  redDistance &&
+              !isDeactivated;
+        }).toList();
+      }
     }
   }
 
@@ -65,11 +84,30 @@ class _RedMapScreenState extends State<RedMapScreen> {
     setState(() {
       removePermPositions = [];
       center = LatLng(location.latitude, location.longitude);
-      myOutlets = widget.outletLatLng.where((element) {
-        return GeolocatorPlatform.instance.distanceBetween(
-                element.lat, element.lng, center!.latitude, center!.longitude) <
-            redDistance && element.deactivated == isDeactivated;
-      }).toList();
+      if (isDeactivated) {
+        myOutlets = widget.outletLatLng.where((element) {
+          return GeolocatorPlatform.instance.distanceBetween(element.lat,
+                  element.lng, center!.latitude, center!.longitude) <
+              redDistance;
+        }).toList();
+      } else {
+        myOutlets = widget.outletLatLng.where((element) {
+          return GeolocatorPlatform.instance.distanceBetween(element.lat,
+                      element.lng, center!.latitude, center!.longitude) <
+                  redDistance &&
+              !isDeactivated;
+        }).toList();
+      }
+    });
+  }
+
+  setDeactivated(List<String> a) {
+    setState(() {
+      for (int i = 0; i < myOutlets.length; i++) {
+        if (a.contains(myOutlets[i].id)) {
+          myOutlets[i].deactivated = true;
+        }
+      }
     });
   }
 
@@ -98,6 +136,8 @@ class _RedMapScreenState extends State<RedMapScreen> {
         widget.distributors,
         widget.categories,
         removePermPositions,
-        setRemovePermPositions);
+        setRemovePermPositions,
+        isDeactivated,
+        changeDeactivated, setDeactivated);
   }
 }
