@@ -38,7 +38,9 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
       if(redPositions.isNotEmpty){
         rangeIndexes = [];
         widget.addBeat(
-          Beat(textController.text, shortestPath(redPositions),
+          // Beat(textController.text, shortestPath(redPositions),
+          //     color: colorIndex[widget.blueIndexes.length]),
+          Beat(textController.text, redPositions,
               color: colorIndex[widget.blueIndexes.length]),
         );
         // setTempRedRadius(0.0);
@@ -55,12 +57,10 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
       child: Actions(
         actions: {
           AddtoBeatIntent: CallbackAction(onInvoke: (intent) {
-            print("Added");
 
             setState(() {
               if (widget.textController.text == "") {
                 validate = true;
-                print(validate.toString() + " on level 1");
               } else {
                 validate = false;
               }
@@ -144,7 +144,6 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                               setState(() {
                                 if (widget.textController.text == "") {
                                   validate = true;
-                                  print(validate.toString() + " on level 1");
                                 } else {
                                   validate = false;
                                 }

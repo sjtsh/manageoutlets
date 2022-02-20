@@ -31,16 +31,18 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function renameBeat;
 
   MapScreenRightPanel(
-    this.categories,
-    this.distributors,
-    this.beats,
-    this.removeBeat,
-    this.selectedDropDownItem,
-    this._changeDropDownValue,
-    this.refresh,
-    this.updateBeat, this.changeColor, this.isDeactivated, this.changeDeactivated,
-      this.renameBeat
-  );
+      this.categories,
+      this.distributors,
+      this.beats,
+      this.removeBeat,
+      this.selectedDropDownItem,
+      this._changeDropDownValue,
+      this.refresh,
+      this.updateBeat,
+      this.changeColor,
+      this.isDeactivated,
+      this.changeDeactivated,
+      this.renameBeat);
 
   @override
   _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
@@ -48,7 +50,6 @@ class MapScreenRightPanel extends StatefulWidget {
 
 class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
   bool isDisabled = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,9 +77,12 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Expanded(child: Container()),
-              Switch(value: widget.isDeactivated, onChanged: (bool a){
-                widget.changeDeactivated(a);
-              })
+              Switch(
+                value: widget.isDeactivated,
+                onChanged: (bool a) {
+                  widget.changeDeactivated(a);
+                },
+              )
             ],
           ),
 
@@ -95,13 +99,45 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           hi.Container(
             color: Colors.white,
             child: DropdownSearch<Distributor>(
-                showSearchBox: true,
-                mode: Mode.MENU,
-                items: widget.distributors,
-                onChanged: (selected) {
-                  widget._changeDropDownValue(selected as Distributor);
-                },
-                selectedItem: widget.selectedDropDownItem),
+              showSearchBox: true,
+              mode: Mode.MENU,
+              items: widget.distributors,
+              onChanged: (selected) {
+                widget._changeDropDownValue(selected as Distributor);
+              },
+              selectedItem: widget.selectedDropDownItem,
+              popupItemBuilder:
+                  (BuildContext context, Distributor distributor, bool a) {
+                return Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(distributor.distributorName),
+                    ),
+                    SizedBox(
+                      width: 6,
+                    ),
+                    distributor.beats.isNotEmpty? Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(12),
+
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 12),
+                          child: Text(
+                            distributor.beats.length.toString() + " beats",
+                            style: TextStyle(fontSize: 10, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ): Container(),
+                  ],
+                );
+              },
+            ),
           ),
           const SizedBox(
             height: 12,
@@ -165,46 +201,52 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 ],
                               ),
                               Expanded(child: hi.Container()),
-                          PopupMenuButton(
-                            itemBuilder: (context) {
-                              return List.generate(
-                                  colorIndex.length,
+                              PopupMenuButton(
+                                itemBuilder: (context) {
+                                  return List.generate(
+                                      colorIndex.length,
                                       (index) => PopupMenuItem(
-                                    child: Center(
-                                      child: Container(
-                                        height: 20,
-                                        width: 20,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: colorIndex[index],
-                                            border: Border.all(color: Colors.black)),
-                                      ),
-                                    ),
-                                        value: colorIndex[index],
-                                  ));
-                            },
-                            initialValue: widget.beats[index].color,
-                            onSelected: (Color value) {
-                              widget.changeColor(value, index);
-                              // widget.refresh();
-                            },
-
-                            child: Container(
-                              height: 20,
-                              width: 20,
-                              decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: widget.beats[index].color,
-                                  border: Border.all(color: Colors.black)),
-                            ),
-                            tooltip: "Show colors",
-                          ),
-                              const SizedBox(width: 12,),
+                                            child: Center(
+                                              child: Container(
+                                                height: 20,
+                                                width: 20,
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    color: colorIndex[index],
+                                                    border: Border.all(
+                                                        color: Colors.black)),
+                                              ),
+                                            ),
+                                            value: colorIndex[index],
+                                          ));
+                                },
+                                initialValue: widget.beats[index].color,
+                                onSelected: (Color value) {
+                                  widget.changeColor(value, index);
+                                  // widget.refresh();
+                                },
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: widget.beats[index].color,
+                                      border: Border.all(color: Colors.black)),
+                                ),
+                                tooltip: "Show colors",
+                              ),
+                              const SizedBox(
+                                width: 12,
+                              ),
                               GestureDetector(
-                                onTap: (){
-                                  showDialog(context: context, builder: (_){
-                                    return RenameBeatNameDialog(widget.beats[index].beatName, widget.renameBeat);
-                                  });
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return RenameBeatNameDialog(
+                                            widget.beats[index].beatName,
+                                            widget.renameBeat);
+                                      });
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -213,11 +255,13 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                       border: Border.all(color: Colors.black)),
                                   child: Padding(
                                     padding: const EdgeInsets.all(3.0),
-                                    child: Icon(Icons.edit, size: 12,),
+                                    child: Icon(
+                                      Icons.edit,
+                                      size: 12,
+                                    ),
                                   ),
                                 ),
                               ),
-
                               const SizedBox(
                                 width: 16,
                               ),
@@ -299,14 +343,41 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                                 ],
                               ),
                               Expanded(child: hi.Container()),
-                              hi.Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: widget.selectedDropDownItem
-                                        .beats[index].color,
-                                    border: Border.all(color: Colors.black)),
+                              PopupMenuButton(
+
+                                itemBuilder: (context) {
+                                  return List.generate(
+                                      colorIndex.length,
+                                          (index) => PopupMenuItem(
+                                        child: Center(
+                                          child: Container(
+                                            height: 20,
+                                            width: 20,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: colorIndex[index],
+                                                border: Border.all(
+                                                    color: Colors.black)),
+                                          ),
+                                        ),
+                                        value: colorIndex[index],
+                                      ));
+                                },
+                                initialValue: widget.selectedDropDownItem
+                                    .beats[index].color,
+                                onSelected: (Color value) {
+                                  widget.changeColor(value, index, isConfirmed: true);
+                                  // widget.refresh();
+                                },
+                                child: hi.Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: widget.selectedDropDownItem
+                                          .beats[index].color,
+                                      border: Border.all(color: Colors.black)),
+                                ),
                               ),
                               const SizedBox(
                                 width: 12,

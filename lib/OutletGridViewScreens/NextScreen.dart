@@ -130,11 +130,7 @@ class _NextScreenState extends State<NextScreen> {
           }))
         },
         child: Scaffold(
-          body: Builder(builder: (context) {
-            double height = MediaQuery.of(context).size.height;
-            double width = MediaQuery.of(context).size.width;
-            return myCompleteWidget();
-          }),
+          body: myCompleteWidget(),
         ),
       ),
     );
@@ -143,100 +139,6 @@ class _NextScreenState extends State<NextScreen> {
   Widget myCompleteWidget() {
     return Column(
       children: [
-        hi.Container(
-          padding: EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                  offset: const Offset(0, 2),
-                  spreadRadius: 2,
-                  blurRadius: 2,
-                  color: Colors.black.withOpacity(0.1))
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 12,
-              ),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) {
-                        return BackButtonAlert(
-                          "Your progress will not be saved",
-                          "Confirm",
-                          "Cancel",
-                          () {
-                            Navigator.pop(context);
-                          },
-                        );
-                      });
-                  widget.refresh();
-                },
-                child: const Focus(
-                  autofocus: true,
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "${(tempBeat as Beat).outlet.length} Outlets",
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      DropdownButton(
-                        items: <String>["Distance", "Name", "Category"]
-                            .map(
-                              (e) => DropdownMenuItem(
-                                child: Text(e),
-                                value: e,
-                              ),
-                            )
-                            .toList(),
-                        value: sortDropdownItem,
-                        onChanged: (String? a) {
-                          if (a != null) {
-                            sortDropdownItem = a;
-                            if (a == "Distance") {
-                              tempBeat?.outlet =
-                                  shortestPath(tempBeat!.outlet);
-                            } else if (a == "Name") {
-                              tempBeat?.outlet.sort((a, b) =>
-                                  a.outletName.compareTo(b.outletName));
-                            } else if (a == "Category") {
-                              tempBeat?.outlet.sort((a, b) => a.categoryID
-                                  .compareTo(b.newcategoryID ?? 0));
-                            }
-                            setState(() {});
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              DoneButton(doneFunction),
-              const SizedBox(
-                width: 12,
-              ),
-            ],
-          ),
-        ),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -268,75 +170,217 @@ class _NextScreenState extends State<NextScreen> {
             }),
           ),
         ),
+        // child: Row(
+        //   children: [
+        //     Expanded(
+        //       child: ListView(
+        //         scrollDirection: Axis.horizontal,
+        //         children: selectedOutlet
+        //             .map(
+        //               (e) => Stack(
+        //                 children: [
+        //                   hi.Container(
+        //                     width: 200,
+        //                     margin: const EdgeInsets.all(12),
+        //                     decoration: BoxDecoration(
+        //                       image: DecorationImage(
+        //                         image: NetworkImage(
+        //                           e.videoName == null
+        //                               ? e.imageURL
+        //                               : localhost + e.imageURL,
+        //                         ),
+        //                         fit: BoxFit.fitHeight,
+        //                       ),
+        //                       borderRadius: BorderRadius.circular(12),
+        //                       color: Colors.white,
+        //                       boxShadow: [
+        //                         BoxShadow(
+        //                           offset: const Offset(0, -2),
+        //                           spreadRadius: 2,
+        //                           blurRadius: 2,
+        //                           color: Colors.black.withOpacity(0.1),
+        //                         )
+        //                       ],
+        //                     ),
+        //                   ),
+        //                   Positioned(
+        //                     right: 4,
+        //                     top: 4,
+        //                     child: Container(
+        //                       height: 20,
+        //                       width: 20,
+        //                       decoration: BoxDecoration(
+        //                           shape: BoxShape.circle, color: Colors.red),
+        //                       child: GestureDetector(
+        //                         onTap: () {
+        //                           selectedOutlet.remove(e);
+        //                           setState(() {});
+        //                         },
+        //                         child: Center(
+        //                           child: Icon(
+        //                             Icons.clear,
+        //                             color: Colors.white,
+        //                             size: 12,
+        //                           ),
+        //                         ),
+        //                       ),
+        //                     ),
+        //                   ),
+        //                 ],
+        //               ),
+        //             )
+        //             .toList(),
+        //       ),
+        //     ),
+        //     hi.Container(
+        //       width: 500,
+        //       child: MergeMap(tempBeat!.outlet, selectedOutlet, false),
+        //     ),
+        //     GestureDetector(
+        //       onTap: () {
+        //         if ((selectedOutlet.length > 1)) {
+        //           Navigator.push(context, MaterialPageRoute(builder: (_) {
+        //             return MergeScreen(
+        //               widget.beat,
+        //               widget.categories,
+        //               refreshNext,
+        //               selectedOutlet,
+        //               tempBeat!,
+        //             );
+        //           }));
+        //         }
+        //       },
+        //       child: hi.Container(
+        //         color: (selectedOutlet.length <= 1)
+        //             ? Colors.blueGrey
+        //             : Colors.green,
+        //         width: 100,
+        //         child: Center(
+        //           child: Column(
+        //             mainAxisAlignment: MainAxisAlignment.center,
+        //             children: const [
+        //               Text(
+        //                 "MERGE",
+        //                 style: TextStyle(color: Colors.white),
+        //               ),
+        //               Icon(
+        //                 Icons.arrow_forward_outlined,
+        //                 color: Colors.white,
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //       ),
+        //     )
+        //   ],
+        // ),
+
         hi.Container(
-          height: 200,
+          padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.5),
+            color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  offset: const Offset(0, -2),
+                  offset: const Offset(0, 2),
                   spreadRadius: 2,
                   blurRadius: 2,
                   color: Colors.black.withOpacity(0.1))
             ],
-            // border: const Border(
-            //   top: BorderSide(
-            //     color: Colors.black,
-            //     width: 10,
-            //   ),
-            // ),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: selectedOutlet
-                      .map(
-                        (e) => Stack(
+          child: Builder(builder: (context) {
+            double widthOfScreen = MediaQuery.of(context).size.width;
+            return Stack(
+              children: [
+                SizedBox(
+                    width: widthOfScreen,
+                    height: 200,
+                    child: MergeMap(tempBeat!.outlet, selectedOutlet, false)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      width: 12,
+                    ),
+                    SizedBox(
+                      height: 200,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            hi.Container(
-                              width: 200,
-                              margin: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    e.videoName == null
-                                        ? e.imageURL
-                                        : localhost + e.imageURL,
-                                  ),
-                                  fit: BoxFit.fitHeight,
-                                ),
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    offset: const Offset(0, -2),
-                                    spreadRadius: 2,
-                                    blurRadius: 2,
-                                    color: Colors.black.withOpacity(0.1),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Positioned(
-                              right: 4,
-                              top: 4,
-                              child: Container(
-                                height: 20,
-                                width: 20,
+                            Builder(builder: (context) {
+                              return Container(
                                 decoration: BoxDecoration(
-                                    shape: BoxShape.circle, color: Colors.red),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    selectedOutlet.remove(e);
-                                    setState(() {});
-                                  },
-                                  child: Center(
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.black.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0),
+                                  child: DropdownButton(
+                                    items:
+                                        <String>["Distance", "Name", "Category"]
+                                            .map(
+                                              (e) => DropdownMenuItem(
+                                                child: Text(e),
+                                                value: e,
+                                              ),
+                                            )
+                                            .toList(),
+                                    value: sortDropdownItem,
+                                    underline: Container(),
+                                    onChanged: (String? a) {
+                                      if (a != null) {
+                                        sortDropdownItem = a;
+                                        if (a == "Distance") {
+                                          tempBeat?.outlet =
+                                              shortestPath(tempBeat!.outlet)[0];
+                                        } else if (a == "Name") {
+                                          tempBeat?.outlet.sort((a, b) => a
+                                              .outletName
+                                              .compareTo(b.outletName));
+                                        } else if (a == "Category") {
+                                          tempBeat?.outlet.sort((a, b) => a
+                                              .categoryID
+                                              .compareTo(b.newcategoryID ?? 0));
+                                        }
+                                        setState(() {});
+                                      }
+                                    },
+                                  ),
+                                ),
+                              );
+                            }),
+                            Expanded(child: Container()),
+                            Container(
+                              decoration: const BoxDecoration(
+                                  color: Colors.green, shape: BoxShape.circle),
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) {
+                                        return BackButtonAlert(
+                                          "Your progress will not be saved",
+                                          "Confirm",
+                                          "Cancel",
+                                          () {
+                                            Navigator.pop(context);
+                                          },
+                                        );
+                                      });
+                                  widget.refresh();
+                                },
+                                child: const Focus(
+                                  autofocus: true,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(16.0),
                                     child: Icon(
-                                      Icons.clear,
+                                      Icons.arrow_back,
                                       color: Colors.white,
-                                      size: 12,
                                     ),
                                   ),
                                 ),
@@ -344,52 +388,98 @@ class _NextScreenState extends State<NextScreen> {
                             ),
                           ],
                         ),
-                      )
-                      .toList(),
-                ),
-              ),
-              hi.Container(
-                width: 500,
-                child: MergeMap(tempBeat!.outlet, selectedOutlet, false),
-              ),
-              GestureDetector(
-                onTap: () {
-                  if ((selectedOutlet.length > 1)) {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) {
-                      return MergeScreen(
-                        widget.beat,
-                        widget.categories,
-                        refreshNext,
-                        selectedOutlet,
-                        tempBeat!,
-                      );
-                    }));
-                  }
-                },
-                child: hi.Container(
-                  color: (selectedOutlet.length <= 1)
-                      ? Colors.blueGrey
-                      : Colors.green,
-                  width: 100,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "MERGE",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_outlined,
-                          color: Colors.white,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 6, horizontal: 12.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Text(
+                                "${(tempBeat as Beat).outlet.length} Outlets",
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 200,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                if ((selectedOutlet.length > 1)) {
+                                  Navigator.push(context,
+                                      MaterialPageRoute(builder: (_) {
+                                    return MergeScreen(
+                                      widget.beat,
+                                      widget.categories,
+                                      refreshNext,
+                                      selectedOutlet,
+                                      tempBeat!,
+                                    );
+                                  }));
+                                }
+                              },
+                              child: Material(
+                                color: (selectedOutlet.length <= 1)
+                                    ? Colors.blueGrey
+                                    : Colors.red,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Text(
+                                          "MERGE",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Icon(
+                                          Icons.merge_type,
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(),
+                            ),
+                            DoneButton(doneFunction),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                  ],
                 ),
-              )
-            ],
-          ),
+              ],
+            );
+          }),
         ),
       ],
     );

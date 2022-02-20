@@ -58,7 +58,6 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["deactivated"] = "true";
         counter++;
         }
-        print("$counter found as deactivated");
 
       aJson["outlets"] = aJson["outlets"].toString();
       Response res = await http.put(

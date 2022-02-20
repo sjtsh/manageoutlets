@@ -8,17 +8,17 @@ class DoneButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.green,
-          width: 2,
+    return GestureDetector(
+      onTap: doneFunction,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.green,
+            width: 2,
+          ),
         ),
-      ),
-      child: Material(
-        color: Colors.white,
-        child: GestureDetector(
-          onTap: doneFunction,
+        child: Material(
+          color: Colors.green,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
@@ -28,7 +28,7 @@ class DoneButton extends StatelessWidget {
                   Text(
                     "DONE",
                     style: TextStyle(
-                      color: Colors.green,
+                      color: Colors.white,
                     ),
                   ),
                   SizedBox(
@@ -36,7 +36,7 @@ class DoneButton extends StatelessWidget {
                   ),
                   Icon(
                     Icons.arrow_forward_outlined,
-                    color: Colors.green,
+                    color: Colors.white,
                   ),
                 ],
               ),

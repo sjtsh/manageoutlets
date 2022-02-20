@@ -7,9 +7,10 @@ class RedSlider extends StatelessWidget {
   final redDistance;
   final Function setTempRedRadius;
   final Function clearFunction;
+  final int maxRedDistance;
 
   RedSlider(this.redPositions, this.redDistance, this.setTempRedRadius,
-      this.clearFunction);
+      this.clearFunction, this.maxRedDistance);
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +46,14 @@ class RedSlider extends StatelessWidget {
                     inactiveColor: Colors.red.withOpacity(0.5),
                     thumbColor: Colors.red,
                     value: redDistance,
-                    max: 2000,
+                    max: maxRedDistance +0.0,
                     min: 0,
                     label: "${redDistance.toStringAsFixed(2)}",
                     onChanged: (double a) {
                       setTempRedRadius(a);
                     }),
               ),
-              const Text("2000 m"),
+              Text("$maxRedDistance m"),
               const SizedBox(
                 width: 12,
               ),

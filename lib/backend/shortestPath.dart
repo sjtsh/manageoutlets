@@ -7,10 +7,12 @@ import 'package:latlng/latlng.dart';
 
 import 'Entities/Outlet.dart';
 
-List<Outlet> shortestPath(List<Outlet> outlets1) {
+List shortestPath(List<Outlet> outlets1) {
+  if(outlets1.isEmpty) return [<Outlet>[],0];
+
   List<Outlet> outlets = outlets1;
   int head = 0;
-
+  double totalDistance = 0;
 
   for (var element in outlets) {
     if (outlets[head].lat > element.lat) {
@@ -28,34 +30,29 @@ List<Outlet> shortestPath(List<Outlet> outlets1) {
     double? mini;
     double? total1 = 0;
 
-    outlets
-        .asMap()
-        .entries
-        .forEach((element) {
-
-      mini ??= Geolocator.distanceBetween(headNode.lat,
-          headNode.lng, element.value.lat, element.value.lng);
+    outlets.asMap().entries.forEach((element) {
+      mini ??= Geolocator.distanceBetween(
+          headNode.lat, headNode.lng, element.value.lat, element.value.lng);
       changingHead ??= element.key;
       if (mini! >
           Geolocator.distanceBetween(headNode.lat, headNode.lng,
               element.value.lat, element.value.lng)) {
         changingHead = element.key;
-        mini = Geolocator.distanceBetween(headNode.lat, headNode.lng,
-            element.value.lat, element.value.lng);
+        mini = Geolocator.distanceBetween(
+            headNode.lat, headNode.lng, element.value.lat, element.value.lng);
 
-        total1= total1!+ mini!;
+        total1 = total1! + mini!;
       }
-  print(total1);
-
     });
 
     head = changingHead!;
     headNode = outlets[changingHead!];
     sorted.add(headNode);
+    totalDistance += mini ?? 0;
     outlets.removeAt(head);
   }
 
-  return sorted;
+  return [sorted, totalDistance];
 }
 
 List<Outlet> shortestPathWithHead(List<Outlet> outlets1, LatLng latLng) {
@@ -64,7 +61,7 @@ List<Outlet> shortestPathWithHead(List<Outlet> outlets1, LatLng latLng) {
   double minDistance = Geolocator.distanceBetween(
       latLng.latitude, latLng.longitude, outlets1[0].lat, outlets1[0].lng);
 
-  for (int i = 0; i < outlets.length; i ++) {
+  for (int i = 0; i < outlets.length; i++) {
     double a = Geolocator.distanceBetween(
         latLng.latitude, latLng.longitude, outlets[i].lat, outlets[i].lng);
     if (a < minDistance) {
@@ -80,20 +77,16 @@ List<Outlet> shortestPathWithHead(List<Outlet> outlets1, LatLng latLng) {
   while (outlets.isNotEmpty) {
     int? changingHead;
     double? mini;
-    outlets
-        .asMap()
-        .entries
-        .forEach((element) {
-      mini ??= Geolocator.distanceBetween(headNode.lat,
-          headNode.lng, element.value.lat, element.value.lng);
+    outlets.asMap().entries.forEach((element) {
+      mini ??= Geolocator.distanceBetween(
+          headNode.lat, headNode.lng, element.value.lat, element.value.lng);
       changingHead ??= element.key;
       if (mini! >
           Geolocator.distanceBetween(headNode.lat, headNode.lng,
               element.value.lat, element.value.lng)) {
         changingHead = element.key;
-        mini = Geolocator.distanceBetween(headNode.lat, headNode.lng,
-            element.value.lat, element.value.lng);
-
+        mini = Geolocator.distanceBetween(
+            headNode.lat, headNode.lng, element.value.lat, element.value.lng);
       }
     });
     head = changingHead!;

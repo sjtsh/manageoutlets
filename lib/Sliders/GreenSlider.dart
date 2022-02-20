@@ -14,8 +14,19 @@ class GreenSlider extends StatelessWidget {
   final Function refresh;
   final Function emptyNearbyOutlets;
   final Function addBeat;
+  final double totalDistance;
 
-  GreenSlider(this.clearFunction, this.focusedOutlets, this.visibleOutlets, this.rangeIndexes, this.blueIndexes, this.setTempRedRadius, this.refresh, this.emptyNearbyOutlets, this.addBeat);
+  GreenSlider(
+      this.clearFunction,
+      this.focusedOutlets,
+      this.visibleOutlets,
+      this.rangeIndexes,
+      this.blueIndexes,
+      this.setTempRedRadius,
+      this.refresh,
+      this.emptyNearbyOutlets,
+      this.addBeat,
+      this.totalDistance);
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +47,12 @@ class GreenSlider extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            "${focusedOutlets.length.toString()} outlets in ${visibleOutlets.length} selected",
+            "${focusedOutlets.length.toString()} outlets with around ${totalDistance < 1000 ? "${totalDistance.toStringAsFixed(0)}m" : "${(totalDistance / 1000).toStringAsFixed(2)}km"} travel distance",
             style: const TextStyle(fontSize: 20),
           ),
-          SizedBox(height: 12,),
+          SizedBox(
+            height: 12,
+          ),
           Row(
             children: [
               Expanded(
@@ -73,49 +86,52 @@ class GreenSlider extends StatelessWidget {
               SizedBox(
                 width: 12,
               ),
-              Focus(
-                autofocus: true,
-                child: Container(
-                  clipBehavior: Clip.hardEdge,
-                  height: 50,
-                  width: 100,
-                  decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                            offset: const Offset(0, 2),
-                            spreadRadius: 2,
-                            blurRadius: 2,
-                            color: Colors.black.withOpacity(0.1))
-                      ]),
-                  child: RawMaterialButton(
-                    onPressed: () {
-                      emptyNearbyOutlets();
-                      TextEditingController textController =
-                          TextEditingController();
-                      if (focusedOutlets.isNotEmpty) {
-                        showDialog(
-                            context: context,
-                            builder: (_) {
-                              return AddBeatDialogBox(
-                                  textController,
-                                  rangeIndexes,
-                                  blueIndexes,
-                                  focusedOutlets,
-                                  refresh, addBeat);
-                            });
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                duration: Duration(milliseconds: 500),
-                                content: Text("Please select outlet")));
-                      }
-                    },
-                    child: const Center(
-                      child: Text(
-                        "ADD",
-                        style: TextStyle(color: Colors.white),
+              Expanded(
+                child: Focus(
+                  autofocus: true,
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    height: 50,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                              offset: const Offset(0, 2),
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              color: Colors.black.withOpacity(0.1))
+                        ]),
+                    child: RawMaterialButton(
+                      onPressed: () {
+                        emptyNearbyOutlets();
+                        TextEditingController textController =
+                            TextEditingController();
+                        if (focusedOutlets.isNotEmpty) {
+                          showDialog(
+                              context: context,
+                              builder: (_) {
+                                return AddBeatDialogBox(
+                                    textController,
+                                    rangeIndexes,
+                                    blueIndexes,
+                                    focusedOutlets,
+                                    refresh,
+                                    addBeat);
+                              });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  duration: Duration(milliseconds: 500),
+                                  content: Text("Please select outlet")));
+                        }
+                      },
+                      child: const Center(
+                        child: Text(
+                          "ADD",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
                   ),

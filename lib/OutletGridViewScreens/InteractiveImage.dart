@@ -25,7 +25,6 @@ class _InteractiveImageState extends State<InteractiveImage> {
   int rotated = 0;
 
   void rotate(int newRotation) {
-    print(newRotation);
     setState(() {
       rotated = newRotation;
     });
