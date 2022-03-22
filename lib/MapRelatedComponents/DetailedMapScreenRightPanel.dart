@@ -2,8 +2,11 @@ import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart' as hi;
 import 'package:manage_outlets/DialogBox/renameBeatNameDialog.dart';
+import 'package:manage_outlets/MapRelatedComponents/SingularBeat/AssignedBeat.dart';
 import 'package:manage_outlets/MapRelatedComponents/SingularBeat/BeatWidgets.dart';
 import 'package:manage_outlets/MapRelatedComponents/SingularBeat/ConfirmedBeat.dart';
+import 'package:manage_outlets/MapRelatedComponents/SingularBeat/ReviewBeat.dart';
+import 'package:manage_outlets/MapRelatedComponents/SingularBeat/SyncButton.dart';
 import 'package:manage_outlets/OutletGridViewScreens/NextScreen.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
@@ -19,7 +22,7 @@ import '../backend/Services/BeatService.dart';
 import '../backend/database.dart';
 import 'PopUpColors.dart';
 
-class MapScreenRightPanel extends StatefulWidget {
+class DetailedMapScreenRightPanel extends StatefulWidget {
   final List<Category> categories;
   final List<Beat> beats;
   final Function removeBeat;
@@ -34,7 +37,9 @@ class MapScreenRightPanel extends StatefulWidget {
   final Function renameBeat;
   final List<User> users;
   final List<Widget> listOfBeatWidgets;
-  MapScreenRightPanel(
+  final Widget sync;
+
+  DetailedMapScreenRightPanel(
       this.categories,
       this.distributors,
       this.beats,
@@ -47,14 +52,15 @@ class MapScreenRightPanel extends StatefulWidget {
       this.isDeactivated,
       this.changeDeactivated,
       this.renameBeat,
-      this.users,
-      this.listOfBeatWidgets,);
+      this.users, this.listOfBeatWidgets, this.sync);
 
   @override
-  _MapScreenRightPanelState createState() => _MapScreenRightPanelState();
+  _DetailedMapScreenRightPanelState createState() =>
+      _DetailedMapScreenRightPanelState();
 }
 
-class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
+class _DetailedMapScreenRightPanelState
+    extends State<DetailedMapScreenRightPanel> {
   bool isDisabled = false;
 
   @override
@@ -83,9 +89,8 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Expanded(child: Container()),
-              SizedBox(
-                width: 12,
-              ),
+              widget.sync,
+              SizedBox(width: 12,),
               Switch(
                 value: widget.isDeactivated,
                 onChanged: (bool a) {
@@ -152,21 +157,92 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
               },
             ),
           ),
-          const SizedBox(
-            height: 12,
-          ),
-          const Text(
-            "Beats",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(
-            height: 12,
-          ),
-
           Expanded(
             child: ListView(
               children: [
-                ...widget.listOfBeatWidgets,
+                const SizedBox(
+                  height: 12,
+                ),
+                const Text(
+                  "Assigned",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Builder(builder: (context) {
+                  List<Beat> beats = widget.selectedDropDownItem.beats
+                      .where((element) => element.status == 1)
+                      .toList();
+                  return Wrap(
+                    direction: Axis.horizontal,
+                    children: [
+                      ...List.generate(
+                        beats.length,
+                        (int index) {
+                          return AssignedBeat(
+                              beats[index],
+                              widget.changeColor,
+                              index,
+                              widget.renameBeat,
+                              widget.removeBeat,
+                              widget.users);
+                        },
+                      ),
+                    ],
+                  );
+                }),
+                Divider(
+                  color: Colors.black.withOpacity(0.5),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                const Text(
+                  "To Be Reviewed",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Builder(builder: (context) {
+                  return Wrap(
+                    direction: Axis.horizontal,
+                    children: [
+                      ...widget.listOfBeatWidgets
+                    ],
+                  );
+                }),
+                Divider(
+                  color: Colors.black.withOpacity(0.5),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                const Text(
+                  "Confirmed",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Builder(builder: (context) {
+                  List<Beat> beats = widget.selectedDropDownItem.beats
+                      .where((element) => element.status == 3)
+                      .toList();
+                  return Wrap(
+                    direction: Axis.horizontal,
+                    children: [
+                      ...List.generate(
+                        beats.length,
+                        (int index) {
+                          return ConfirmedBeat(beats[index], widget.changeColor,
+                              index, widget.renameBeat, widget.removeBeat, widget.users);
+                        },
+                      ),
+                    ],
+                  );
+                })
               ],
             ),
           ),
@@ -175,7 +251,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           //     clipBehavior: Clip.hardEdge,
           //     height: 50,
           //     decoration: BoxDecoration(
-          //         color: Colors.green,
+          //         color: Colors.white,
           //         borderRadius: BorderRadius.circular(12),
           //         boxShadow: [
           //           BoxShadow(
@@ -193,20 +269,29 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           //               setState(() {
           //                 isDisabled = true;
           //               });
-          //               BeatService()
-          //                   .updateOutlets(widget.beats,
-          //                       widget.selectedDropDownItem.id, context)
-          //                   .then((value) {
-          //                 setState(() {
-          //                   isDisabled = false;
+          //               try {
+          //                 BeatService()
+          //                     .updateOutlets(widget.beats,
+          //                         widget.selectedDropDownItem.id, context)
+          //                     .then((value) {
+          //                   while (Navigator.canPop(context)) {
+          //                     Navigator.pop(context);
+          //                   }
+          //                   Navigator.push(context,
+          //                       MaterialPageRoute(builder: (_) {
+          //                     return GetOutletScreen(1000000);
+          //                   }));
           //                 });
-          //                 while (Navigator.canPop(context)) {
-          //                   Navigator.pop(context);
-          //                 }
-          //                 Navigator.push(context,
-          //                     MaterialPageRoute(builder: (_) {
-          //                   return GetOutletScreen(1000000);
-          //                 }));
+          //               } catch (e) {
+          //                 ScaffoldMessenger.of(context).showSnackBar(
+          //                   const SnackBar(
+          //                     content: Text(
+          //                         "Unsuccessful try again with connection"),
+          //                   ),
+          //                 );
+          //               }
+          //               setState(() {
+          //                 isDisabled = false;
           //               });
           //             }
           //           } else {
@@ -225,7 +310,7 @@ class _MapScreenRightPanelState extends State<MapScreenRightPanel> {
           //             ? const CircularProgressIndicator()
           //             : const Text(
           //                 "CONFIRM",
-          //                 style: const TextStyle(color: Colors.white),
+          //                 style: const TextStyle(color: Colors.black),
           //               ),
           //       ),
           //     ),

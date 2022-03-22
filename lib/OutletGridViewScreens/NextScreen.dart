@@ -355,25 +355,25 @@ class _NextScreenState extends State<NextScreen> {
                               );
                             }),
                             Expanded(child: Container()),
-                            Container(
-                              decoration: const BoxDecoration(
-                                  color: Colors.green, shape: BoxShape.circle),
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (_) {
-                                        return BackButtonAlert(
-                                          "Your progress will not be saved",
-                                          "Confirm",
-                                          "Cancel",
-                                          () {
-                                            Navigator.pop(context);
-                                          },
-                                        );
-                                      });
-                                  widget.refresh();
-                                },
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) {
+                                      return BackButtonAlert(
+                                        "Your progress will not be saved",
+                                        "Confirm",
+                                        "Cancel",
+                                        () {
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    });
+                                widget.refresh();
+                              },
+                              child: Container(
+                                decoration: const BoxDecoration(
+                                    color: Colors.green, shape: BoxShape.circle),
                                 child: const Focus(
                                   autofocus: true,
                                   child: Padding(

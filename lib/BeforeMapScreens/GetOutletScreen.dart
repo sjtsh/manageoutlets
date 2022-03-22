@@ -57,10 +57,12 @@ class _GetOutletScreenState extends State<GetOutletScreen> {
             element.outlet = a[(element.id).toString()] ?? [];
           }
         }
+        print("dpone with the aopis");
         return [outlets, distributors, categories, value, users];
       }),
       builder: (context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
+        print("done in to the snaphsot");
           List<Outlet> outletLatLng = snapshot.data[0];
           List<Distributor> distributors = snapshot.data[1];
           List<Category> categories = snapshot.data[2];
@@ -77,7 +79,7 @@ class _GetOutletScreenState extends State<GetOutletScreen> {
               controller,
               LatLng(position.latitude, position.longitude),
               distributors,
-              categories);
+              categories, users);
         }
         return SplashScreen(localhost);
       },

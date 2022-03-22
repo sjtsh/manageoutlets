@@ -16,9 +16,9 @@ class Beat {
       {this.id, this.color, this.deactivated, this.userID, this.status});
 
   factory Beat.fromJson(Map<String, dynamic> json) {
-    return Beat(json["beatName"], [],
-        id: int.parse(json["id"]),
-        status: int.parse(json["status"]),
-        userID: int.parse(json["user"]));
+    return Beat(json["name"], [],
+        id: int.parse(json["id"].toString()),
+        status: int.parse(json["status"].toString()),
+        userID: int.parse(json["user"].toString()));
   }
 }

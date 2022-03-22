@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../DialogBox/addBeatNameDialog.dart';
+import '../backend/Entities/Distributor.dart';
 import '../backend/Entities/Outlet.dart';
 import '../backend/Entities/OutletsListEntity.dart';
+import '../backend/Entities/User.dart';
 
 class GreenSlider extends StatelessWidget {
   final List<Outlet> focusedOutlets;
@@ -15,6 +17,8 @@ class GreenSlider extends StatelessWidget {
   final Function emptyNearbyOutlets;
   final Function addBeat;
   final double totalDistance;
+  final List<User> users;
+  final Distributor selectedDropdownItem;
 
   GreenSlider(
       this.clearFunction,
@@ -26,7 +30,7 @@ class GreenSlider extends StatelessWidget {
       this.refresh,
       this.emptyNearbyOutlets,
       this.addBeat,
-      this.totalDistance);
+      this.totalDistance, this.users, this.selectedDropdownItem);
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +122,7 @@ class GreenSlider extends StatelessWidget {
                                     blueIndexes,
                                     focusedOutlets,
                                     refresh,
-                                    addBeat);
+                                    addBeat, users, selectedDropdownItem);
                               });
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(

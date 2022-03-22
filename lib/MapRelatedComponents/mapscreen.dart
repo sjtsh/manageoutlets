@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +20,16 @@ import 'package:manage_outlets/DialogBox/addBeatNameDialog.dart';
 import 'package:map/map.dart';
 import '../backend/Entities/OutletsListEntity.dart';
 import '../backend/Entities/PathPoint.dart';
+import '../backend/Entities/User.dart';
+import '../backend/Services/UserService.dart';
+import 'DetailedMapScreenRightPanel.dart';
 import 'MapScreenRightPanel.dart';
 import '../backend/Entities/Distributor.dart';
 import '../backend/Entities/Outlet.dart';
 import '../backend/shortestPath.dart';
+import 'SingularBeat/BeatWidgets.dart';
+import 'SingularBeat/ReviewBeat.dart';
+import 'SingularBeat/SyncButton.dart';
 
 class MapScreen extends StatefulWidget {
   final List<Outlet>
@@ -43,22 +50,26 @@ class MapScreen extends StatefulWidget {
   final Function changeDeactivated;
   final Function setDeactivated;
 
+  final List<User> users;
+
   MapScreen(
-      this.outletLatLng,
-      this.redRadius,
-      this.controller,
-      this.bluegreyIndexes,
-      this.redDistance,
-      this.setTempRedRadius,
-      this.center,
-      this.changeCenter,
-      this.distributors,
-      this.categories,
-      this.removePermPositions,
-      this.setRemovePermPositions,
-      this.isDeactivated,
-      this.changeDeactivated,
-      this.setDeactivated);
+    this.outletLatLng,
+    this.redRadius,
+    this.controller,
+    this.bluegreyIndexes,
+    this.redDistance,
+    this.setTempRedRadius,
+    this.center,
+    this.changeCenter,
+    this.distributors,
+    this.categories,
+    this.removePermPositions,
+    this.setRemovePermPositions,
+    this.isDeactivated,
+    this.changeDeactivated,
+    this.setDeactivated,
+    this.users,
+  );
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -89,9 +100,23 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  addBeat(Beat newBeat) {
+  setNewBeats(
+    List<Beat> beats,
+    int distributorID,
+  ) {
+    widget.distributors.firstWhere((element) => element.id == distributorID).beats = beats;
+    selectedDropDownItem.beats = beats;
+    setState(() {});
+  }
+
+  addBeat(Beat newBeat, int distributorID) {
     setState(() {
-      blueIndexes.add(newBeat);
+      UserService().assignOutlets(
+        [newBeat],
+        distributorID,
+        context,
+      );
+      selectedDropDownItem.beats.add(newBeat);
       isPathPointChoosing = !isPathPointChoosing;
       pathPoints = [];
       nearbyOutlets = [];
@@ -265,8 +290,15 @@ class _MapScreenState extends State<MapScreen> {
                 builder: (_) {
                   TextEditingController textController =
                       TextEditingController();
-                  return AddBeatDialogBox(textController, rangeIndexes,
-                      blueIndexes, redPositions, refresh, addBeat);
+                  return AddBeatDialogBox(
+                      textController,
+                      rangeIndexes,
+                      blueIndexes,
+                      redPositions,
+                      refresh,
+                      addBeat,
+                      widget.users,
+                      selectedDropDownItem);
                 });
           }),
           AIntent: CallbackAction(onInvoke: (intent) {
@@ -326,390 +358,603 @@ class _MapScreenState extends State<MapScreen> {
         },
         child: Scaffold(
           backgroundColor: const Color(0xfff2f2f2),
-          body: Row(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Column(
+          body: Builder(builder: (context) {
+            Size size = MediaQuery.of(context).size;
+            return Stack(
+              children: [
+                Row(
                   children: [
-                    Expanded(
-                      child: Container(
-                        clipBehavior: Clip.hardEdge,
-                        margin: EdgeInsets.only(top: 12, left: 12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                                offset: const Offset(0, 2),
-                                spreadRadius: 2,
-                                blurRadius: 2,
-                                color: Colors.black.withOpacity(0.1))
-                          ],
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: MapLayoutBuilder(
-                          controller: widget.controller,
-                          builder: (context, transformer) {
-                            List<Widget> pathWidgets = [];
-                            redPositions = widget.outletLatLng;
-                            final markerWidgets = [];
-                            if (widget.center != null) {
-                              List<String> selectedOutlets = [];
-                              for (Beat beat in blueIndexes) {
-                                for (var element in beat.outlet) {
-                                  selectedOutlets.add(element.id);
-                                }
-                              }
+                    Container(
+                      height: size.height,
+                      width: size.width * 3 / 4 - 20,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              clipBehavior: Clip.hardEdge,
+                              margin: EdgeInsets.only(top: 12, left: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: const Offset(0, 2),
+                                      spreadRadius: 2,
+                                      blurRadius: 2,
+                                      color: Colors.black.withOpacity(0.1))
+                                ],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: MapLayoutBuilder(
+                                controller: widget.controller,
+                                builder: (context, transformer) {
+                                  List<Widget> pathWidgets = [];
+                                  redPositions = widget.outletLatLng;
+                                  final markerWidgets = [];
+                                  if (widget.center != null) {
+                                    List<String> selectedOutlets = [];
+                                    for (Beat beat in blueIndexes) {
+                                      for (var element in beat.outlet) {
+                                        selectedOutlets.add(element.id);
+                                      }
+                                    }
 
-                              for (Beat beat in selectedDropDownItem.beats) {
-                                for (var element in beat.outlet) {
-                                  selectedOutlets.add(element.id);
-                                }
-                              }
-                              redPositions = [];
-                              rangeIndexes = [];
-                              widget.outletLatLng
-                                  .asMap()
-                                  .entries
-                                  .forEach((element) {
-                                if (element.value.deactivated) {
-                                  markerWidgets.addAll([
-                                    LatLng(element.value.lat, element.value.lng)
-                                  ]
-                                      .map(transformer.fromLatLngToXYCoords)
-                                      .toList()
-                                      .map((pos) =>
-                                          // _buildMarkerWidget(
-                                          // pos, Colors.brown, false),
-                                          _buildMarkerWidgetAddedDisabled(
-                                              pos,
-                                              "assets/disabled_marker.png",
-                                              false)));
-                                } else if (selectedOutlets
-                                        .contains(element.value.id) ||
-                                    widget.removePermPositions
-                                        .contains(element.value)) {
-                                  // bluePositions.add(element.value
-                                } else if (GeolocatorPlatform.instance
-                                        .distanceBetween(
-                                            element.value.lat,
-                                            element.value.lng,
-                                            widget.center!.latitude,
-                                            widget.center!.longitude) <
-                                    widget.redDistance) {
-                                  if (element.value.beatID != null) {
-                                    markerWidgets.addAll([
-                                      LatLng(
-                                          element.value.lat, element.value.lng)
-                                    ]
-                                        .map(transformer.fromLatLngToXYCoords)
-                                        .toList()
-                                        .map(
-                                          (pos) =>
-                                              _buildMarkerWidgetAddedDisabled(
-                                                  pos,
-                                                  "assets/done_marker_1.png",
-                                                  false),
-                                        ));
-                                  } else if (nearbyOutlets
-                                      .contains(element.value)) {
+                                    for (Beat beat
+                                        in selectedDropDownItem.beats) {
+                                      for (var element in beat.outlet) {
+                                        selectedOutlets.add(element.id);
+                                      }
+                                    }
+                                    redPositions = [];
+                                    rangeIndexes = [];
+                                    widget.outletLatLng
+                                        .asMap()
+                                        .entries
+                                        .forEach((element) {
+                                      if (element.value.deactivated) {
+                                        markerWidgets.addAll([
+                                          LatLng(element.value.lat,
+                                              element.value.lng)
+                                        ]
+                                            .map(transformer
+                                                .fromLatLngToXYCoords)
+                                            .toList()
+                                            .map((pos) =>
+                                                // _buildMarkerWidget(
+                                                // pos, Colors.brown, false),
+                                                _buildMarkerWidgetAddedDisabled(
+                                                    pos,
+                                                    "assets/disabled_marker.png",
+                                                    false)));
+                                      } else if (selectedOutlets
+                                              .contains(element.value.id) ||
+                                          widget.removePermPositions
+                                              .contains(element.value)) {
+                                        // bluePositions.add(element.value
+                                      } else if (GeolocatorPlatform.instance
+                                              .distanceBetween(
+                                                  element.value.lat,
+                                                  element.value.lng,
+                                                  widget.center!.latitude,
+                                                  widget.center!.longitude) <
+                                          widget.redDistance) {
+                                        if (element.value.beatID != null) {
+                                          markerWidgets.addAll([
+                                            LatLng(element.value.lat,
+                                                element.value.lng)
+                                          ]
+                                              .map(transformer
+                                                  .fromLatLngToXYCoords)
+                                              .toList()
+                                              .map(
+                                                (pos) =>
+                                                    _buildMarkerWidgetAddedDisabled(
+                                                        pos,
+                                                        "assets/done_marker_1.png",
+                                                        false),
+                                              ));
+                                        } else if (nearbyOutlets
+                                            .contains(element.value)) {
+                                          markerWidgets.addAll(
+                                            [
+                                              LatLng(element.value.lat,
+                                                  element.value.lng)
+                                            ]
+                                                .map(transformer
+                                                    .fromLatLngToXYCoords)
+                                                .toList()
+                                                .map(
+                                                  (pos) => _buildMarkerWidget(
+                                                      pos, Colors.blue, false),
+                                                ),
+                                          );
+                                        } else {
+                                          redPositions.add(element.value);
+                                          markerWidgets.addAll([
+                                            LatLng(element.value.lat,
+                                                element.value.lng)
+                                          ]
+                                              .map(transformer
+                                                  .fromLatLngToXYCoords)
+                                              .toList()
+                                              .map(
+                                                (pos) => _buildMarkerWidget(
+                                                    pos, Colors.red, false),
+                                              ));
+                                        }
+                                      }
+                                    });
+                                  }
+                                  for (int i = 0; i < blueIndexes.length; i++) {
                                     markerWidgets.addAll(
-                                      [
-                                        LatLng(element.value.lat,
-                                            element.value.lng)
-                                      ]
+                                      List.generate(
+                                              blueIndexes[i].outlet.length,
+                                              (e) => LatLng(
+                                                  blueIndexes[i].outlet[e].lat,
+                                                  blueIndexes[i].outlet[e].lng))
                                           .map(transformer.fromLatLngToXYCoords)
                                           .toList()
                                           .map(
                                             (pos) => _buildMarkerWidget(
-                                                pos, Colors.blue, false),
+                                                pos,
+                                                blueIndexes[i].color ??
+                                                    Colors.blueGrey,
+                                                false),
                                           ),
                                     );
-                                  } else {
-                                    redPositions.add(element.value);
-                                    markerWidgets.addAll([
-                                      LatLng(
-                                          element.value.lat, element.value.lng)
-                                    ]
-                                        .map(transformer.fromLatLngToXYCoords)
-                                        .toList()
-                                        .map(
-                                          (pos) => _buildMarkerWidget(
-                                              pos, Colors.red, false),
-                                        ));
                                   }
-                                }
-                              });
-                            }
-                            for (int i = 0; i < blueIndexes.length; i++) {
-                              markerWidgets.addAll(
-                                List.generate(
-                                        blueIndexes[i].outlet.length,
-                                        (e) => LatLng(
-                                            blueIndexes[i].outlet[e].lat,
-                                            blueIndexes[i].outlet[e].lng))
-                                    .map(transformer.fromLatLngToXYCoords)
-                                    .toList()
-                                    .map(
-                                      (pos) => _buildMarkerWidget(
-                                          pos,
-                                          blueIndexes[i].color ??
-                                              Colors.blueGrey,
-                                          false),
-                                    ),
-                              );
-                            }
 
-                            Widget? homeMarkerWidget;
-                            Widget? removeMarkerWidget;
-                            if (widget.center != null) {
-                              final homeLocation = transformer
-                                  .fromLatLngToXYCoords(widget.center!);
+                                  Widget? homeMarkerWidget;
+                                  Widget? removeMarkerWidget;
+                                  if (widget.center != null) {
+                                    final homeLocation = transformer
+                                        .fromLatLngToXYCoords(widget.center!);
 
-                              homeMarkerWidget = _buildMarkerWidget(
-                                  homeLocation, Colors.black, true);
-                            }
-
-                            for (int i = 0;
-                                i < selectedDropDownItem.beats.length;
-                                i++) {
-                              markerWidgets.addAll(
-                                List.generate(
-                                        selectedDropDownItem
-                                            .beats[i].outlet.length,
-                                        (e) => LatLng(
-                                            selectedDropDownItem
-                                                .beats[i].outlet[e].lat,
-                                            selectedDropDownItem
-                                                .beats[i].outlet[e].lng))
-                                    .map(transformer.fromLatLngToXYCoords)
-                                    .toList()
-                                    .map(
-                                      (pos) => _buildMarkerWidget(
-                                          pos,
-                                          selectedDropDownItem.beats[i].color ??
-                                              Colors.blueGrey,
-                                          false),
-                                    ),
-                              );
-                            }
-
-                            for (int i = 0; i < pathPoints.length; i++) {
-                              pathWidgets.add(
-                                _buildDraggableMarkerWidget(
-                                    transformer, pathPoints[i], i),
-                              );
-                            }
-                            return GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onDoubleTap: _onDoubleTap,
-                              onScaleStart: (ScaleStartDetails details) {
-                                _dragStart = details.focalPoint;
-                                _scaleStart = 1.0;
-                              },
-                              onScaleUpdate: (ScaleUpdateDetails details) {
-                                final scaleDiff = details.scale - _scaleStart;
-                                _scaleStart = details.scale;
-
-                                if (scaleDiff > 0) {
-                                  widget.controller.zoom += 0.02;
-                                  setState(() {});
-                                } else if (scaleDiff < 0) {
-                                  widget.controller.zoom -= 0.02;
-                                  setState(() {});
-                                } else {
-                                  final now = details.focalPoint;
-                                  final diff = now - _dragStart!;
-                                  _dragStart = now;
-                                  widget.controller.drag(diff.dx, diff.dy);
-                                  setState(() {});
-                                }
-                              },
-                              onTapUp: (details) {
-                                if (!isPathPointChoosing) {
-                                  LatLng location =
-                                      transformer.fromXYCoordsToLatLng(
-                                          details.localPosition);
-
-                                  Offset clicked = transformer
-                                      .fromLatLngToXYCoords(location);
-                                  if (!isPathPointChoosing) {
-                                    widget.changeCenter(location);
+                                    homeMarkerWidget = _buildMarkerWidget(
+                                        homeLocation, Colors.black, true);
                                   }
-                                } else {
-                                  LatLng location =
-                                      transformer.fromXYCoordsToLatLng(Offset(
-                                          details.localPosition.dx,
-                                          details.localPosition.dy));
-                                  if (widget.outletLatLng.isNotEmpty) {
-                                    pathPoints.add(location);
-                                    findOutletsInPolygon();
-                                    setState(() {});
-                                  } else {}
-                                }
-                              },
-                              child: Listener(
-                                behavior: HitTestBehavior.opaque,
-                                onPointerSignal: (event) {
-                                  if (event is PointerScrollEvent) {
-                                    final delta = event.scrollDelta;
-                                    widget.controller.zoom -= delta.dy / 50.0;
-                                    setState(() {});
+
+                                  for (int i = 0;
+                                      i < selectedDropDownItem.beats.length;
+                                      i++) {
+                                    markerWidgets.addAll(
+                                      List.generate(
+                                              selectedDropDownItem
+                                                  .beats[i].outlet.length,
+                                              (e) => LatLng(
+                                                  selectedDropDownItem
+                                                      .beats[i].outlet[e].lat,
+                                                  selectedDropDownItem
+                                                      .beats[i].outlet[e].lng))
+                                          .map(transformer.fromLatLngToXYCoords)
+                                          .toList()
+                                          .map(
+                                            (pos) => _buildMarkerWidget(
+                                                pos,
+                                                selectedDropDownItem
+                                                        .beats[i].color ??
+                                                    Colors.blueGrey,
+                                                false),
+                                          ),
+                                    );
                                   }
-                                },
-                                child: Stack(
-                                  key: stackKey,
-                                  children: [
-                                    Map(
-                                      controller: widget.controller,
-                                      builder: (context, x, y, z) {
-                                        final url =
-                                            'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
-                                        return CachedNetworkImage(
-                                          imageUrl: url,
-                                          fit: BoxFit.cover,
-                                        );
+
+                                  for (int i = 0; i < pathPoints.length; i++) {
+                                    pathWidgets.add(
+                                      _buildDraggableMarkerWidget(
+                                          transformer, pathPoints[i], i),
+                                    );
+                                  }
+                                  return GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onDoubleTap: _onDoubleTap,
+                                    onScaleStart: (ScaleStartDetails details) {
+                                      _dragStart = details.focalPoint;
+                                      _scaleStart = 1.0;
+                                    },
+                                    onScaleUpdate:
+                                        (ScaleUpdateDetails details) {
+                                      final scaleDiff =
+                                          details.scale - _scaleStart;
+                                      _scaleStart = details.scale;
+
+                                      if (scaleDiff > 0) {
+                                        widget.controller.zoom += 0.02;
+                                        setState(() {});
+                                      } else if (scaleDiff < 0) {
+                                        widget.controller.zoom -= 0.02;
+                                        setState(() {});
+                                      } else {
+                                        final now = details.focalPoint;
+                                        final diff = now - _dragStart!;
+                                        _dragStart = now;
+                                        widget.controller
+                                            .drag(diff.dx, diff.dy);
+                                        setState(() {});
+                                      }
+                                    },
+                                    onTapUp: (details) {
+                                      if (!isPathPointChoosing) {
+                                        LatLng location =
+                                            transformer.fromXYCoordsToLatLng(
+                                                details.localPosition);
+
+                                        Offset clicked = transformer
+                                            .fromLatLngToXYCoords(location);
+                                        if (!isPathPointChoosing) {
+                                          widget.changeCenter(location);
+                                        }
+                                      } else {
+                                        LatLng location = transformer
+                                            .fromXYCoordsToLatLng(Offset(
+                                                details.localPosition.dx,
+                                                details.localPosition.dy));
+                                        if (widget.outletLatLng.isNotEmpty) {
+                                          pathPoints.add(location);
+                                          findOutletsInPolygon();
+                                          setState(() {});
+                                        } else {}
+                                      }
+                                    },
+                                    child: Listener(
+                                      behavior: HitTestBehavior.opaque,
+                                      onPointerSignal: (event) {
+                                        if (event is PointerScrollEvent) {
+                                          final delta = event.scrollDelta;
+                                          widget.controller.zoom -=
+                                              delta.dy / 50.0;
+                                          setState(() {});
+                                        }
                                       },
-                                    ),
-                                    DragTarget(
-                                      builder: (BuildContext context,
-                                          List<Object?> candidateData,
-                                          List<dynamic> rejectedData) {
-                                        return CustomPaint(
-                                          painter: ShapePainter(pathPoints
-                                              .map(transformer
-                                                  .fromLatLngToXYCoords)
-                                              .toList()),
-                                        );
-                                      },
-                                    ),
-                                    (homeMarkerWidget != null)
-                                        ? homeMarkerWidget
-                                        : Container(),
-                                    (removeMarkerWidget != null)
-                                        ? removeMarkerWidget
-                                        : Container(),
-                                    ...markerWidgets,
-                                    ...pathWidgets,
-                                    Positioned(
-                                      bottom: 20,
-                                      right: 20,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            // isPathPointChoosing = !isPathPointChoosing;
-                                            // removeCenter = null;
-                                            // setRemoveRedRadius(0.0);
-                                            isPathPointChoosing =
-                                                !isPathPointChoosing;
-                                          });
-                                        },
-                                        child: Focus(
-                                          autofocus: true,
-                                          child: Container(
-                                            height: 60,
-                                            width: 60,
-                                            decoration: BoxDecoration(
-                                                color: isPathPointChoosing
-                                                    ? Colors.green
-                                                    : Colors.red,
-                                                shape: BoxShape.circle),
-                                            child: const Icon(
-                                              Icons.pattern_sharp,
-                                              color: Colors.white,
+                                      child: Stack(
+                                        key: stackKey,
+                                        children: [
+                                          Map(
+                                            controller: widget.controller,
+                                            builder: (context, x, y, z) {
+                                              final url =
+                                                  'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
+                                              return CachedNetworkImage(
+                                                imageUrl: url,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          ),
+                                          DragTarget(
+                                            builder: (BuildContext context,
+                                                List<Object?> candidateData,
+                                                List<dynamic> rejectedData) {
+                                              return CustomPaint(
+                                                painter: ShapePainter(pathPoints
+                                                    .map(transformer
+                                                        .fromLatLngToXYCoords)
+                                                    .toList()),
+                                              );
+                                            },
+                                          ),
+                                          (homeMarkerWidget != null)
+                                              ? homeMarkerWidget
+                                              : Container(),
+                                          (removeMarkerWidget != null)
+                                              ? removeMarkerWidget
+                                              : Container(),
+                                          ...markerWidgets,
+                                          ...pathWidgets,
+                                          Positioned(
+                                            bottom: 20,
+                                            right: 20,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  // isPathPointChoosing = !isPathPointChoosing;
+                                                  // removeCenter = null;
+                                                  // setRemoveRedRadius(0.0);
+                                                  isPathPointChoosing =
+                                                      !isPathPointChoosing;
+                                                });
+                                              },
+                                              child: Focus(
+                                                autofocus: true,
+                                                child: Container(
+                                                  height: 60,
+                                                  width: 60,
+                                                  decoration: BoxDecoration(
+                                                      color: isPathPointChoosing
+                                                          ? Colors.green
+                                                          : Colors.red,
+                                                      shape: BoxShape.circle),
+                                                  child: const Icon(
+                                                    Icons.pattern_sharp,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
+                                          // Positioned(
+                                          //     top: 20,
+                                          //     left: 20,
+                                          //     child: Container(
+                                          //       height: 50,
+                                          //       width:300,
+                                          //       color: Colors.white,
+                                          //       child: TextField(
+                                          //         decoration: InputDecoration(
+                                          //           prefixIcon: Icon(Icons.search),
+                                          //           hintText: " Outlet Name",
+                                          //           border: OutlineInputBorder(),
+                                          //
+                                          //         ),
+                                          //         onChanged: (text){
+                                          //           SearchOutlets(widget.bluegreyIndexes);
+                                          //         },
+                                          //       ),
+                                          //     ),),
+                                        ],
                                       ),
                                     ),
-                                    // Positioned(
-                                    //     top: 20,
-                                    //     left: 20,
-                                    //     child: Container(
-                                    //       height: 50,
-                                    //       width:300,
-                                    //       color: Colors.white,
-                                    //       child: TextField(
-                                    //         decoration: InputDecoration(
-                                    //           prefixIcon: Icon(Icons.search),
-                                    //           hintText: " Outlet Name",
-                                    //           border: OutlineInputBorder(),
-                                    //
-                                    //         ),
-                                    //         onChanged: (text){
-                                    //           SearchOutlets(widget.bluegreyIndexes);
-                                    //         },
-                                    //       ),
-                                    //     ),),
-                                  ],
-                                ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                          ),
+                          isPathPointChoosing
+                              ? Builder(builder: (context) {
+                                  if (pathPoints.isEmpty) totalDistance = 0;
+                                  return GreenSlider(
+                                      () {
+                                        setState(() {
+                                          pathPoints = [];
+                                          nearbyOutlets = [];
+                                        });
+                                      },
+                                      nearbyOutlets,
+                                      redPositions,
+                                      rangeIndexes,
+                                      blueIndexes,
+                                      widget.setTempRedRadius,
+                                      refresh,
+                                      () {
+                                        setState(() {
+                                          totalDistance = 0.0;
+                                          pathPoints = [];
+                                          nearbyOutlets = [];
+                                        });
+                                      },
+                                      addBeat,
+                                      totalDistance,
+                                      widget.users,
+                                      selectedDropDownItem);
+                                })
+                              : Builder(builder: (context) {
+                                  return RedSlider(
+                                      redPositions,
+                                      widget.redDistance,
+                                      widget.setTempRedRadius, () {
+                                    setState(() {
+                                      rangeIndexes = [];
+                                      pathPoints = [];
+                                      widget.setTempRedRadius(0.0);
+                                      nearbyOutlets = [];
+                                    });
+                                  }, maxRedDistance);
+                                }),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                        ],
                       ),
                     ),
-                    isPathPointChoosing
-                        ? Builder(builder: (context) {
-                            if (pathPoints.isEmpty) totalDistance = 0;
-                            return GreenSlider(
-                                () {
-                                  setState(() {
-                                    pathPoints = [];
-                                    nearbyOutlets = [];
-                                  });
-                                },
-                                nearbyOutlets,
-                                redPositions,
-                                rangeIndexes,
-                                blueIndexes,
-                                widget.setTempRedRadius,
-                                refresh,
-                                () {
-                                  setState(() {
-                                    totalDistance = 0.0;
-                                    pathPoints = [];
-                                    nearbyOutlets = [];
-                                  });
-                                },
-                                addBeat,
-                                totalDistance);
-                          })
-                        : Builder(builder: (context) {
-                            return RedSlider(redPositions, widget.redDistance,
-                                widget.setTempRedRadius, () {
-                              setState(() {
-                                rangeIndexes = [];
-                                pathPoints = [];
-                                widget.setTempRedRadius(0.0);
-                                nearbyOutlets = [];
-                              });
-                            }, maxRedDistance);
-                          }),
-                    const SizedBox(
-                      height: 12,
+                    SizedBox(
+                      height: size.height,
+                      width: size.width * 1 / 4,
                     ),
                   ],
                 ),
-              ),
-              Expanded(
-                flex: 1,
-                child: MapScreenRightPanel(
-                    widget.categories,
-                    widget.distributors,
-                    blueIndexes,
-                    removeBeat,
-                    selectedDropDownItem,
-                    _changeDropDownValue,
-                    refresh,
-                    updateBeat,
-                    changeColor,
-                    widget.isDeactivated,
-                    widget.changeDeactivated,
-                    renameBeat),
-              ),
-            ],
-          ),
+                SizedBox(
+                  height: size.height,
+                  width: size.width,
+                  child: Row(
+                    children: [
+                      Expanded(child: Container()),
+                      Builder(builder: (context) {
+                        List<Beat> beats = selectedDropDownItem.beats
+                            .where((element) => element.status == 2)
+                            .toList();
+                        List<Widget> listOfBeatWidgets = List.generate(
+                          beats.length,
+                          (int index) {
+                            return ReviewBeat(
+                                beats[index],
+                                changeColor,
+                                index,
+                                renameBeat,
+                                removeBeat,
+                                widget.categories,
+                                refresh,
+                                updateBeat,
+                                widget.users);
+                          },
+                        );
+
+                        Widget sync =
+                            SyncButton(selectedDropDownItem, setNewBeats);
+                        return ExpandablePanel(
+                          collapsed: SizedBox(
+                            height: size.height,
+                            width: size.width * 1 / 4 + 20,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                ExpandableButton(
+                                  child: Container(
+                                    height: 100,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          color: Colors.black.withOpacity(0.5)),
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(12),
+                                        bottomLeft: Radius.circular(12),
+                                      ),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 2.0),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                          Container(
+                                            width: 1,
+                                            height: 100,
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                          ),
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                          Container(
+                                            width: 1,
+                                            height: 100,
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                          ),
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                          Container(
+                                            width: 1,
+                                            height: 100,
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                          ),
+                                          Expanded(
+                                            child: Container(),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: MapScreenRightPanel(
+                                    widget.categories,
+                                    widget.distributors,
+                                    blueIndexes,
+                                    removeBeat,
+                                    selectedDropDownItem,
+                                    _changeDropDownValue,
+                                    refresh,
+                                    updateBeat,
+                                    changeColor,
+                                    widget.isDeactivated,
+                                    widget.changeDeactivated,
+                                    renameBeat,
+                                    widget.users,
+                                    listOfBeatWidgets,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          expanded: SizedBox(
+                            height: size.height,
+                            width: size.width * 3 / 4,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Builder(builder: (context) {
+                                  return ExpandableButton(
+                                    child: Container(
+                                      height: 100,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            color:
+                                                Colors.black.withOpacity(0.5)),
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(12),
+                                          bottomLeft: Radius.circular(12),
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Container(),
+                                            ),
+                                            Container(
+                                              width: 1,
+                                              height: 100,
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                            ),
+                                            Expanded(
+                                              child: Container(),
+                                            ),
+                                            Container(
+                                              width: 1,
+                                              height: 100,
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                            ),
+                                            Expanded(
+                                              child: Container(),
+                                            ),
+                                            Container(
+                                              width: 1,
+                                              height: 100,
+                                              color:
+                                                  Colors.black.withOpacity(0.5),
+                                            ),
+                                            Expanded(
+                                              child: Container(),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                                Expanded(
+                                  child: DetailedMapScreenRightPanel(
+                                      widget.categories,
+                                      widget.distributors,
+                                      blueIndexes,
+                                      removeBeat,
+                                      selectedDropDownItem,
+                                      _changeDropDownValue,
+                                      refresh,
+                                      updateBeat,
+                                      changeColor,
+                                      widget.isDeactivated,
+                                      widget.changeDeactivated,
+                                      renameBeat,
+                                      widget.users,
+                                      listOfBeatWidgets,
+                                      sync),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                )
+              ],
+            );
+          }),
         ),
       ),
     );

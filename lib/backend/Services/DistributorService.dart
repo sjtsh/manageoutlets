@@ -9,7 +9,7 @@ import '../database.dart';
 class DistributorService {
   Future<List<Distributor>> getDistributor() async {
     Response res = await http.get(
-      Uri.parse("$localhost/distributor"),
+      Uri.parse("$localhost/distributor/"),
     );
     if (res.statusCode == 200) {
       Map<String, dynamic> a = jsonDecode(res.body);
