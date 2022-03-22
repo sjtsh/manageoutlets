@@ -7,18 +7,18 @@ class Beat {
   int? id;
   Color? color;
   int? status;
-  User? user;
+  int? userID;
   String beatName;
   List<Outlet> outlet;
   List<Outlet>? deactivated;
 
-  Beat(this.beatName, this.outlet, {this.id, this.color, this.deactivated, this.user, this.status});
+  Beat(this.beatName, this.outlet,
+      {this.id, this.color, this.deactivated, this.userID, this.status});
 
   factory Beat.fromJson(Map<String, dynamic> json) {
-    return Beat(
-      json["beatName"],
-      [],
-      id: int.parse(json["id"]),
-    );
+    return Beat(json["beatName"], [],
+        id: int.parse(json["id"]),
+        status: int.parse(json["status"]),
+        userID: int.parse(json["user"]));
   }
 }

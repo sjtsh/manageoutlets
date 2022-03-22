@@ -21,11 +21,7 @@ class DistributorService {
             int.parse(element.toString()),
             a[element]["name"],
             beats
-                .map((e) => Beat(
-                      e["name"],
-                      [],
-                      id: e["id"],
-                    ))
+                .map((e) => Beat.fromJson(e))
                 .toList(),
           ),
         );
