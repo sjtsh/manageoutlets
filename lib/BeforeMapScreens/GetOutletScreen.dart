@@ -33,7 +33,7 @@ class _GetOutletScreenState extends State<GetOutletScreen> {
       future:
           GeolocatorPlatform.instance.getCurrentPosition().then((value) async {
         List<Category> categories = await CategoryService().getCatagory();
-
+        print("here");
         //35000
         List<Outlet> outlets = await OutletService().getNearbyOutlets(context);
         Map<String, List<Outlet>> a = {};

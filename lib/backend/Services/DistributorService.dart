@@ -11,6 +11,8 @@ class DistributorService {
     Response res = await http.get(
       Uri.parse("$localhost/distributor"),
     );
+    print("distributors");
+
     if (res.statusCode == 200) {
       Map<String, dynamic> a = jsonDecode(res.body);
       List<Distributor> distributors = [];
