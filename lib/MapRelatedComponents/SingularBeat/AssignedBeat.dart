@@ -18,7 +18,7 @@ class AssignedBeat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12, right: 12),
+      padding: const EdgeInsets.only(bottom: 12, right: 12, left: 2),
       child: SizedBox(
         width: 400,
         child: Container(

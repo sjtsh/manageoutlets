@@ -154,7 +154,9 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                           onChanged: (User? c) {
                             if (c != null) {
                               selected = c;
-                              setState(() {});
+                              setState(() {
+                                validate =false;
+                              });
                             }
                           },
                           items: List.generate(
