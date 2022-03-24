@@ -8,7 +8,6 @@ import '../database.dart';
 
 class CategoryService{
 
-
   Future <List<Category>> getCatagory() async {
     Response res = await http.get(
       Uri.parse("$localhost/category"),

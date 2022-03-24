@@ -43,7 +43,10 @@ dependencies:
   dijkstra:
   hovering: ^1.0.4
   flutter_improved_scrolling: ^0.0.3
-
+  expandable:
+  super_tooltip: ^1.0.1
+  shared_preferences:
+  nepali_utils:
 
 
   # The following adds the Cupertino Icons font to your application.

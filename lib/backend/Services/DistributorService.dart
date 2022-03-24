@@ -9,7 +9,7 @@ import '../database.dart';
 class DistributorService {
   Future<List<Distributor>> getDistributor() async {
     Response res = await http.get(
-      Uri.parse("$localhost/distributor"),
+      Uri.parse("$localhost/distributor/"),
     );
     print("distributors");
 
@@ -23,11 +23,7 @@ class DistributorService {
             int.parse(element.toString()),
             a[element]["name"],
             beats
-                .map((e) => Beat(
-                      e["name"],
-                      [],
-                      id: e["id"],
-                    ))
+                .map((e) => Beat.fromJson(e))
                 .toList(),
           ),
         );

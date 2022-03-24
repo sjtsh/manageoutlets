@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:manage_outlets/backend/database.dart';
 
+import '../backend/Entities/Distributor.dart';
 import '../backend/Entities/Outlet.dart';
 import '../backend/Entities/OutletsListEntity.dart';
+import '../backend/Entities/User.dart';
+import '../backend/Services/UserService.dart';
 import '../backend/shortestPath.dart';
 
 class AddBeatDialogBox extends StatefulWidget {
@@ -13,9 +16,18 @@ class AddBeatDialogBox extends StatefulWidget {
   final List<Outlet> redPositions;
   final Function refresh;
   final Function addBeat;
+  final List<User> users;
+  final Distributor selectedDropdownItem;
 
-  AddBeatDialogBox(this.textController, this.rangeIndexes, this.blueIndexes,
-      this.redPositions, this.refresh, this.addBeat);
+  AddBeatDialogBox(
+      this.textController,
+      this.rangeIndexes,
+      this.blueIndexes,
+      this.redPositions,
+      this.refresh,
+      this.addBeat,
+      this.users,
+      this.selectedDropdownItem);
 
   @override
   State<AddBeatDialogBox> createState() => _AddBeatDialogBoxState();
@@ -25,6 +37,7 @@ class AddtoBeatIntent extends Intent {}
 
 class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
   bool validate = false;
+  User? selected;
 
   toBeatList(rangeIndexes, blueIndexes, textController,
       List<Outlet> redPositions, context, validate, Function refresh) {
@@ -35,13 +48,16 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
     }
 
     if (validate == false) {
-      if(redPositions.isNotEmpty){
+      if (redPositions.isNotEmpty) {
         rangeIndexes = [];
         widget.addBeat(
           // Beat(textController.text, shortestPath(redPositions),
           //     color: colorIndex[widget.blueIndexes.length]),
           Beat(textController.text, redPositions,
-              color: colorIndex[widget.blueIndexes.length]),
+              color: colorIndex[widget.blueIndexes.length],
+              userID: selected!.id,
+              status: 1),
+          widget.selectedDropdownItem.id,
         );
         // setTempRedRadius(0.0);
         refresh();
@@ -57,7 +73,6 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
       child: Actions(
         actions: {
           AddtoBeatIntent: CallbackAction(onInvoke: (intent) {
-
             setState(() {
               if (widget.textController.text == "") {
                 validate = true;
@@ -73,7 +88,8 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                   widget.textController,
                   widget.redPositions,
                   context,
-                  validate, widget.refresh);
+                  validate,
+                  widget.refresh);
             }
           }),
         },
@@ -83,7 +99,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: SizedBox(
-                height: 150,
+                height: 200,
                 width: 300,
                 child: Column(
                   children: [
@@ -112,12 +128,34 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                         autofocus: true,
                         controller: widget.textController,
                         decoration: InputDecoration(
-                          errorText: validate == true
-                              ? 'Field Can\'t Be Empty'
-                              : null,
+                          errorText:
+                              validate == true ? 'Field Can\'t Be Empty' : null,
                           border: const OutlineInputBorder(),
                           label: const Text("Beat name"),
                         ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      height: 50,
+                      width: 200,
+                      child: DropdownButton(
+                        onChanged: (User? c) {
+                          if (c != null) {
+                            selected = c;
+                            setState(() {});
+                          }
+                        },
+                        items: List.generate(
+                          widget.users.length,
+                          (e) => DropdownMenuItem(
+                            child: Text(widget.users[e].name),
+                            value: widget.users[e],
+                          ),
+                        ),
+                        value: selected,
                       ),
                     ),
                     SizedBox(
@@ -144,6 +182,21 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                               setState(() {
                                 if (widget.textController.text == "") {
                                   validate = true;
+                                } else if (selected == null) {
+                                  validate = true;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Select a assignable"),
+                                    ),
+                                  );
+                                } else if (widget.selectedDropdownItem.id ==
+                                    -1) {
+                                  validate = true;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Select a distributor"),
+                                    ),
+                                  );
                                 } else {
                                   validate = false;
                                 }
@@ -156,7 +209,8 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                                     widget.textController,
                                     widget.redPositions,
                                     context,
-                                    validate, widget.refresh);
+                                    validate,
+                                    widget.refresh);
                               }
                             },
                             child: const Center(

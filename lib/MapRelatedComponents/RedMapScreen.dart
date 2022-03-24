@@ -6,6 +6,7 @@ import 'package:manage_outlets/backend/Entities/Category.dart';
 
 import '../backend/Entities/Distributor.dart';
 import '../backend/Entities/Outlet.dart';
+import '../backend/Entities/User.dart';
 import 'mapscreen.dart';
 
 class RedMapScreen extends StatefulWidget {
@@ -16,9 +17,10 @@ class RedMapScreen extends StatefulWidget {
   final LatLng myPosition; //this is the position of the user
   final List<Distributor> distributors;
   final List<Category> categories;
+  final List<User> users;
 
   RedMapScreen(this.outletLatLng, this.redRadius, this.controller,
-      this.myPosition, this.distributors, this.categories);
+      this.myPosition, this.distributors, this.categories, this.users);
 
   @override
   State<RedMapScreen> createState() => _RedMapScreenState();
@@ -138,6 +140,6 @@ class _RedMapScreenState extends State<RedMapScreen> {
         removePermPositions,
         setRemovePermPositions,
         isDeactivated,
-        changeDeactivated, setDeactivated);
+        changeDeactivated, setDeactivated, widget.users,);
   }
 }

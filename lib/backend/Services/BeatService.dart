@@ -5,19 +5,48 @@ import 'package:http/http.dart';
 import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 import 'package:http/http.dart' as http;
 
+import '../Entities/Category.dart';
 import '../Entities/Outlet.dart';
 import '../database.dart';
 
 class BeatService {
+  Future<List<Beat>> getBeat(int distributorID) async {
+    Response res = await http.get(
+      Uri.parse("$localhost/distributorsingle/$distributorID"),
+    );
+    if (res.statusCode == 200) {
+      List<dynamic> b = jsonDecode(res.body);
+      List<Beat> beats = b.map((a) {
+        List<dynamic> outletsMap = a["outlet"];
+        return Beat(
+          a["name"],
+          outletsMap
+              .map((e) => Outlet(
+                  id: e["id"],
+                  categoryID: int.parse(e["category"]),
+                  categoryName: e["categoryName"],
+                  outletName: e["name"],
+                  lat: double.parse(e["lat"]),
+                  lng: double.parse(e["lng"]),
+                  imageURL: e["imageURL"],
+                  deactivated: e["deactivated"] != "False"))
+              .toList(),
+          id: a["id"],
+          status: a["status"],
+          userID: a["user"],
+        );
+      }).toList();
+      return beats;
+    }
+    throw "[]";
+  }
+
   Future<bool> updateOutlets(
       List<Beat> beat, int distributorID, BuildContext context) async {
     int statusCode = 200;
     for (var element in beat) {
       Map<String, dynamic> aJson = {};
-      aJson["distributor"] = distributorID.toString();
       aJson["beat"] = element.id.toString();
-      aJson["beatName"] = element.beatName.toString();
-      aJson["outlets"] = {};
       for (Outlet element in element.outlet) {
         aJson["outlets"][element.id.toString()] = {};
         aJson["outlets"][element.id.toString()]["videoID"] =
@@ -57,7 +86,7 @@ class BeatService {
             element.imageURL.toString();
         aJson["outlets"][element.id.toString()]["deactivated"] = "true";
         counter++;
-        }
+      }
 
       aJson["outlets"] = aJson["outlets"].toString();
 
@@ -76,7 +105,6 @@ class BeatService {
         content: Text("SUCCESSFUL"),
       ));
       return true;
-
     }
     return false;
   }
