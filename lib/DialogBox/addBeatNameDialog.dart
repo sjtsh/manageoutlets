@@ -99,8 +99,8 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: SizedBox(
-                height: 200,
                 width: 300,
+                height: 230,
                 child: Column(
                   children: [
                     Row(
@@ -133,29 +133,39 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                           border: const OutlineInputBorder(),
                           label: const Text("Beat name"),
                         ),
+                        onChanged: (value){
+                          setState(() {
+                            validate = false;
+                          });
+                        },
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
+                    Container(
                       height: 50,
-                      width: 200,
-                      child: DropdownButton(
-                        onChanged: (User? c) {
-                          if (c != null) {
-                            selected = c;
-                            setState(() {});
-                          }
-                        },
-                        items: List.generate(
-                          widget.users.length,
-                          (e) => DropdownMenuItem(
-                            child: Text(widget.users[e].name),
-                            value: widget.users[e],
+                      width: 300,
+                      decoration:
+                          BoxDecoration(border: Border.all(color: Colors.grey)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: DropdownButton(
+                          isExpanded: true,
+                          hint: Text("Select user"),
+                          underline: Text(''),
+                          onChanged: (User? c) {
+                            if (c != null) {
+                              selected = c;
+                              setState(() {});
+                            }
+                          },
+                          items: List.generate(
+                            widget.users.length,
+                            (e) => DropdownMenuItem(
+                              child: Text(widget.users[e].name),
+                              value: widget.users[e],
+                            ),
                           ),
+                          value: selected,
                         ),
-                        value: selected,
                       ),
                     ),
                     SizedBox(
@@ -187,14 +197,6 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                       content: Text("Select a assignable"),
-                                    ),
-                                  );
-                                } else if (widget.selectedDropdownItem.id ==
-                                    -1) {
-                                  validate = true;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text("Select a distributor"),
                                     ),
                                   );
                                 } else {

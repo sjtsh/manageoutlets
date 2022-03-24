@@ -47,7 +47,7 @@ class AssignedBeat extends StatelessWidget {
                       height: 4,
                     ),
                     Text(
-                      "${beat.outlet.length} Outlets, ${users.firstWhere((e)=> beat.userID == e.id).name}",
+                      "${beat.outlet.where((element) =>  !element.deactivated).toList().length} Outlets, ${users.firstWhere((e)=> beat.userID == e.id).name}",
                       style: TextStyle(color: Colors.black.withOpacity(0.5)),
                       overflow: TextOverflow.ellipsis,
                     )
