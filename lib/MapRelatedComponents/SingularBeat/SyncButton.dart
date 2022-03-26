@@ -13,9 +13,10 @@ import '../../backend/Services/BeatService.dart';
 
 class SyncButton extends StatefulWidget {
   final Distributor distributor;
+  final Function changeColor;
   final Function setNewBeats;
 
-  SyncButton(this.distributor, this.setNewBeats);
+  SyncButton(this.distributor, this.changeColor, this.setNewBeats);
 
   @override
   State<SyncButton> createState() => _SyncButtonState();
@@ -148,6 +149,7 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
                                     setState(() {
                                       condition = false;
                                     });
+
                                     SharedPreferences prefs =
                                         await SharedPreferences.getInstance();
                                     prefs.setString(
@@ -164,10 +166,13 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
                                       List<Beat> beats = await BeatService()
                                           .getBeat(widget.distributor.id);
                                           widget.setNewBeats(beats, widget.distributor.id);
+
+                                         widget.changeColor(widget.distributor);
                                     } catch (e) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text("Unsuccessful")));
+                                      print(e);
                                     }
                                     setState(() {
                                       condition = true;

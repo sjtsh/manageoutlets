@@ -73,7 +73,7 @@ class _BeatWidgetsState extends State<BeatWidgets> {
                         height: 4,
                       ),
                       Text(
-                        "${widget.beat.outlet.length} Outlets, ",
+                        "${widget.beat.outlet.where((element) => !element.deactivated).toList().length} Outlets, ",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.grey),
                       ),

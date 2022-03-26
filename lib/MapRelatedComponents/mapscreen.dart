@@ -845,7 +845,7 @@ class _MapScreenState extends State<MapScreen> {
                         ];
 
                         Widget sync =
-                            SyncButton(selectedDropDownItem, setNewBeats);
+                            SyncButton(selectedDropDownItem, _changeDropDownValue, setNewBeats);
                         return ExpandablePanel(
                           collapsed: SizedBox(
                             height: size.height,

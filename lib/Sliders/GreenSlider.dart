@@ -113,17 +113,28 @@ class GreenSlider extends StatelessWidget {
                         TextEditingController textController =
                             TextEditingController();
                         if (focusedOutlets.isNotEmpty) {
-                          showDialog(
-                              context: context,
-                              builder: (_) {
-                                return AddBeatDialogBox(
-                                    textController,
-                                    rangeIndexes,
-                                    blueIndexes,
-                                    focusedOutlets,
-                                    refresh,
-                                    addBeat, users, selectedDropdownItem);
-                              });
+
+                           if(selectedDropdownItem.id ==
+                               -1){
+                             ScaffoldMessenger.of(context).showSnackBar(
+                                 const SnackBar(
+                                     duration: Duration(milliseconds: 500),
+                                     content: Text("Please select distributor")));
+                           } else{
+                             showDialog(
+                                 context: context,
+                                 builder: (_) {
+                                   return AddBeatDialogBox(
+                                       textController,
+                                       rangeIndexes,
+                                       blueIndexes,
+                                       focusedOutlets,
+                                       refresh,
+                                       addBeat, users, selectedDropdownItem);
+                                 });
+
+                           }
+
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(

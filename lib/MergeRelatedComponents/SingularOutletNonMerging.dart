@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -203,16 +204,15 @@ class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
                               },
                               child: InteractiveViewer(
                               maxScale: 1000,
-                                child: Image.network(
-                                  widget.tempBeat.outlet[widget.i]
-                                              .videoName ==
-                                          null
-                                      ? widget
-                                          .tempBeat.outlet[widget.i].imageURL
-                                      : localhost +
-                                          widget.tempBeat.outlet[widget.i]
-                                              .imageURL,
-                                  fit: BoxFit.contain,
+                                child: CachedNetworkImage(
+                                    fit: BoxFit.contain, imageUrl:   widget.tempBeat.outlet[widget.i]
+                                    .videoName ==
+                                    null
+                                    ? widget
+                                    .tempBeat.outlet[widget.i].imageURL
+                                    : localhost +
+                                    widget.tempBeat.outlet[widget.i]
+                                        .imageURL,
                                 ),
                               ),
                             ),

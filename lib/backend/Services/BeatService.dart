@@ -79,10 +79,12 @@ class BeatService {
       }
 
       aJson["outlets"] = aJson["outlets"].toString();
+
       Response res = await http.put(
         Uri.parse("$localhost/beat/update/"),
         body: aJson,
       );
+      print(res.body);
       if (res.statusCode != 200) {
         statusCode = res.statusCode;
       }

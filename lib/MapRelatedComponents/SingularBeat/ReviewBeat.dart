@@ -91,7 +91,7 @@ class ReviewBeat extends StatelessWidget {
                         height: 4,
                       ),
                       Text(
-                        "${beat.outlet.length} Outlets, ${users.firstWhere((e) => beat.userID == e.id).name}",
+                        "${beat.outlet.where((element) => !element.deactivated).toList().length } Outlets, ${users.firstWhere((e)=> beat.userID == e.id).name}",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.white),
                       )
