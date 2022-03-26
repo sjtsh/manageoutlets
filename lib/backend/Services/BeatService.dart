@@ -41,56 +41,46 @@ class BeatService {
     throw "[]";
   }
 
-  Future<bool> updateOutlets(
-      List<Beat> beat, int distributorID, BuildContext context) async {
+  Future<bool> updateOutlets(List<Beat> beat, int distributorID,
+      BuildContext context, Function setNewBeats) async {
     int statusCode = 200;
-    for (var element in beat) {
-      Map<String, dynamic> aJson = {};
+    for (Beat element in beat) {
+      Map<String, dynamic> aJson = {"outlets": {}};
       aJson["beat"] = element.id.toString();
       for (Outlet element in element.outlet) {
         aJson["outlets"][element.id.toString()] = {};
-        aJson["outlets"][element.id.toString()]["videoID"] =
-            element.videoID.toString();
-        aJson["outlets"][element.id.toString()]["beatID"] =
-            element.beatID.toString();
+        aJson["outlets"][element.id.toString()]["videoID"] = element.videoID;
+        aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
         aJson["outlets"][element.id.toString()]["categoryID"] =
-            element.newcategoryID.toString();
-        aJson["outlets"][element.id.toString()]["dateTime"] =
-            element.dateTime.toString().split(":").join("c");
+            element.newcategoryID;
+        aJson["outlets"][element.id.toString()]["dateTime"] = DateTime.tryParse(element.dateTime ?? "");
         aJson["outlets"][element.id.toString()]["outletName"] =
-            element.outletName.toString();
-        aJson["outlets"][element.id.toString()]["lat"] = element.lat.toString();
-        aJson["outlets"][element.id.toString()]["lng"] = element.lng.toString();
-        aJson["outlets"][element.id.toString()]["md5"] = element.md5.toString();
-        aJson["outlets"][element.id.toString()]["imageURL"] =
-            element.imageURL.toString();
+            element.outletName;
+        aJson["outlets"][element.id.toString()]["lat"] = element.lat;
+        aJson["outlets"][element.id.toString()]["lng"] = element.lng;
+        aJson["outlets"][element.id.toString()]["md5"] = element.md5;
+        aJson["outlets"][element.id.toString()]["imageURL"] = element.imageURL;
         aJson["outlets"][element.id.toString()]["deactivated"] = "false";
       }
-      int counter = 0;
       for (Outlet element in (element.deactivated ?? [])) {
         aJson["outlets"][element.id.toString()] = {};
-        aJson["outlets"][element.id.toString()]["videoID"] =
-            element.videoID.toString();
-        aJson["outlets"][element.id.toString()]["beatID"] =
-            element.beatID.toString();
+        aJson["outlets"][element.id.toString()]["videoID"] = element.videoID;
+        aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
         aJson["outlets"][element.id.toString()]["categoryID"] =
-            element.newcategoryID.toString();
-        aJson["outlets"][element.id.toString()]["dateTime"] =
-            element.dateTime.toString().split(":").join("c");
+            element.newcategoryID;
+        aJson["outlets"][element.id.toString()]["dateTime"] = element.dateTime;
         aJson["outlets"][element.id.toString()]["outletName"] =
-            element.outletName.toString();
-        aJson["outlets"][element.id.toString()]["lat"] = element.lat.toString();
-        aJson["outlets"][element.id.toString()]["lng"] = element.lng.toString();
-        aJson["outlets"][element.id.toString()]["md5"] = element.md5.toString();
-        aJson["outlets"][element.id.toString()]["imageURL"] =
-            element.imageURL.toString();
+            element.outletName;
+        aJson["outlets"][element.id.toString()]["lat"] = element.lat;
+        aJson["outlets"][element.id.toString()]["lng"] = element.lng;
+        aJson["outlets"][element.id.toString()]["md5"] = element.md5;
+        aJson["outlets"][element.id.toString()]["imageURL"] = element.imageURL;
         aJson["outlets"][element.id.toString()]["deactivated"] = "true";
-        counter++;
       }
 
       aJson["outlets"] = aJson["outlets"].toString();
       Response res = await http.put(
-        Uri.parse("$localhost/beat/update"),
+        Uri.parse("$localhost/beat/update/"),
         body: aJson,
       );
       if (res.statusCode != 200) {
@@ -99,6 +89,8 @@ class BeatService {
     }
 
     if (statusCode == 200) {
+      List<Beat> beats = await BeatService().getBeat(distributorID);
+      setNewBeats(beats, distributorID);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("SUCCESSFUL"),
       ));

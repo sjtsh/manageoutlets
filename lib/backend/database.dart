@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'Entities/OutletsListEntity.dart';
 
-String localhost = "http://192.168.0.120:1000";
+String localhost = "http://192.168.1.68:8000";
 
 List<Color> colorIndex = [
   Colors.green,

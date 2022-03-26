@@ -119,26 +119,16 @@ class _BeatWidgetsState extends State<BeatWidgets> {
                   const SizedBox(
                     width: 12,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (_) {
-                            return RenameBeatNameDialog(
-                                widget.beat.beatName, widget.renameBeat);
-                          });
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          border: Border.all(color: Colors.black)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Icon(
-                          Icons.edit,
-                          size: 12,
-                        ),
+                  Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        border: Border.all(color: Colors.black)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Icon(
+                        Icons.edit,
+                        size: 12,
                       ),
                     ),
                   ),

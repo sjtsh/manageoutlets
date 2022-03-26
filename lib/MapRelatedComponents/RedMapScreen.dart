@@ -60,6 +60,11 @@ class _RedMapScreenState extends State<RedMapScreen> {
     setState(() {});
   }
 
+  addDistributor(Distributor distributor) {
+    widget.distributors.add(distributor);
+    setState(() {});
+  }
+
   setTempRedRadius(double a) {
     setState(() {
       redDistance = a;
@@ -140,6 +145,9 @@ class _RedMapScreenState extends State<RedMapScreen> {
         removePermPositions,
         setRemovePermPositions,
         isDeactivated,
-        changeDeactivated, setDeactivated, widget.users,);
+        changeDeactivated,
+        setDeactivated,
+        widget.users,
+        addDistributor);
   }
 }

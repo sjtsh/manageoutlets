@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:latlng/latlng.dart';
 import 'package:manage_outlets/DraggableMarker.dart';
 import 'package:manage_outlets/MapRelatedComponents/SearchOutlets.dart';
+import 'package:manage_outlets/MapRelatedComponents/SingularBeat/AssignedBeat.dart';
 import 'package:manage_outlets/ShapePainteer.dart';
 import 'package:manage_outlets/Sliders/BlueSlider.dart';
 import 'package:manage_outlets/Sliders/GreenSlider.dart';
@@ -21,6 +22,7 @@ import 'package:map/map.dart';
 import '../backend/Entities/OutletsListEntity.dart';
 import '../backend/Entities/PathPoint.dart';
 import '../backend/Entities/User.dart';
+import '../backend/Services/DistributorService.dart';
 import '../backend/Services/UserService.dart';
 import 'DetailedMapScreenRightPanel.dart';
 import 'MapScreenRightPanel.dart';
@@ -49,6 +51,7 @@ class MapScreen extends StatefulWidget {
   final bool isDeactivated;
   final Function changeDeactivated;
   final Function setDeactivated;
+  final Function addDistributor;
 
   final List<User> users;
 
@@ -69,6 +72,7 @@ class MapScreen extends StatefulWidget {
     this.changeDeactivated,
     this.setDeactivated,
     this.users,
+    this.addDistributor,
   );
 
   @override
@@ -104,7 +108,9 @@ class _MapScreenState extends State<MapScreen> {
     List<Beat> beats,
     int distributorID,
   ) {
-    widget.distributors.firstWhere((element) => element.id == distributorID).beats = beats;
+    widget.distributors
+        .firstWhere((element) => element.id == distributorID)
+        .beats = beats;
     selectedDropDownItem.beats = beats;
     setState(() {});
   }
@@ -133,8 +139,8 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       selectedDropDownItem = newValue;
       for (int i = 0; i < selectedDropDownItem.beats.length; i++) {
-        selectedDropDownItem.beats[i].color =
-            colorIndex[colorIndex.length - 1 - i];
+        selectedDropDownItem.beats[i].color = colorIndex[
+            (selectedDropDownItem.beats[i].id ?? 3) % (colorIndex.length - 1)];
       }
     });
   }
@@ -160,9 +166,37 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  renameBeat(String oldName, String newBeatName) {
-    final name = blueIndexes.firstWhere((item) => item.beatName == oldName);
-    setState(() => name.beatName = newBeatName);
+  Future<bool> renameBeat(Beat beat,
+      {Distributor? distributor, String? newBeatName}) async {
+    if (distributor == null) {
+      bool success = await DistributorService().updateDistributor(
+          beat, selectedDropDownItem, newBeatName ?? beat.beatName);
+      if (success) {
+        Beat name =
+            selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
+        setState(() => name.beatName = newBeatName ?? beat.beatName);
+        return success;
+      } else {
+        return success;
+      }
+    } else {
+      bool success = await DistributorService()
+          .updateDistributor(beat, distributor, newBeatName ?? beat.beatName);
+      if (success) {
+        Beat name =
+            selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
+        selectedDropDownItem.beats.removeWhere((element) => element == name);
+        name.beatName = newBeatName ?? beat.beatName;
+        widget.distributors
+            .firstWhere((element) => element.id == distributor.id)
+            .beats
+            .add(name);
+        setState(() {});
+        return success;
+      } else {
+        return success;
+      }
+    }
   }
 
   void _onDoubleTap() {
@@ -410,7 +444,8 @@ class _MapScreenState extends State<MapScreen> {
                                         .asMap()
                                         .entries
                                         .forEach((element) {
-                                      if (element.value.deactivated) {
+                                      if (element.value.deactivated &&
+                                          widget.isDeactivated) {
                                         markerWidgets.addAll([
                                           LatLng(element.value.lat,
                                               element.value.lng)
@@ -760,21 +795,54 @@ class _MapScreenState extends State<MapScreen> {
                         List<Beat> beats = selectedDropDownItem.beats
                             .where((element) => element.status == 2)
                             .toList();
-                        List<Widget> listOfBeatWidgets = List.generate(
-                          beats.length,
-                          (int index) {
-                            return ReviewBeat(
-                                beats[index],
-                                changeColor,
-                                index,
-                                renameBeat,
-                                removeBeat,
-                                widget.categories,
-                                refresh,
-                                updateBeat,
-                                widget.users);
-                          },
-                        );
+                        List<Beat> beats2 = selectedDropDownItem.beats
+                            .where((element) => element.status == 1)
+                            .toList();
+                        List<Widget> listOfBeatWidgets = [
+                          ...List.generate(
+                            beats.length,
+                            (int index) {
+                              return ReviewBeat(
+                                  beats[index],
+                                  changeColor,
+                                  index,
+                                  renameBeat,
+                                  removeBeat,
+                                  widget.categories,
+                                  refresh,
+                                  updateBeat,
+                                  widget.users,
+                                  selectedDropDownItem,
+                                  setNewBeats, widget.distributors);
+                            },
+                          )
+                        ];
+                        List<Widget> listOfBeatWidgets2 = [
+                          ...List.generate(
+                            beats2.length,
+                            (int index) {
+                              return AssignedBeat(beats2[index], changeColor,
+                                  index, renameBeat, removeBeat, widget.users, widget.distributors);
+                            },
+                          ),
+                          ...List.generate(
+                            beats.length,
+                            (int index) {
+                              return ReviewBeat(
+                                  beats[index],
+                                  changeColor,
+                                  index,
+                                  renameBeat,
+                                  removeBeat,
+                                  widget.categories,
+                                  refresh,
+                                  updateBeat,
+                                  widget.users,
+                                  selectedDropDownItem,
+                                  setNewBeats, widget.distributors);
+                            },
+                          )
+                        ];
 
                         Widget sync =
                             SyncButton(selectedDropDownItem, setNewBeats);
@@ -856,7 +924,7 @@ class _MapScreenState extends State<MapScreen> {
                                     widget.changeDeactivated,
                                     renameBeat,
                                     widget.users,
-                                    listOfBeatWidgets,
+                                    listOfBeatWidgets2,
                                   ),
                                 ),
                               ],
@@ -942,7 +1010,8 @@ class _MapScreenState extends State<MapScreen> {
                                       renameBeat,
                                       widget.users,
                                       listOfBeatWidgets,
-                                      sync),
+                                      sync,
+                                      widget.addDistributor),
                                 ),
                               ],
                             ),

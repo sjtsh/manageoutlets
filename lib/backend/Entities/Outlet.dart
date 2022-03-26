@@ -30,8 +30,7 @@ class Outlet {
       required this.lat,
       required this.lng,
       this.md5,
-      required this.imageURL,
-        // this.deactivated,
+      required this.imageURL, // this.deactivated,
       this.marker, required this.deactivated});
 
   factory Outlet.fromJson(Map<String, dynamic> json) {

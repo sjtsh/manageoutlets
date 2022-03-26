@@ -20,9 +20,7 @@ class DistributorService {
           Distributor(
             int.parse(element.toString()),
             a[element]["name"],
-            beats
-                .map((e) => Beat.fromJson(e))
-                .toList(),
+            beats.map((e) => Beat.fromJson(e)).toList(),
           ),
         );
       }
@@ -30,7 +28,36 @@ class DistributorService {
     }
     return [];
   }
-}
 
-///["distributorID": {"beat":[{"name":"beatName","id":"beatID"}], "name":"distributorName"}}]
-///
+  Future<Distributor> createDistributor(String name) async {
+    Response res = await http
+        .post(Uri.parse("$localhost/distributor/create"), body: {"name": name});
+    if (res.statusCode == 200) {
+      String a = jsonDecode(res.body).toString();
+      if (a == "false") {
+        throw "Unsucessful";
+      } else {
+        return Distributor(int.parse(a), name, []);
+      }
+    }
+    throw "Unsucessful";
+  }
+
+  Future<bool> updateDistributor(
+      Beat beat, Distributor distributor, String newBeatName) async {
+    Response res = await http.put(
+      Uri.parse("$localhost/beat/distributor"),
+      body: {
+        "beat_id": beat.id.toString(),
+        "distributor_id": distributor.id.toString(),
+        "name": newBeatName,
+      },
+    );
+    print(res.body);
+    if (res.statusCode == 200) {
+      bool a = jsonDecode(res.body);
+      return a;
+    }
+    throw "Unsucessful";
+  }
+}

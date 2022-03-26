@@ -11,6 +11,8 @@ import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:manage_outlets/backend/database.dart';
 import 'package:flutter/src/widgets/container.dart' as hi;
 import '../MergeRelatedComponents/SingularOutlet.dart';
+import '../backend/Entities/Distributor.dart';
+import '../backend/Services/BeatService.dart';
 import '../backend/shortestPath.dart';
 import 'DoneButton.dart';
 import 'InteractiveImage.dart';
@@ -24,13 +26,11 @@ class NextScreen extends StatefulWidget {
   final List<Category> categories;
   final Function refresh;
   final Function updateBeat;
+  final Distributor dropdownSelectedItem;
+  final Function setNewBeats;
 
-  NextScreen(
-    this.beat,
-    this.categories,
-    this.refresh,
-    this.updateBeat,
-  );
+  NextScreen(this.beat, this.categories, this.refresh, this.updateBeat,
+      this.dropdownSelectedItem, this.setNewBeats);
 
   @override
   State<NextScreen> createState() => _NextScreenState();
@@ -46,6 +46,7 @@ class _NextScreenState extends State<NextScreen> {
   String sortDropdownItem = "Distance";
   final controller = ScrollController();
   bool scrollable = true;
+  bool isDisabled = false;
 
   List<Outlet> selectedOutlet = [];
 
@@ -106,12 +107,17 @@ class _NextScreenState extends State<NextScreen> {
     tempBeat = Beat(widget.beat.beatName, outlets,
         id: widget.beat.id,
         deactivated: deactivateds,
-        color: widget.beat.color);
+        color: widget.beat.color,
+        userID: widget.beat.userID,
+        status: widget.beat.status);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Shortcuts(
+    return
+        !isDisabled
+           ?
+        Shortcuts(
       shortcuts: {
         LogicalKeySet(LogicalKeyboardKey.escape): BackIntent(),
       },
@@ -133,7 +139,12 @@ class _NextScreenState extends State<NextScreen> {
           body: myCompleteWidget(),
         ),
       ),
-    );
+    )
+    : Scaffold(
+        body: Center(
+          child: Text("Please Wait..."),
+        ),
+      );
   }
 
   Widget myCompleteWidget() {
@@ -373,7 +384,8 @@ class _NextScreenState extends State<NextScreen> {
                               },
                               child: Container(
                                 decoration: const BoxDecoration(
-                                    color: Colors.green, shape: BoxShape.circle),
+                                    color: Colors.green,
+                                    shape: BoxShape.circle),
                                 child: const Focus(
                                   autofocus: true,
                                   child: Padding(
@@ -498,8 +510,41 @@ class _NextScreenState extends State<NextScreen> {
       }
     }
     if (!isValidate) {
-      widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
-      Navigator.pop(context, tempBeat);
+      // widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
+      if (widget.dropdownSelectedItem.distributorName.isNotEmpty) {
+        if ("Select Distributor" !=
+            widget.dropdownSelectedItem.distributorName) {
+          if (!isDisabled) {
+          setState(() {
+            isDisabled = true;
+          });
+          BeatService().updateOutlets(
+              [tempBeat!],
+              widget.dropdownSelectedItem.id,
+              context,
+              widget.setNewBeats).then((value) {
+            setState(() {
+              isDisabled = false;
+            });
+            Navigator.pop(context);
+          })
+          .onError((error, stackTrace) {
+            setState(() => isDisabled = false);
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("UNSUCCESSFUL TRY AGAIN"),
+          ));
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Select a distributor"),
+          ));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("No beats created"),
+        ));
+      }
     } else {
       setState(() {
         isValidate = false;

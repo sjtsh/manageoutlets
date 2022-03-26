@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../DialogBox/renameBeatNameDialog.dart';
 import '../../OutletGridViewScreens/NextScreen.dart';
 import '../../backend/Entities/Category.dart';
+import '../../backend/Entities/Distributor.dart';
 import '../../backend/Entities/OutletsListEntity.dart';
 import '../../backend/Entities/User.dart';
 import '../../backend/database.dart';
@@ -16,9 +18,22 @@ class ReviewBeat extends StatelessWidget {
   final Function refresh;
   final Function updateBeat;
   final List<User> users;
+  final Distributor dropdownSelectedItem;
+  final Function setNewBeats;
+  final List<Distributor> distributors;
 
-  ReviewBeat(this.beat, this.changeColor, this.index, this.renameBeat,
-      this.removeBeat, this.categories, this.refresh, this.updateBeat, this.users);
+  ReviewBeat(
+      this.beat,
+      this.changeColor,
+      this.index,
+      this.renameBeat,
+      this.removeBeat,
+      this.categories,
+      this.refresh,
+      this.updateBeat,
+      this.users,
+      this.dropdownSelectedItem,
+      this.setNewBeats, this.distributors);
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +41,25 @@ class ReviewBeat extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 12, right: 12),
       child: GestureDetector(
         onDoubleTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) {
-            return NextScreen(
-                beat, categories, refresh, updateBeat);
-          }));
+          if (dropdownSelectedItem.id != -1) {
+            Navigator.push(context, MaterialPageRoute(builder: (_) {
+              return NextScreen(beat, categories, refresh, updateBeat,
+                  dropdownSelectedItem, setNewBeats);
+            }));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Please select a distributor"),
+              ),
+            );
+          }
+        },
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (_) {
+                return RenameBeatNameDialog(beat, renameBeat, distributors);
+              });
         },
         child: SizedBox(
           width: 400,
@@ -61,7 +91,7 @@ class ReviewBeat extends StatelessWidget {
                         height: 4,
                       ),
                       Text(
-                        "${beat.outlet.length} Outlets, ${users.firstWhere((e)=> beat.userID == e.id).name}",
+                        "${beat.outlet.length} Outlets, ${users.firstWhere((e) => beat.userID == e.id).name}",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.white),
                       )

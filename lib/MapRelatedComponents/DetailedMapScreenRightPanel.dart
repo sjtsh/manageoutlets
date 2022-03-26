@@ -38,6 +38,7 @@ class DetailedMapScreenRightPanel extends StatefulWidget {
   final List<User> users;
   final List<Widget> listOfBeatWidgets;
   final Widget sync;
+  final Function addDistributor;
 
   DetailedMapScreenRightPanel(
       this.categories,
@@ -52,7 +53,9 @@ class DetailedMapScreenRightPanel extends StatefulWidget {
       this.isDeactivated,
       this.changeDeactivated,
       this.renameBeat,
-      this.users, this.listOfBeatWidgets, this.sync);
+      this.users,
+      this.listOfBeatWidgets,
+      this.sync, this.addDistributor);
 
   @override
   _DetailedMapScreenRightPanelState createState() =>
@@ -61,6 +64,7 @@ class DetailedMapScreenRightPanel extends StatefulWidget {
 
 class _DetailedMapScreenRightPanelState
     extends State<DetailedMapScreenRightPanel> {
+  TextEditingController newDistributorController = TextEditingController();
   bool isDisabled = false;
 
   @override
@@ -90,7 +94,9 @@ class _DetailedMapScreenRightPanelState
               ),
               Expanded(child: Container()),
               widget.sync,
-              SizedBox(width: 12,),
+              SizedBox(
+                width: 12,
+              ),
               Switch(
                 value: widget.isDeactivated,
                 onChanged: (bool a) {
@@ -110,52 +116,143 @@ class _DetailedMapScreenRightPanelState
           const SizedBox(
             height: 12,
           ),
-          hi.Container(
-            color: Colors.white,
-            child: DropdownSearch<Distributor>(
-              showSearchBox: true,
-              mode: Mode.MENU,
-              items: widget.distributors,
-              onChanged: (selected) {
-                widget._changeDropDownValue(selected as Distributor);
-              },
-              selectedItem: widget.selectedDropDownItem,
-              popupItemBuilder:
-                  (BuildContext context, Distributor distributor, bool a) {
-                return Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(distributor.distributorName),
-                    ),
-                    SizedBox(
-                      width: 6,
-                    ),
-                    distributor.beats.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.all(6.0),
+          Row(
+            children: [
+              Expanded(
+                child: hi.Container(
+                  color: Colors.white,
+                  child: DropdownSearch<Distributor>(
+                    showSearchBox: true,
+                    mode: Mode.MENU,
+                    items: widget.distributors,
+                    onChanged: (selected) {
+                      widget._changeDropDownValue(selected as Distributor);
+                    },
+                    selectedItem: widget.selectedDropDownItem,
+                    popupItemBuilder: (BuildContext context,
+                        Distributor distributor, bool a) {
+                      return Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(distributor.distributorName),
+                          ),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          distributor.beats.isNotEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.all(6.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 2.0, horizontal: 12),
+                                      child: Text(
+                                        distributor.beats.length.toString() +
+                                            " beats",
+                                        style: TextStyle(
+                                            fontSize: 10, color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) {
+                        return Center(
+                          child: Material(
                             child: Container(
+                              height: 150,
+                              width: 300,
                               decoration: BoxDecoration(
-                                color: Colors.green,
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 2.0, horizontal: 12),
-                                child: Text(
-                                  distributor.beats.length.toString() +
-                                      " beats",
-                                  style: TextStyle(
-                                      fontSize: 10, color: Colors.white),
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  children: [
+                                    TextField(
+                                      controller: newDistributorController,
+                                      decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colors.black))),
+                                    ),
+                                    SizedBox(
+                                      height: 12,
+                                    ),
+                                    MaterialButton(
+                                      color: Colors.green,
+                                      height: 60,
+                                      onPressed: () async {
+                                        if (newDistributorController.text !=
+                                            "") {
+                                          try {
+                                            Distributor dis =
+                                                await DistributorService()
+                                                    .createDistributor(
+                                                        newDistributorController
+                                                            .text);
+                                            widget.addDistributor(dis);
+                                            Navigator.pop(context);
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content:
+                                                        Text("Unsuccessful")));
+                                          }
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                                      "Fill in the field")));
+                                        }
+                                      },
+                                      child: Center(
+                                        child: Text(
+                                          "Confirm",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
-                          )
-                        : Container(),
-                  ],
-                );
-              },
-            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: 60,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Color(0xfff2f2f2),
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: Colors.black.withOpacity(0.1))),
+                    child: Icon(Icons.add),
+                  ),
+                ),
+              ),
+            ],
           ),
           Expanded(
             child: ListView(
@@ -186,7 +283,7 @@ class _DetailedMapScreenRightPanelState
                               index,
                               widget.renameBeat,
                               widget.removeBeat,
-                              widget.users);
+                              widget.users, widget.distributors);
                         },
                       ),
                     ],
@@ -208,9 +305,7 @@ class _DetailedMapScreenRightPanelState
                 Builder(builder: (context) {
                   return Wrap(
                     direction: Axis.horizontal,
-                    children: [
-                      ...widget.listOfBeatWidgets
-                    ],
+                    children: [...widget.listOfBeatWidgets],
                   );
                 }),
                 Divider(
@@ -236,8 +331,13 @@ class _DetailedMapScreenRightPanelState
                       ...List.generate(
                         beats.length,
                         (int index) {
-                          return ConfirmedBeat(beats[index], widget.changeColor,
-                              index, widget.renameBeat, widget.removeBeat, widget.users);
+                          return ConfirmedBeat(
+                              beats[index],
+                              widget.changeColor,
+                              index,
+                              widget.renameBeat,
+                              widget.removeBeat,
+                              widget.users, widget.distributors);
                         },
                       ),
                     ],

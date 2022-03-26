@@ -173,19 +173,6 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
                                       condition = true;
                                     });
                                     tooltip.show(context);
-                                    // loadLocalData(
-                                    //     widget.refresh, close, context);
-                                    // SharedPreferences prefs =
-                                    // await SharedPreferences.getInstance();
-                                    // NepaliDateService nepaliDateService =
-                                    // NepaliDateService();
-                                    // nepaliDateService
-                                    //     .fetchNepaliDate()
-                                    //     .then((value) {
-                                    //   prefs.setString("lastUpdated", value);
-                                    //   setState(() {});
-                                    // });
-                                    // setState(() {});
                                   },
                                   child: Container(
                                     alignment: Alignment.center,
