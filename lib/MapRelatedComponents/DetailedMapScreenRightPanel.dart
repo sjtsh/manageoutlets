@@ -135,7 +135,9 @@ class _DetailedMapScreenRightPanelState
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(distributor.distributorName),
+                            child: Text(distributor.distributorName,
+                            textDirection: TextDirection.rtl,
+                            overflow: TextOverflow.ellipsis,),
                           ),
                           SizedBox(
                             width: 6,
@@ -177,7 +179,7 @@ class _DetailedMapScreenRightPanelState
                         return Center(
                           child: Material(
                             child: Container(
-                              height: 150,
+                              height: 180,
                               width: 300,
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -187,9 +189,12 @@ class _DetailedMapScreenRightPanelState
                                 padding: const EdgeInsets.all(12.0),
                                 child: Column(
                                   children: [
+                                    Text("CREATE DISTRIBUTOR", style: TextStyle(fontWeight: FontWeight.bold),),
+                                    SizedBox(height: 12,),
                                     TextField(
                                       controller: newDistributorController,
                                       decoration: InputDecoration(
+                                        labelText: "Distributor's Name",
                                           border: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: Colors.black))),

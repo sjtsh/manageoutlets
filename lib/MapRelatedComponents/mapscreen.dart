@@ -116,17 +116,23 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   addBeat(Beat newBeat, int distributorID) {
-    setState(() {
       UserService().assignOutlets(
         [newBeat],
         distributorID,
         context,
-      );
-      selectedDropDownItem.beats.add(newBeat);
-      isPathPointChoosing = !isPathPointChoosing;
-      pathPoints = [];
-      nearbyOutlets = [];
-    });
+      ).then((value){
+        if(value){
+
+          setState(() {
+            selectedDropDownItem.beats.add(newBeat);
+            isPathPointChoosing = !isPathPointChoosing;
+            pathPoints = [];
+            nearbyOutlets = [];
+          });
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Try Again")));
+        }
+      });
   }
 
   Distributor selectedDropDownItem = Distributor(
@@ -861,7 +867,7 @@ class _MapScreenState extends State<MapScreen> {
                                     height: 100,
                                     width: 20,
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
+                                      color: Colors.black.withOpacity(0.1),
                                       border: Border.all(
                                           color: Colors.black.withOpacity(0.5)),
                                       borderRadius: BorderRadius.only(
@@ -870,43 +876,47 @@ class _MapScreenState extends State<MapScreen> {
                                       ),
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 2.0),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Container(),
-                                          ),
-                                          Container(
-                                            width: 1,
-                                            height: 100,
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                          ),
-                                          Expanded(
-                                            child: Container(),
-                                          ),
-                                          Container(
-                                            width: 1,
-                                            height: 100,
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                          ),
-                                          Expanded(
-                                            child: Container(),
-                                          ),
-                                          Container(
-                                            width: 1,
-                                            height: 100,
-                                            color:
-                                                Colors.black.withOpacity(0.5),
-                                          ),
-                                          Expanded(
-                                            child: Container(),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: Icon(Icons.arrow_back_ios, size: 16,color: Colors.black.withOpacity(0.5),),
+                                    )
+                                    // child: Padding(
+                                    //   padding: const EdgeInsets.symmetric(
+                                    //       vertical: 2.0),
+                                    //   child: Row(
+                                    //     children: [
+                                    //       Expanded(
+                                    //         child: Container(),
+                                    //       ),
+                                    //       Container(
+                                    //         width: 1,
+                                    //         height: 100,
+                                    //         color:
+                                    //             Colors.black.withOpacity(0.5),
+                                    //       ),
+                                    //       Expanded(
+                                    //         child: Container(),
+                                    //       ),
+                                    //       Container(
+                                    //         width: 1,
+                                    //         height: 100,
+                                    //         color:
+                                    //             Colors.black.withOpacity(0.5),
+                                    //       ),
+                                    //       Expanded(
+                                    //         child: Container(),
+                                    //       ),
+                                    //       Container(
+                                    //         width: 1,
+                                    //         height: 100,
+                                    //         color:
+                                    //             Colors.black.withOpacity(0.5),
+                                    //       ),
+                                    //       Expanded(
+                                    //         child: Container(),
+                                    //       ),
+                                    //     ],
+                                    //   ),
+                                    // ),
                                   ),
                                 ),
                                 Expanded(
@@ -944,7 +954,7 @@ class _MapScreenState extends State<MapScreen> {
                                       height: 100,
                                       width: 20,
                                       decoration: BoxDecoration(
-                                        color: Colors.white,
+                                        color: Colors.black.withOpacity(0.1),
                                         border: Border.all(
                                             color:
                                                 Colors.black.withOpacity(0.5)),
@@ -954,43 +964,47 @@ class _MapScreenState extends State<MapScreen> {
                                         ),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 2.0),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(),
-                                            ),
-                                            Container(
-                                              width: 1,
-                                              height: 100,
-                                              color:
-                                                  Colors.black.withOpacity(0.5),
-                                            ),
-                                            Expanded(
-                                              child: Container(),
-                                            ),
-                                            Container(
-                                              width: 1,
-                                              height: 100,
-                                              color:
-                                                  Colors.black.withOpacity(0.5),
-                                            ),
-                                            Expanded(
-                                              child: Container(),
-                                            ),
-                                            Container(
-                                              width: 1,
-                                              height: 100,
-                                              color:
-                                                  Colors.black.withOpacity(0.5),
-                                            ),
-                                            Expanded(
-                                              child: Container(),
-                                            ),
-                                          ],
-                                        ),
+                                        padding: const EdgeInsets.all(2.0),
+                                        child: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.black.withOpacity(0.5),),
                                       ),
+                                      // child: Padding(
+                                      //   padding: const EdgeInsets.symmetric(
+                                      //       vertical: 2.0),
+                                      //   child: Row(
+                                      //     children: [
+                                      //       Expanded(
+                                      //         child: Container(),
+                                      //       ),
+                                      //       Container(
+                                      //         width: 1,
+                                      //         height: 100,
+                                      //         color:
+                                      //             Colors.black.withOpacity(0.5),
+                                      //       ),
+                                      //       Expanded(
+                                      //         child: Container(),
+                                      //       ),
+                                      //       Container(
+                                      //         width: 1,
+                                      //         height: 100,
+                                      //         color:
+                                      //             Colors.black.withOpacity(0.5),
+                                      //       ),
+                                      //       Expanded(
+                                      //         child: Container(),
+                                      //       ),
+                                      //       Container(
+                                      //         width: 1,
+                                      //         height: 100,
+                                      //         color:
+                                      //             Colors.black.withOpacity(0.5),
+                                      //       ),
+                                      //       Expanded(
+                                      //         child: Container(),
+                                      //       ),
+                                      //     ],
+                                      //   ),
+                                      // ),
                                     ),
                                   );
                                 }),
