@@ -111,7 +111,7 @@ class _ConfirmMergeDialogBoxState extends State<ConfirmMergeDialogBox> {
                 ),
                 DropdownSearch(
                   selectedItem: category,
-                  showSearchBox: true,
+                  showSearchBox: false,
                   items: widget.categories,
                   hint: "Select Category",
                   onChanged: (Category? category) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:manage_outlets/backend/database.dart';
 
 import 'GetOutletScreen.dart';
@@ -15,10 +16,8 @@ class LocalHostScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(child: Container()),
-            Image.asset(
-              logo1,
-              width: 300,
-              height: 320,
+            SvgPicture.asset(
+              "assets/hilifelogo.svg",
             ),
             Container(
               height: 50,

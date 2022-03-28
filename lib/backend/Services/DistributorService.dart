@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:http/http.dart';
 import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 import 'package:manage_outlets/backend/Entities/Distributor.dart';
@@ -8,25 +11,33 @@ import '../database.dart';
 
 class DistributorService {
   Future<List<Distributor>> getDistributor() async {
-    Response res = await http.get(
-      Uri.parse("$localhost/distributor/"),
-    );
-    print("distributors");
-
-    if (res.statusCode == 200) {
-      Map<String, dynamic> a = jsonDecode(res.body);
-      List<Distributor> distributors = [];
-      for (var element in a.keys) {
-        List<dynamic> beats = a[element]["beats"];
-        distributors.add(
-          Distributor(
-            int.parse(element.toString()),
-            a[element]["name"],
-            beats.map((e) => Beat.fromJson(e)).toList(),
-          ),
+    int checkStatus = 0;
+    while (checkStatus != 200) {
+      try{
+        Response res = await http.get(
+          Uri.parse("$localhost/distributor/"),
         );
+        print("distributors");
+
+        if (res.statusCode == 200) {
+          Map<String, dynamic> a = jsonDecode(res.body);
+          List<Distributor> distributors = [];
+          for (var element in a.keys) {
+            List<dynamic> beats = a[element]["beats"];
+            distributors.add(
+              Distributor(
+                int.parse(element.toString()),
+                a[element]["name"],
+                beats.map((e) => Beat.fromJson(e)).toList(),
+              ),
+            );
+          }
+          return distributors;
+        }
+        return [];
+      }on SocketException{
+        print(" $e Failed Loading Distributor");
       }
-      return distributors;
     }
     return [];
   }

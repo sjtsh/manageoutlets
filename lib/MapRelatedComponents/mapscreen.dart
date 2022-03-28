@@ -85,6 +85,7 @@ class AIntent extends Intent {}
 
 class AddButtonIntent extends Intent {}
 
+
 class _MapScreenState extends State<MapScreen> {
   GlobalKey stackKey = GlobalKey();
   List<Outlet> redPositions = [];
@@ -189,16 +190,10 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  void changeColor(Color newColor, int index, {bool isConfirmed = true}) {
-    if (!isConfirmed) {
+  void changeColor(Color newColor, int index,) {
       setState(() {
-        blueIndexes[index].color = newColor;
+        selectedDropDownItem.beats.firstWhere((element) => element.id == index).color = newColor;
       });
-    } else {
-      setState(() {
-        selectedDropDownItem.beats[index].color = newColor;
-      });
-    }
   }
 
   Offset? _dragStart;
@@ -284,6 +279,8 @@ class _MapScreenState extends State<MapScreen> {
       }
     }, stackKey);
   }
+
+
 
   @override
   Widget build(BuildContext context) {

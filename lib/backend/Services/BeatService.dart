@@ -10,35 +10,44 @@ import '../Entities/Outlet.dart';
 import '../database.dart';
 
 class BeatService {
+
   Future<List<Beat>> getBeat(int distributorID) async {
-    Response res = await http.get(
-      Uri.parse("$localhost/distributorsingle/$distributorID"),
-    );
-    if (res.statusCode == 200) {
-      List<dynamic> b = jsonDecode(res.body);
-      List<Beat> beats = b.map((a) {
-        List<dynamic> outletsMap = a["outlet"];
-        return Beat(
-          a["name"],
-          outletsMap
-              .map((e) => Outlet(
-                  id: e["id"],
-                  categoryID: int.parse(e["category"]),
-                  categoryName: e["categoryName"],
-                  outletName: e["name"],
-                  lat: double.parse(e["lat"]),
-                  lng: double.parse(e["lng"]),
-                  imageURL: e["imageURL"],
-                  deactivated: e["deactivated"] != "False"))
-              .toList(),
-          id: a["id"],
-          status: a["status"],
-          userID: a["user"],
+    int checkStatus = 0;
+    while (checkStatus != 200) {
+      try{
+        Response res = await http.get(
+          Uri.parse("$localhost/distributorsingle/$distributorID"),
         );
-      }).toList();
-      return beats;
+        if (res.statusCode == 200) {
+          List<dynamic> b = jsonDecode(res.body);
+          List<Beat> beats = b.map((a) {
+            List<dynamic> outletsMap = a["outlet"];
+            return Beat(
+              a["name"],
+              outletsMap
+                  .map((e) => Outlet(
+                      id: e["id"],
+                      categoryID: int.parse(e["category"]),
+                      categoryName: e["categoryName"],
+                      outletName: e["name"],
+                      lat: double.parse(e["lat"]),
+                      lng: double.parse(e["lng"]),
+                      imageURL: e["imageURL"],
+                      deactivated: e["deactivated"] != "False"))
+                  .toList(),
+              id: a["id"],
+              status: a["status"],
+              userID: a["user"],
+            );
+          }).toList();
+          return beats;
+        }
+        throw "[]";
+      } catch(e){
+        print("Failed loading beats");
+      }
     }
-    throw "[]";
+    return [];
   }
 
   Future<bool> updateOutlets(List<Beat> beat, int distributorID,
@@ -63,26 +72,26 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["deactivated"] =  element.deactivated ? "true": "false";
       }
 
-      aJson["outlets"] = aJson["outlets"].toString();
+        aJson["outlets"] = aJson["outlets"].toString();
 
-      Response res = await http.put(
-        Uri.parse("$localhost/beat/update/"),
-        body: aJson,
-      );
-      print(res.body);
-      if (res.statusCode != 200) {
-        statusCode = res.statusCode;
+        Response res = await http.put(
+          Uri.parse("$localhost/beat/update/"),
+          body: aJson,
+        );
+        print(res.body);
+        if (res.statusCode != 200) {
+          statusCode = res.statusCode;
+        }
       }
-    }
 
-    if (statusCode == 200) {
-      List<Beat> beats = await BeatService().getBeat(distributorID);
-      setNewBeats(beats, distributorID);
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("SUCCESSFUL"),
-      ));
-      return true;
+      if (statusCode == 200) {
+        List<Beat> beats = await BeatService().getBeat(distributorID);
+        setNewBeats(beats, distributorID);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("SUCCESSFUL"),
+        ));
+        return true;
+      }
+      return false;
     }
-    return false;
-  }
 }
