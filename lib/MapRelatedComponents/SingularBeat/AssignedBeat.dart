@@ -11,12 +11,10 @@ class AssignedBeat extends StatelessWidget {
   final Function changeColor;
   final int index;
   final Function renameBeat;
-  final Function removeBeat;
   final List<User> users;
   final List<Distributor> distributors;
 
-  AssignedBeat(this.beat, this.changeColor, this.index, this.renameBeat,
-      this.removeBeat, this.users, this.distributors);
+  AssignedBeat(this.beat, this.changeColor, this.index, this.renameBeat,this.users, this.distributors);
 
   @override
   Widget build(BuildContext context) {

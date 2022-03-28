@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../backend/database.dart';
 
@@ -110,11 +111,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    logo1,
-                    width: 300,
-                    height: 320,
-                  ),
+                  SvgPicture.asset("assets/hilifelogo.svg"),
                   Stack(
                     children: [
                       Container(

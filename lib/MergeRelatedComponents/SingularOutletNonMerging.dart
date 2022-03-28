@@ -24,8 +24,8 @@ class SingularOutletNonMerging extends StatefulWidget {
   final Function setCategoryID;
   final Beat tempBeat;
   final int i;
-  final Function removeItemFunction;
   final Function stopScroll;
+  final Function setDeactivated;
 
   SingularOutletNonMerging(
       this.selectedOutlet,
@@ -37,24 +37,15 @@ class SingularOutletNonMerging extends StatefulWidget {
       this.setCategoryID,
       this.tempBeat,
       this.i,
-      this.removeItemFunction,
-      this.stopScroll);
+      this.stopScroll,
+      this.setDeactivated);
 
   @override
   State<SingularOutletNonMerging> createState() =>
       _SingularOutletNonMergingState();
 }
 
-
-
 class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-  }
-
   int numberOfTurns = 0;
 
   @override
@@ -152,7 +143,10 @@ class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
                             },
                             selectedItem: (widget.tempOutlet.newcategoryID ==
                                     null)
-                                ? Category("Select category", 10000000)
+                                ? (widget.tempBeat.status! > 1
+                                    ? widget.categories.firstWhere((e) =>
+                                        e.id == widget.tempOutlet.categoryID)
+                                    : Category("Select category", 10000000))
                                 : widget.categories.firstWhere((e) =>
                                     e.id == widget.tempOutlet.newcategoryID!),
                             dropdownSearchDecoration: InputDecoration(
@@ -179,7 +173,8 @@ class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
                                   "Do you want to deactivate this outlet?",
                                   "REMOVE",
                                   "CANCEL", () {
-                                widget.removeItemFunction(widget.i);
+                                widget.setDeactivated(
+                                    widget.tempOutlet.id, true);
                               });
                             });
                       },
@@ -197,7 +192,7 @@ class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
                     children: [
                       Expanded(
                         child: RotatedBox(
-                        quarterTurns: numberOfTurns,
+                          quarterTurns: numberOfTurns,
                           child: Container(
                             color: Colors.black.withOpacity(0.1),
                             child: MouseRegion(
@@ -211,16 +206,17 @@ class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
                                 widget.stopScroll(true);
                               },
                               child: InteractiveViewer(
-                              maxScale: 1000,
+                                maxScale: 1000,
                                 child: CachedNetworkImage(
-                                    fit: BoxFit.contain, imageUrl:   widget.tempBeat.outlet[widget.i]
-                                    .videoName ==
-                                    null
-                                    ? widget
-                                    .tempBeat.outlet[widget.i].imageURL
-                                    : localhost +
-                                    widget.tempBeat.outlet[widget.i]
-                                        .imageURL,
+                                  fit: BoxFit.contain,
+                                  imageUrl: widget.tempBeat.outlet[widget.i]
+                                              .videoName ==
+                                          null
+                                      ? widget
+                                          .tempBeat.outlet[widget.i].imageURL
+                                      : localhost +
+                                          widget.tempBeat.outlet[widget.i]
+                                              .imageURL,
                                 ),
                               ),
                             ),
@@ -256,17 +252,17 @@ class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
                     ),
                   ),
                 ),
-              ),Positioned(
+              ),
+              Positioned(
                 left: 0,
                 bottom: 0,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: GestureDetector(
-                    onTap: (){
-                    setState(() {
-
-                      numberOfTurns++;
-                    });
+                    onTap: () {
+                      setState(() {
+                        numberOfTurns++;
+                      });
                     },
                     child: Container(
                       width: 30,

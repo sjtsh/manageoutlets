@@ -50,46 +50,27 @@ class BeatService {
     return [];
   }
 
-    Future<bool> updateOutlets(List<Beat> beat, int distributorID,
-        BuildContext context, Function setNewBeats) async {
-      int statusCode = 200;
-      for (Beat element in beat) {
-        Map<String, dynamic> aJson = {"outlets": {}};
-        aJson["beat"] = element.id.toString();
-        for (Outlet element in element.outlet) {
-          aJson["outlets"][element.id.toString()] = {};
-          aJson["outlets"][element.id.toString()]["videoID"] = element.videoID;
-          aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
-          aJson["outlets"][element.id.toString()]["categoryID"] =
-              element.newcategoryID;
-          aJson["outlets"][element.id.toString()]["dateTime"] =
-              DateTime.tryParse(element.dateTime ?? "");
-          aJson["outlets"][element.id.toString()]["outletName"] =
-              element.outletName;
-          aJson["outlets"][element.id.toString()]["lat"] = element.lat;
-          aJson["outlets"][element.id.toString()]["lng"] = element.lng;
-          aJson["outlets"][element.id.toString()]["md5"] = element.md5;
-          aJson["outlets"][element.id.toString()]["imageURL"] =
-              element.imageURL;
-          aJson["outlets"][element.id.toString()]["deactivated"] = "false";
-        }
-        for (Outlet element in (element.deactivated ?? [])) {
-          aJson["outlets"][element.id.toString()] = {};
-          aJson["outlets"][element.id.toString()]["videoID"] = element.videoID;
-          aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
-          aJson["outlets"][element.id.toString()]["categoryID"] =
-              element.newcategoryID;
-          aJson["outlets"][element.id.toString()]["dateTime"] =
-              element.dateTime;
-          aJson["outlets"][element.id.toString()]["outletName"] =
-              element.outletName;
-          aJson["outlets"][element.id.toString()]["lat"] = element.lat;
-          aJson["outlets"][element.id.toString()]["lng"] = element.lng;
-          aJson["outlets"][element.id.toString()]["md5"] = element.md5;
-          aJson["outlets"][element.id.toString()]["imageURL"] =
-              element.imageURL;
-          aJson["outlets"][element.id.toString()]["deactivated"] = "true";
-        }
+  Future<bool> updateOutlets(List<Beat> beat, int distributorID,
+      BuildContext context, Function setNewBeats) async {
+    int statusCode = 200;
+    for (Beat element in beat) {
+      Map<String, dynamic> aJson = {"outlets": {}};
+      aJson["beat"] = element.id.toString();
+      for (Outlet element in element.outlet) {
+        aJson["outlets"][element.id.toString()] = {};
+        aJson["outlets"][element.id.toString()]["videoID"] = element.videoID;
+        aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
+        aJson["outlets"][element.id.toString()]["categoryID"] =
+            element.newcategoryID;
+        aJson["outlets"][element.id.toString()]["dateTime"] = DateTime.tryParse(element.dateTime ?? "");
+        aJson["outlets"][element.id.toString()]["outletName"] =
+            element.outletName;
+        aJson["outlets"][element.id.toString()]["lat"] = element.lat;
+        aJson["outlets"][element.id.toString()]["lng"] = element.lng;
+        aJson["outlets"][element.id.toString()]["md5"] = element.md5;
+        aJson["outlets"][element.id.toString()]["imageURL"] = element.imageURL;
+        aJson["outlets"][element.id.toString()]["deactivated"] =  element.deactivated ? "true": "false";
+      }
 
         aJson["outlets"] = aJson["outlets"].toString();
 

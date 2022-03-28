@@ -152,27 +152,6 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  updateBeat({required Beat formerBeat, required Beat newBeat}) {
-    setState(() {
-      blueIndexes.remove(formerBeat);
-      blueIndexes.add(newBeat);
-    });
-
-    widget.setDeactivated(List.generate(newBeat.deactivated?.length ?? 0,
-        (index) => newBeat.deactivated![index].id));
-  }
-
-  removeBeat(Beat beat) {
-    setState(() {
-      blueIndexes.remove(beat);
-      widget.setDeactivated(
-        List.generate(
-            (beat.deactivated ?? []).length, (e) => beat.deactivated![e].id),
-        isToDeactivate: false,
-      );
-    });
-  }
-
   Future<bool> renameBeat(Beat beat,
       {Distributor? distributor, String? newBeatName}) async {
     if (distributor == null) {
@@ -810,10 +789,8 @@ class _MapScreenState extends State<MapScreen> {
                                   changeColor,
                                   index,
                                   renameBeat,
-                                  removeBeat,
                                   widget.categories,
                                   refresh,
-                                  updateBeat,
                                   widget.users,
                                   selectedDropDownItem,
                                   setNewBeats, widget.distributors);
@@ -825,7 +802,7 @@ class _MapScreenState extends State<MapScreen> {
                             beats2.length,
                             (int index) {
                               return AssignedBeat(beats2[index], changeColor,
-                                  index, renameBeat, removeBeat, widget.users, widget.distributors);
+                                  index, renameBeat, widget.users, widget.distributors);
                             },
                           ),
                           ...List.generate(
@@ -836,10 +813,8 @@ class _MapScreenState extends State<MapScreen> {
                                   changeColor,
                                   index,
                                   renameBeat,
-                                  removeBeat,
                                   widget.categories,
                                   refresh,
-                                  updateBeat,
                                   widget.users,
                                   selectedDropDownItem,
                                   setNewBeats, widget.distributors);
@@ -876,44 +851,6 @@ class _MapScreenState extends State<MapScreen> {
                                       padding: const EdgeInsets.all(6.0),
                                       child: Icon(Icons.arrow_back_ios, size: 16,color: Colors.black.withOpacity(0.5),),
                                     )
-                                    // child: Padding(
-                                    //   padding: const EdgeInsets.symmetric(
-                                    //       vertical: 2.0),
-                                    //   child: Row(
-                                    //     children: [
-                                    //       Expanded(
-                                    //         child: Container(),
-                                    //       ),
-                                    //       Container(
-                                    //         width: 1,
-                                    //         height: 100,
-                                    //         color:
-                                    //             Colors.black.withOpacity(0.5),
-                                    //       ),
-                                    //       Expanded(
-                                    //         child: Container(),
-                                    //       ),
-                                    //       Container(
-                                    //         width: 1,
-                                    //         height: 100,
-                                    //         color:
-                                    //             Colors.black.withOpacity(0.5),
-                                    //       ),
-                                    //       Expanded(
-                                    //         child: Container(),
-                                    //       ),
-                                    //       Container(
-                                    //         width: 1,
-                                    //         height: 100,
-                                    //         color:
-                                    //             Colors.black.withOpacity(0.5),
-                                    //       ),
-                                    //       Expanded(
-                                    //         child: Container(),
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
                                   ),
                                 ),
                                 Expanded(
@@ -921,11 +858,9 @@ class _MapScreenState extends State<MapScreen> {
                                     widget.categories,
                                     widget.distributors,
                                     blueIndexes,
-                                    removeBeat,
                                     selectedDropDownItem,
                                     _changeDropDownValue,
                                     refresh,
-                                    updateBeat,
                                     changeColor,
                                     widget.isDeactivated,
                                     widget.changeDeactivated,
@@ -964,44 +899,6 @@ class _MapScreenState extends State<MapScreen> {
                                         padding: const EdgeInsets.all(2.0),
                                         child: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.black.withOpacity(0.5),),
                                       ),
-                                      // child: Padding(
-                                      //   padding: const EdgeInsets.symmetric(
-                                      //       vertical: 2.0),
-                                      //   child: Row(
-                                      //     children: [
-                                      //       Expanded(
-                                      //         child: Container(),
-                                      //       ),
-                                      //       Container(
-                                      //         width: 1,
-                                      //         height: 100,
-                                      //         color:
-                                      //             Colors.black.withOpacity(0.5),
-                                      //       ),
-                                      //       Expanded(
-                                      //         child: Container(),
-                                      //       ),
-                                      //       Container(
-                                      //         width: 1,
-                                      //         height: 100,
-                                      //         color:
-                                      //             Colors.black.withOpacity(0.5),
-                                      //       ),
-                                      //       Expanded(
-                                      //         child: Container(),
-                                      //       ),
-                                      //       Container(
-                                      //         width: 1,
-                                      //         height: 100,
-                                      //         color:
-                                      //             Colors.black.withOpacity(0.5),
-                                      //       ),
-                                      //       Expanded(
-                                      //         child: Container(),
-                                      //       ),
-                                      //     ],
-                                      //   ),
-                                      // ),
                                     ),
                                   );
                                 }),
@@ -1010,11 +907,9 @@ class _MapScreenState extends State<MapScreen> {
                                       widget.categories,
                                       widget.distributors,
                                       blueIndexes,
-                                      removeBeat,
                                       selectedDropDownItem,
                                       _changeDropDownValue,
                                       refresh,
-                                      updateBeat,
                                       changeColor,
                                       widget.isDeactivated,
                                       widget.changeDeactivated,
