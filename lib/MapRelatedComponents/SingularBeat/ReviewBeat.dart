@@ -35,6 +35,7 @@ class ReviewBeat extends StatelessWidget {
       this.dropdownSelectedItem,
       this.setNewBeats, this.distributors);
 
+
   @override
   Widget build(BuildContext context) {
     return Padding(

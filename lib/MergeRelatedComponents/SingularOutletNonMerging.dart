@@ -46,7 +46,14 @@ class SingularOutletNonMerging extends StatefulWidget {
 }
 
 
+
 class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
 
   int numberOfTurns = 0;
 
@@ -126,8 +133,9 @@ class _SingularOutletNonMergingState extends State<SingularOutletNonMerging> {
                         width: 200,
                         height: 50,
                         child: Builder(builder: (context) {
+                          print(widget.tempOutlet.newcategoryID);
                           return DropdownSearch<Category>(
-                            showSearchBox: true,
+                            showSearchBox: false,
                             mode: Mode.MENU,
                             dropdownButtonSplashRadius: 1,
                             dropDownButton: SizedBox.shrink(),

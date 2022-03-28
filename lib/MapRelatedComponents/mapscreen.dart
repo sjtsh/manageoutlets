@@ -85,6 +85,7 @@ class AIntent extends Intent {}
 
 class AddButtonIntent extends Intent {}
 
+
 class _MapScreenState extends State<MapScreen> {
   GlobalKey stackKey = GlobalKey();
   List<Outlet> redPositions = [];
@@ -305,6 +306,8 @@ class _MapScreenState extends State<MapScreen> {
       }
     }, stackKey);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
