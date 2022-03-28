@@ -181,9 +181,6 @@ class _NextScreenState extends State<NextScreen> {
       if (element.outletName == "") {
         isValidate = true;
       }
-      if (element.newcategoryID == null) {
-        isValidate = true;
-      }
     }
     if (!isValidate) {
       // widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
@@ -240,6 +237,8 @@ class _NextScreenState extends State<NextScreen> {
   }
 
   setCategoryID(Category? selected, int i) {
-    tempBeat!.outlet[i].categoryID = selected?.id ?? tempBeat!.outlet[i].categoryID  ;
+    tempBeat!.outlet[i].categoryID =
+        selected?.id ?? tempBeat!.outlet[i].categoryID;
+    setState(() {});
   }
 }

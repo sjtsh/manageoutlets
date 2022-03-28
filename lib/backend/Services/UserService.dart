@@ -29,7 +29,7 @@ class UserService {
         aJson["outlets"][element.id.toString()]["beatID"] =
             element.beatID.toString();
         aJson["outlets"][element.id.toString()]["categoryID"] =
-            element.newcategoryID.toString();
+            element.categoryID.toString();
         aJson["outlets"][element.id.toString()]["dateTime"] =
             element.dateTime.toString().split(":").join("c");
         aJson["outlets"][element.id.toString()]["outletName"] =

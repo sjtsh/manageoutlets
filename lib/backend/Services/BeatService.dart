@@ -52,7 +52,7 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["videoID"] = element.videoID;
         aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
         aJson["outlets"][element.id.toString()]["categoryID"] =
-            element.newcategoryID;
+            element.categoryID;
         aJson["outlets"][element.id.toString()]["dateTime"] = DateTime.tryParse(element.dateTime ?? "");
         aJson["outlets"][element.id.toString()]["outletName"] =
             element.outletName;
