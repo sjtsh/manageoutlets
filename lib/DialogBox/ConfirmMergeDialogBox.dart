@@ -150,16 +150,10 @@ class _ConfirmMergeDialogBoxState extends State<ConfirmMergeDialogBox> {
                               break;
                             }
                           }
-                          List dynamicList = widget.selectedOutlet
-                              .where((element) => element.id != widget.myID)
-                              .toList();
-                          for (var element in dynamicList) {
-                            if (widget.tempBeat.deactivated == null) {
-                              widget.tempBeat.deactivated = [element];
-                            } else {
-                              widget.tempBeat.deactivated?.add(element);
+                          for (var element in widget.selectedOutlet) {
+                            if (element.id != widget.myID){
+                              element.deactivated = true;
                             }
-                            widget.tempBeat.outlet.remove(element);
                           }
                           Navigator.pop(context);
                           widget.refresh();

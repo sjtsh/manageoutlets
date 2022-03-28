@@ -25,12 +25,10 @@ import 'PopUpColors.dart';
 class DetailedMapScreenRightPanel extends StatefulWidget {
   final List<Category> categories;
   final List<Beat> beats;
-  final Function removeBeat;
   final List<Distributor> distributors;
   final Distributor selectedDropDownItem;
   final Function _changeDropDownValue;
   final Function refresh;
-  final Function updateBeat;
   final Function changeColor;
   final bool isDeactivated;
   final Function changeDeactivated;
@@ -44,11 +42,9 @@ class DetailedMapScreenRightPanel extends StatefulWidget {
       this.categories,
       this.distributors,
       this.beats,
-      this.removeBeat,
       this.selectedDropDownItem,
       this._changeDropDownValue,
       this.refresh,
-      this.updateBeat,
       this.changeColor,
       this.isDeactivated,
       this.changeDeactivated,
@@ -135,7 +131,9 @@ class _DetailedMapScreenRightPanelState
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Text(distributor.distributorName),
+                            child: Text(distributor.distributorName,
+                            textDirection: TextDirection.rtl,
+                            overflow: TextOverflow.ellipsis,),
                           ),
                           SizedBox(
                             width: 6,
@@ -177,7 +175,7 @@ class _DetailedMapScreenRightPanelState
                         return Center(
                           child: Material(
                             child: Container(
-                              height: 150,
+                              height: 180,
                               width: 300,
                               decoration: BoxDecoration(
                                 color: Colors.white,
@@ -187,9 +185,12 @@ class _DetailedMapScreenRightPanelState
                                 padding: const EdgeInsets.all(12.0),
                                 child: Column(
                                   children: [
+                                    Text("CREATE DISTRIBUTOR", style: TextStyle(fontWeight: FontWeight.bold),),
+                                    SizedBox(height: 12,),
                                     TextField(
                                       controller: newDistributorController,
                                       decoration: InputDecoration(
+                                        labelText: "Distributor's Name",
                                           border: OutlineInputBorder(
                                               borderSide: BorderSide(
                                                   color: Colors.black))),
@@ -282,7 +283,6 @@ class _DetailedMapScreenRightPanelState
                               widget.changeColor,
                               index,
                               widget.renameBeat,
-                              widget.removeBeat,
                               widget.users, widget.distributors);
                         },
                       ),
@@ -336,7 +336,6 @@ class _DetailedMapScreenRightPanelState
                               widget.changeColor,
                               index,
                               widget.renameBeat,
-                              widget.removeBeat,
                               widget.users, widget.distributors);
                         },
                       ),

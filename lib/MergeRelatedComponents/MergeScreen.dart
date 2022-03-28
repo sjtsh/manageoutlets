@@ -22,13 +22,14 @@ class MergeScreen extends StatefulWidget {
   final Function refresh;
   final List<Outlet> selectedOutlet;
   final Beat tempBeat;
+  final bool isDeactivated;
 
   MergeScreen(
     this.beat,
     this.categories,
     this.refresh,
     this.selectedOutlet,
-    this.tempBeat,
+    this.tempBeat, this.isDeactivated,
   );
 
   @override
@@ -206,7 +207,7 @@ class _MergeScreenState extends State<MergeScreen> {
                     hi.Container(
                         width: 500,
                         child: MergeMap(widget.selectedOutlet,
-                            chosenOutlet == null ? [] : [chosenOutlet!], true)),
+                            chosenOutlet == null ? [] : [chosenOutlet!], true, widget.isDeactivated)),
                     GestureDetector(
                       onTap: () {
                         if (chosenOutlet != null) {

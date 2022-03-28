@@ -13,7 +13,10 @@ class MergeMap extends StatefulWidget {
   final List<Outlet> focusedOutlets;
   final bool isMerge;
 
-  MergeMap(this.visibleOutlets, this.focusedOutlets, this.isMerge);
+  final bool isDeactivated;
+
+  MergeMap(this.visibleOutlets, this.focusedOutlets, this.isMerge,
+      this.isDeactivated);
 
   @override
   State<MergeMap> createState() => _MergeMapState();
@@ -24,10 +27,8 @@ class _MergeMapState extends State<MergeMap> {
 
   final TextEditingController textController = TextEditingController();
 
-  void refresh(){
-  setState(() {
-
-  });
+  void refresh() {
+    setState(() {});
   }
 
   Widget _buildMarkerWidget(Offset pos, Color color, bool isLarge) {
@@ -44,6 +45,20 @@ class _MergeMapState extends State<MergeMap> {
     );
   }
 
+  Widget _buildMarkerWidgetAddedDisabled(
+      Offset pos, String imgName, bool isLarge) {
+    return Positioned(
+      left: pos.dx - 16,
+      top: pos.dy - 16,
+      width: isLarge ? 50 : 24,
+      height: isLarge ? 50 : 24,
+      child: Image.asset(
+        imgName,
+        height: 24,
+        width: 24,
+      ),
+    );
+  }
 
   void _onDoubleTap() {
     controller.zoom += 0.5;
@@ -59,8 +74,7 @@ class _MergeMapState extends State<MergeMap> {
     super.initState();
 
     Outlet? centerOutlet;
-    if (widget.focusedOutlets.isNotEmpty ||
-        widget.visibleOutlets.isNotEmpty) {
+    if (widget.focusedOutlets.isNotEmpty || widget.visibleOutlets.isNotEmpty) {
       if (widget.focusedOutlets.isNotEmpty) {
         centerOutlet = widget.focusedOutlets[0];
       } else {
@@ -72,8 +86,6 @@ class _MergeMapState extends State<MergeMap> {
           ? LatLng(0, 0)
           : LatLng(centerOutlet.lat, centerOutlet.lng),
       zoom: widget.isMerge ? 19 : 17, //19
-
-
     );
   }
 
@@ -94,42 +106,39 @@ class _MergeMapState extends State<MergeMap> {
           }
           visibleMarkers.addAll(
             List.generate(
-                widget.visibleOutlets.length,
-                    (e) =>
-                    LatLng(widget.visibleOutlets[e].lat,
-                        widget.visibleOutlets[e].lng))
-                .map(transformer.fromLatLngToXYCoords)
-                .toList()
-                .map(
-                  (pos) =>
-                  _buildMarkerWidget(
-                      pos,
-                      Colors.red,
-                      false),
+              widget.visibleOutlets.length,
+              (index) {
+                Offset pos = transformer.fromLatLngToXYCoords(LatLng(
+                    widget.visibleOutlets[index].lat,
+                    widget.visibleOutlets[index].lng));
+                return widget.visibleOutlets[index].deactivated
+                    ? (widget.isDeactivated
+                        ? _buildMarkerWidgetAddedDisabled(
+                            pos, "assets/disabled_marker.png", false)
+                        : Container())
+                    : _buildMarkerWidget(pos, Colors.blue, false);
+              },
             ),
           );
-
           focusedMarkers.addAll(
             List.generate(
-                widget.focusedOutlets.length,
-                    (e) =>
-                    LatLng(widget.focusedOutlets[e].lat,
-                        widget.focusedOutlets[e].lng))
-                .map(transformer.fromLatLngToXYCoords)
-                .toList()
-                .map(
-                  (pos) =>
-                  _buildMarkerWidget(
-                      pos,
-                      Colors.blue,
-                      false),
+              widget.focusedOutlets.length,
+              (index) {
+                Offset pos = transformer.fromLatLngToXYCoords(LatLng(
+                    widget.focusedOutlets[index].lat,
+                    widget.focusedOutlets[index].lng));
+                return widget.focusedOutlets[index].deactivated
+                    ? (widget.isDeactivated
+                        ? _buildMarkerWidgetAddedDisabled(
+                            pos, "assets/disabled_marker.png", false)
+                        : Container())
+                    : _buildMarkerWidget(pos, Colors.blue, false);
+              },
             ),
           );
         }
 
-
         return GestureDetector(
-
           behavior: HitTestBehavior.opaque,
           onDoubleTap: _onDoubleTap,
           onScaleStart: (ScaleStartDetails details) {
@@ -155,7 +164,6 @@ class _MergeMapState extends State<MergeMap> {
             }
           },
           child: Listener(
-
             behavior: HitTestBehavior.opaque,
             onPointerSignal: (event) {
               if (event is PointerScrollEvent) {

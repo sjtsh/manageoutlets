@@ -13,10 +13,8 @@ class ReviewBeat extends StatelessWidget {
   final Function changeColor;
   final int index;
   final Function renameBeat;
-  final Function removeBeat;
   final List<Category> categories;
   final Function refresh;
-  final Function updateBeat;
   final List<User> users;
   final Distributor dropdownSelectedItem;
   final Function setNewBeats;
@@ -27,10 +25,8 @@ class ReviewBeat extends StatelessWidget {
       this.changeColor,
       this.index,
       this.renameBeat,
-      this.removeBeat,
       this.categories,
       this.refresh,
-      this.updateBeat,
       this.users,
       this.dropdownSelectedItem,
       this.setNewBeats, this.distributors);
@@ -43,7 +39,7 @@ class ReviewBeat extends StatelessWidget {
         onDoubleTap: () {
           if (dropdownSelectedItem.id != -1) {
             Navigator.push(context, MaterialPageRoute(builder: (_) {
-              return NextScreen(beat, categories, refresh, updateBeat,
+              return NextScreen(beat, categories, refresh,
                   dropdownSelectedItem, setNewBeats);
             }));
           } else {

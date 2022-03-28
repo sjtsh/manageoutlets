@@ -60,22 +60,7 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["lng"] = element.lng;
         aJson["outlets"][element.id.toString()]["md5"] = element.md5;
         aJson["outlets"][element.id.toString()]["imageURL"] = element.imageURL;
-        aJson["outlets"][element.id.toString()]["deactivated"] = "false";
-      }
-      for (Outlet element in (element.deactivated ?? [])) {
-        aJson["outlets"][element.id.toString()] = {};
-        aJson["outlets"][element.id.toString()]["videoID"] = element.videoID;
-        aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
-        aJson["outlets"][element.id.toString()]["categoryID"] =
-            element.newcategoryID;
-        aJson["outlets"][element.id.toString()]["dateTime"] = element.dateTime;
-        aJson["outlets"][element.id.toString()]["outletName"] =
-            element.outletName;
-        aJson["outlets"][element.id.toString()]["lat"] = element.lat;
-        aJson["outlets"][element.id.toString()]["lng"] = element.lng;
-        aJson["outlets"][element.id.toString()]["md5"] = element.md5;
-        aJson["outlets"][element.id.toString()]["imageURL"] = element.imageURL;
-        aJson["outlets"][element.id.toString()]["deactivated"] = "true";
+        aJson["outlets"][element.id.toString()]["deactivated"] =  element.deactivated ? "true": "false";
       }
 
       aJson["outlets"] = aJson["outlets"].toString();

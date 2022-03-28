@@ -22,12 +22,10 @@ import 'PopUpColors.dart';
 class MapScreenRightPanel extends StatefulWidget {
   final List<Category> categories;
   final List<Beat> beats;
-  final Function removeBeat;
   final List<Distributor> distributors;
   final Distributor selectedDropDownItem;
   final Function _changeDropDownValue;
   final Function refresh;
-  final Function updateBeat;
   final Function changeColor;
   final bool isDeactivated;
   final Function changeDeactivated;
@@ -38,11 +36,9 @@ class MapScreenRightPanel extends StatefulWidget {
       this.categories,
       this.distributors,
       this.beats,
-      this.removeBeat,
       this.selectedDropDownItem,
       this._changeDropDownValue,
       this.refresh,
-      this.updateBeat,
       this.changeColor,
       this.isDeactivated,
       this.changeDeactivated,
