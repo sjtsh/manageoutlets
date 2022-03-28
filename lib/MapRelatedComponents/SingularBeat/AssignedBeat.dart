@@ -87,7 +87,7 @@ class AssignedBeat extends StatelessWidget {
                     },
                     initialValue: beat.color,
                     onSelected: (Color value) {
-                      changeColor(value, index, isConfirmed: true);
+                      changeColor(value, beat.id);
                       // refresh();
                     },
                     child: Container(

@@ -17,6 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   int percentage = 0;
   int total = 400;
   int estimatedTime = 10;
+  String loadingText = "Loading beats...";
 
   @override
   void initState() {
@@ -28,27 +29,32 @@ class _SplashScreenState extends State<SplashScreen> {
       if (mounted) {
         setState(() {
           percentage += 10;
+          loadingText = "Loading Distributors...";
         });
         Future.delayed(Duration(seconds: estimatedTime)).then((value) {
           if (mounted) {
             setState(() {
               percentage += 10;
+              loadingText = "Loading Categories...";
             });
             Future.delayed(Duration(seconds: estimatedTime)).then((value) {
               if (mounted) {
                 setState(() {
                   percentage += 10;
+                  loadingText = "Loading PathPoint...";
                 });
                 Future.delayed(Duration(seconds: estimatedTime)).then((value) {
                   if (mounted) {
                     setState(() {
                       percentage += 10;
+                      loadingText = "Loading user...";
                     });
                     Future.delayed(Duration(seconds: estimatedTime)).then((
                         value) {
                       if (mounted) {
                         setState(() {
                           percentage += 10;
+                          loadingText = "Fetching outlets...";
                         });
 
                         Future.delayed(Duration(seconds: estimatedTime))
@@ -56,6 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
                           if (mounted) {
                             setState(() {
                               percentage += 10;
+                              loadingText = "Compiling Outlets...";
                             });
 
                             Future.delayed(Duration(seconds: estimatedTime))
@@ -63,6 +70,7 @@ class _SplashScreenState extends State<SplashScreen> {
                               if (mounted) {
                                 setState(() {
                                   percentage += 10;
+                                  loadingText = "Analyzing Outlets...";
                                 });
 
                                 Future.delayed(
@@ -71,6 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
                                   if (mounted) {
                                     setState(() {
                                       percentage += 10;
+                                      loadingText = "Completing...";
                                     });
                                   }
                                 });
@@ -122,17 +131,25 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                   SizedBox(
                     height: 10,
-                  ),
-                  Text(
-                    "Powered by Hilife",
+                  ),    Text(
+                    loadingText,
                     style: TextStyle(
-                      color: Colors.red,
+                      color: Colors.grey,
                     ),
                   ),
                 ],
               ),
             ),
           ),
+          Text(
+            "Powered by Hilife",
+            style: TextStyle(
+              color: Colors.red,
+            ),
+          ),
+            SizedBox(
+            height: 10,
+    ),
           Text("Trying to run on " + widget.localhostText,
             style: TextStyle(color: Colors.black.withOpacity(0.5)),),
           SizedBox(height: 12,),
