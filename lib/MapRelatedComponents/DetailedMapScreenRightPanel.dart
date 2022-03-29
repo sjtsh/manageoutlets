@@ -255,6 +255,7 @@ class _DetailedMapScreenRightPanelState
               ),
             ],
           ),
+          SizedBox(height: 12,),
           Expanded(
             child: ListView(
               children: [

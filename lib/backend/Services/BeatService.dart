@@ -10,11 +10,10 @@ import '../Entities/Outlet.dart';
 import '../database.dart';
 
 class BeatService {
-
   Future<List<Beat>> getBeat(int distributorID) async {
     int checkStatus = 0;
     while (checkStatus != 200) {
-      try{
+      try {
         Response res = await http.get(
           Uri.parse("$localhost/distributorsingle/$distributorID"),
         );
@@ -25,7 +24,8 @@ class BeatService {
             return Beat(
               a["name"],
               outletsMap
-                  .map((e) => Outlet(
+                  .map((e) =>
+                  Outlet(
                       id: e["id"],
                       categoryID: int.parse(e["category"]),
                       categoryName: e["categoryName"],
@@ -43,7 +43,7 @@ class BeatService {
           return beats;
         }
         throw "[]";
-      } catch(e){
+      } catch (e) {
         print("Failed loading beats");
       }
     }
@@ -62,36 +62,53 @@ class BeatService {
         aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
         aJson["outlets"][element.id.toString()]["categoryID"] =
             element.newcategoryID;
-        aJson["outlets"][element.id.toString()]["dateTime"] = DateTime.tryParse(element.dateTime ?? "");
+        aJson["outlets"][element.id.toString()]["dateTime"] =
+            DateTime.tryParse(element.dateTime ?? "");
         aJson["outlets"][element.id.toString()]["outletName"] =
             element.outletName;
         aJson["outlets"][element.id.toString()]["lat"] = element.lat;
         aJson["outlets"][element.id.toString()]["lng"] = element.lng;
         aJson["outlets"][element.id.toString()]["md5"] = element.md5;
         aJson["outlets"][element.id.toString()]["imageURL"] = element.imageURL;
-        aJson["outlets"][element.id.toString()]["deactivated"] =  element.deactivated ? "true": "false";
+        aJson["outlets"][element.id.toString()]["deactivated"] =
+        element.deactivated ? "true" : "false";
       }
 
-        aJson["outlets"] = aJson["outlets"].toString();
+      aJson["outlets"] = aJson["outlets"].toString();
 
-        Response res = await http.put(
-          Uri.parse("$localhost/beat/update/"),
-          body: aJson,
-        );
-        print(res.body);
-        if (res.statusCode != 200) {
-          statusCode = res.statusCode;
-        }
+      Response res = await http.put(
+        Uri.parse("$localhost/beat/update/"),
+        body: aJson,
+      );
+      print(res.body);
+      if (res.statusCode != 200) {
+        statusCode = res.statusCode;
       }
-
-      if (statusCode == 200) {
-        List<Beat> beats = await BeatService().getBeat(distributorID);
-        setNewBeats(beats, distributorID);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("SUCCESSFUL"),
-        ));
-        return true;
-      }
-      return false;
     }
+
+    if (statusCode == 200) {
+      List<Beat> beats = await BeatService().getBeat(distributorID);
+      setNewBeats(beats, distributorID);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("SUCCESSFUL"),
+      ));
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> deleteBeat(int ? id) async {
+    Response res = await http.delete(
+      Uri.parse("$localhost/beat/$id/delete/"),
+    );
+    print(res.body);
+    if(res.statusCode==200){
+      if (res.body == "true") {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
 }

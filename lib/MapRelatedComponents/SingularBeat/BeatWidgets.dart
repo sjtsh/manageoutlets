@@ -103,7 +103,7 @@ class _BeatWidgetsState extends State<BeatWidgets> {
                     },
                     initialValue: widget.beat.color,
                     onSelected: (Color value) {
-                      widget.changeColor(value, widget.index);
+                      widget.changeColor(value, widget.beat);
                       // widget.refresh();
                     },
                     child: Container(

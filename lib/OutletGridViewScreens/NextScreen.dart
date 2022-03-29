@@ -181,9 +181,6 @@ class _NextScreenState extends State<NextScreen> {
       if (element.outletName == "") {
         isValidate = true;
       }
-      if (element.newcategoryID == null) {
-        isValidate = true;
-      }
     }
     if (!isValidate) {
       // widget.updateBeat(formerBeat: widget.beat, newBeat: tempBeat);
