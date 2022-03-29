@@ -51,6 +51,7 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+
     return Material(
       color: Colors.white,
       child: InkWell(
@@ -145,39 +146,40 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
                                 color: Colors.white,
                                 child: InkWell(
                                   onTap: () async {
-                                    tooltip.close();
-                                    setState(() {
-                                      condition = false;
-                                    });
-
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    prefs.setString(
-                                        "lastUpdated",
-                                        NepaliDateTime.now()
-                                            .toString()
-                                            .substring(0, 19));
-                                    // List<Beat> beats = widget.beats
-                                    //     .where((element) => element.status == 1)
-                                    //     .toList();
-                                    // BeatService().getBeat(201);
-                                    // distributor
-                                    try {
-                                      List<Beat> beats = await BeatService()
-                                          .getBeat(widget.distributor.id);
-                                          widget.setNewBeats(beats, widget.distributor.id);
-
-                                         widget.changeColor(widget.distributor);
-                                    } catch (e) {
+                                    if (widget.distributor.id != -1) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
-                                              content: Text("Unsuccessful")));
-                                      print(e);
+                                              content: Text(
+                                                  "Selkect a distributor to sync")));
+                                    } else {
+                                      tooltip.close();
+                                      setState(() {
+                                        condition = false;
+                                      });
+
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      prefs.setString(
+                                          "lastUpdated",
+                                          NepaliDateTime.now()
+                                              .toString()
+                                              .substring(0, 19));
+                                      try {
+                                        List<Beat> beats = await BeatService()
+                                            .getBeat(widget.distributor.id, context);
+                                        widget.setNewBeats(
+                                            beats, widget.distributor.id);
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                                content: Text("Unsuccessful")));
+                                        print(e);
+                                      }
+                                      setState(() {
+                                        condition = true;
+                                      });
+                                      tooltip.show(context);
                                     }
-                                    setState(() {
-                                      condition = true;
-                                    });
-                                    tooltip.show(context);
                                   },
                                   child: Container(
                                     alignment: Alignment.center,

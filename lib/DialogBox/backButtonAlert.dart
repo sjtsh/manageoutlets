@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 
-class BackButtonAlert extends StatelessWidget {
+class BackButtonAlert extends StatefulWidget {
   final String message;
   final String GreyMesage;
   final String RedMessage;
   final Function todo;
 
   BackButtonAlert(this.message, this.GreyMesage, this.RedMessage, this.todo);
+
+  @override
+  State<BackButtonAlert> createState() => _BackButtonAlertState();
+}
+
+class _BackButtonAlertState extends State<BackButtonAlert> {
+  bool isDisabled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,39 +28,56 @@ class BackButtonAlert extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    message,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    widget.message,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(
                     height: 8,
                   ),
                   Text(
                     "Are you sure?",
-                    style: const TextStyle( fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
-
                   Expanded(child: Container()),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 22),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        MaterialButton(
-                            onPressed: () {
-                            Navigator.pop(context);
-                              todo();
-                            },
-                            color: Colors.red,
-                            child: Text(
-                              GreyMesage,
-                              style: TextStyle(color: Colors.white),
-                            )),
+                        isDisabled
+                            ? MaterialButton(
+                                onPressed: () async {},
+                                color: Colors.red,
+                                child: SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(color: Colors.white,),
+                                ))
+                            : MaterialButton(
+                                onPressed: () async {
+                                  isDisabled = true;
+                                  setState(() {});
+                                  try{
+                                    await widget.todo();
+                                  }catch(e){
+
+                                  }
+                                  isDisabled = false;
+                                  setState(() {});
+                                  Navigator.pop(context);
+                                },
+                                color: Colors.red,
+                                child: Text(
+                                  widget.GreyMesage,
+                                  style: TextStyle(color: Colors.white),
+                                )),
                         MaterialButton(
                             onPressed: () {
                               Navigator.pop(context);
                             },
                             child: Text(
-                              RedMessage,
+                              widget.RedMessage,
                             ))
                       ],
                     ),

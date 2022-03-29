@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:http/http.dart' as http;
@@ -9,7 +10,7 @@ import '../database.dart';
 
 class CategoryService{
 
-  Future <List<Category>> getCatagory() async {
+  Future <List<Category>> getCatagory(BuildContext context) async {
     int checkStatus = 0;
     while (checkStatus != 200) {
       try{
@@ -28,7 +29,11 @@ class CategoryService{
         }
         return [];
       }on SocketException{
-        print("Failed loading Category");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Unsuccessful"),
+          ),
+        );
       }
     }
     return [];

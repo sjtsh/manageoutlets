@@ -21,8 +21,11 @@ class OutletService {
         List<Outlet> outlets = a.map((e) => Outlet.fromJson(e)).toList();
         return outlets;
       } on SocketException {
-        print("Failed loading Outlet Service");
-
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Unsuccessful"),
+          ),
+        );
       }
     }
     return [];

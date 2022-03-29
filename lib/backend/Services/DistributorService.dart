@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 import 'package:manage_outlets/backend/Entities/Distributor.dart';
@@ -10,7 +12,7 @@ import 'package:http/http.dart' as http;
 import '../database.dart';
 
 class DistributorService {
-  Future<List<Distributor>> getDistributor() async {
+  Future<List<Distributor>> getDistributor(BuildContext context) async {
     int checkStatus = 0;
     while (checkStatus != 200) {
       try{
@@ -36,7 +38,11 @@ class DistributorService {
         }
         return [];
       }on SocketException{
-        print(" $e Failed Loading Distributor");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Unsuccessful"),
+          ),
+        );
       }
     }
     return [];

@@ -116,7 +116,7 @@ class ReviewBeat extends StatelessWidget {
                     },
                     initialValue: beat.color,
                     onSelected: (Color value) {
-                      changeColor(value, index, isConfirmed: true);
+                      changeColor(value, beat,);
                       // refresh();
                     },
                     child: Container(

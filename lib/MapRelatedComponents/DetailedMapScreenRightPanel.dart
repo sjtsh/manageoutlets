@@ -37,6 +37,7 @@ class DetailedMapScreenRightPanel extends StatefulWidget {
   final List<Widget> listOfBeatWidgets;
   final Widget sync;
   final Function addDistributor;
+  final Function setNewBeats;
 
   DetailedMapScreenRightPanel(
       this.categories,
@@ -51,7 +52,7 @@ class DetailedMapScreenRightPanel extends StatefulWidget {
       this.renameBeat,
       this.users,
       this.listOfBeatWidgets,
-      this.sync, this.addDistributor);
+      this.sync, this.addDistributor, this.setNewBeats);
 
   @override
   _DetailedMapScreenRightPanelState createState() =>
@@ -255,6 +256,7 @@ class _DetailedMapScreenRightPanelState
               ),
             ],
           ),
+          SizedBox(height: 12,),
           Expanded(
             child: ListView(
               children: [
@@ -283,7 +285,7 @@ class _DetailedMapScreenRightPanelState
                               widget.changeColor,
                               index,
                               widget.renameBeat,
-                              widget.users, widget.distributors);
+                              widget.users, widget.distributors, widget.selectedDropDownItem.id,widget.setNewBeats);
                         },
                       ),
                     ],

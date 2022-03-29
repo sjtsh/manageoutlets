@@ -36,24 +36,6 @@ class RedSlider extends StatelessWidget {
           ),
           Row(
             children: [
-              SizedBox(
-                width: 12,
-              ),
-              const Text("0 m"),
-              Expanded(
-                child: Slider(
-                    activeColor: Colors.red,
-                    inactiveColor: Colors.red.withOpacity(0.5),
-                    thumbColor: Colors.red,
-                    value: redDistance,
-                    max: maxRedDistance +0.0,
-                    min: 0,
-                    label: "${redDistance.toStringAsFixed(2)}",
-                    onChanged: (double a) {
-                      setTempRedRadius(a);
-                    }),
-              ),
-              Text("$maxRedDistance m"),
               const SizedBox(
                 width: 12,
               ),
@@ -83,6 +65,24 @@ class RedSlider extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(
+                width: 12,
+              ),
+              const Text("0 m"),
+              Expanded(
+                child: Slider(
+                    activeColor: Colors.red,
+                    inactiveColor: Colors.red.withOpacity(0.5),
+                    thumbColor: Colors.red,
+                    value: redDistance,
+                    max: maxRedDistance +0.0,
+                    min: 0,
+                    label: "${redDistance.toStringAsFixed(2)}",
+                    onChanged: (double a) {
+                      setTempRedRadius(a);
+                    }),
+              ),
+              Text("$maxRedDistance m"),
               SizedBox(
                 width: 12,
               ),

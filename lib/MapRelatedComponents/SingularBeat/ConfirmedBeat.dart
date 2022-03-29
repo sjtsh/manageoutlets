@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:manage_outlets/backend/Services/BeatService.dart';
 
+import '../../DialogBox/backButtonAlert.dart';
 import '../../DialogBox/renameBeatNameDialog.dart';
 import '../../backend/Entities/Distributor.dart';
 import '../../backend/Entities/OutletsListEntity.dart';
@@ -14,21 +16,19 @@ class ConfirmedBeat extends StatelessWidget {
   final List<User> users;
   final List<Distributor> distributors;
 
-  ConfirmedBeat(this.beat, this.changeColor, this.index, this.renameBeat,this.users, this.distributors);
+  ConfirmedBeat(this.beat, this.changeColor, this.index, this.renameBeat,
+      this.users, this.distributors);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12, right: 12),
       child: GestureDetector(
-
-        onTap: (){
-
+        onTap: () {
           showDialog(
               context: context,
               builder: (_) {
-                return RenameBeatNameDialog(
-                    beat, renameBeat, distributors);
+                return RenameBeatNameDialog(beat, renameBeat, distributors);
               });
         },
         child: SizedBox(
@@ -61,7 +61,7 @@ class ConfirmedBeat extends StatelessWidget {
                         height: 4,
                       ),
                       Text(
-                        "${beat.outlet.where((element) =>  !element.deactivated).toList().length} Outlets, ${users.firstWhere((e)=> beat.userID == e.id).name}",
+                        "${beat.outlet.where((element) => !element.deactivated).toList().length} Outlets, ${users.firstWhere((e) => beat.userID == e.id).name}",
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.white),
                       )
@@ -80,7 +80,8 @@ class ConfirmedBeat extends StatelessWidget {
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: colorIndex[index],
-                                        border: Border.all(color: Colors.black)),
+                                        border:
+                                            Border.all(color: Colors.black)),
                                   ),
                                 ),
                                 value: colorIndex[index],
@@ -88,7 +89,7 @@ class ConfirmedBeat extends StatelessWidget {
                     },
                     initialValue: beat.color,
                     onSelected: (Color value) {
-                      changeColor(value, index, isConfirmed: true);
+                      changeColor(value, beat);
                       // widget.refresh();
                     },
                     child: Container(

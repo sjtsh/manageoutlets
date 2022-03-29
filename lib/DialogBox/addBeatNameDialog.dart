@@ -37,33 +37,36 @@ class AddtoBeatIntent extends Intent {}
 
 class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
   bool validate = false;
+  bool isDisabled = false;
   User? selected;
 
-  toBeatList(rangeIndexes, blueIndexes, textController,
-      List<Outlet> redPositions, context, validate, Function refresh) {
-    if (textController.text == "") {
-      validate = true;
-    } else {
-      validate = false;
-    }
-
-    if (validate == false) {
-      if (redPositions.isNotEmpty) {
-        rangeIndexes = [];
-        widget.addBeat(
-          // Beat(textController.text, shortestPath(redPositions),
-          //     color: colorIndex[widget.blueIndexes.length]),
-          Beat(textController.text, redPositions,
-              color: colorIndex[widget.blueIndexes.length],
-              userID: selected!.id,
-              status: 1),
-          widget.selectedDropdownItem.id,
-        );
-        // setTempRedRadius(0.0);
-        refresh();
-        Navigator.pop(context);
+  Future<void> toBeatList(rangeIndexes, blueIndexes, textController,
+      List<Outlet> redPositions, context, validate, Function refresh) async {
+    try {
+      if (textController.text == "") {
+        validate = true;
+      } else {
+        validate = false;
       }
-    }
+
+      if (validate == false) {
+        if (redPositions.isNotEmpty) {
+          rangeIndexes = [];
+          await widget.addBeat(
+            // Beat(textController.text, shortestPath(redPositions),
+            //     color: colorIndex[widget.blueIndexes.length]),
+            Beat(textController.text, redPositions,
+                color: colorIndex[widget.blueIndexes.length],
+                userID: selected!.id,
+                status: 1),
+            widget.selectedDropdownItem.id,
+          );
+          // setTempRedRadius(0.0);
+          refresh();
+          Navigator.pop(context);
+        }
+      }
+    } catch (e) {}
   }
 
   @override
@@ -72,7 +75,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
       shortcuts: {LogicalKeySet(LogicalKeyboardKey.enter): AddtoBeatIntent()},
       child: Actions(
         actions: {
-          AddtoBeatIntent: CallbackAction(onInvoke: (intent) {
+          AddtoBeatIntent: CallbackAction(onInvoke: (intent) async {
             setState(() {
               if (widget.textController.text == "") {
                 validate = true;
@@ -82,7 +85,9 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
             });
 
             if (validate == false) {
-              toBeatList(
+              isDisabled = true;
+              setState(() {});
+              await toBeatList(
                   widget.rangeIndexes,
                   widget.blueIndexes,
                   widget.textController,
@@ -90,6 +95,8 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                   context,
                   validate,
                   widget.refresh);
+              isDisabled = false;
+              setState(() {});
             }
           }),
         },
@@ -133,7 +140,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                           border: const OutlineInputBorder(),
                           label: const Text("Beat name"),
                         ),
-                        onChanged: (value){
+                        onChanged: (value) {
                           setState(() {
                             validate = false;
                           });
@@ -155,7 +162,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                             if (c != null) {
                               selected = c;
                               setState(() {
-                                validate =false;
+                                validate = false;
                               });
                             }
                           },
@@ -189,8 +196,14 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                             ]),
                         child: Material(
                           color: Colors.green,
-                          child: InkWell(
-                            onTap: () {
+                          child: isDisabled ? InkWell(
+                            onTap: () async {
+                            },
+                            child: const Center(
+                              child: CircularProgressIndicator(color: Colors.white,),
+                            ),
+                          ) : InkWell(
+                            onTap: () async {
                               setState(() {
                                 if (widget.textController.text == "") {
                                   validate = true;
@@ -207,7 +220,9 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                               });
 
                               if (validate == false) {
-                                toBeatList(
+                                isDisabled = true;
+                                setState(() {});
+                                await toBeatList(
                                     widget.rangeIndexes,
                                     widget.blueIndexes,
                                     widget.textController,
@@ -215,6 +230,8 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                                     context,
                                     validate,
                                     widget.refresh);
+                                isDisabled = false;
+                                setState(() {});
                               }
                             },
                             child: const Center(
