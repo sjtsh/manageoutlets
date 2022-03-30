@@ -16,7 +16,6 @@ import '../backend/Entities/Distributor.dart';
 import '../backend/Services/BeatService.dart';
 import '../backend/shortestPath.dart';
 import 'DoneButton.dart';
-import 'InteractiveImage.dart';
 import '../MergeRelatedComponents/SingularOutletNonMerging.dart';
 import '../DialogBox/backButtonAlert.dart';
 import '../backend/Entities/OutletsListEntity.dart';

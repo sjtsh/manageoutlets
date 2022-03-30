@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:hovering/hovering.dart';
 
 import 'CompareInteractive.dart';
-import '../OutletGridViewScreens/InteractiveImage.dart';
 import '../OutletGridViewScreens/NextScreen.dart';
 import '../DialogBox/backButtonAlert.dart';
 import '../backend/Entities/Category.dart';
