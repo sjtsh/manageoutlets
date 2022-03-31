@@ -93,24 +93,27 @@ class ActivatedOutlets extends StatelessWidget {
                                           setCategoryID,
                                           tempBeat!,
                                           i,
-                                          stopScroll, setActivate),
+                                          stopScroll,
+                                          setActivate),
                                       Container(
                                         height: height / 3 - 12,
                                         width: width / 3 - 36,
                                         color: Colors.black.withOpacity(0.5),
                                         child: Center(
                                             child: GestureDetector(
-                                              onTap: (){
-                                              setActivate(tempBeat!.outlet[i].id, false);
-                                              },
-                                              child: Container(
-                                          color: Colors.white,
-                                          child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                          onTap: () {
+                                            setActivate(
+                                                tempBeat!.outlet[i].id, false);
+                                          },
+                                          child: Container(
+                                            color: Colors.white,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: Text("Activate"),
+                                            ),
                                           ),
-                                        ),
-                                            )),
+                                        )),
                                       )
                                     ],
                                   ),
@@ -129,7 +132,8 @@ class ActivatedOutlets extends StatelessWidget {
                                       setCategoryID,
                                       tempBeat!,
                                       i,
-                                      stopScroll, setActivate),
+                                      stopScroll,
+                                      setActivate),
                                 );
                               }
                             } else {
@@ -170,7 +174,8 @@ class ActivatedOutlets extends StatelessWidget {
                                       setCategoryID,
                                       tempBeat!,
                                       i,
-                                      stopScroll, setActivate),
+                                      stopScroll,
+                                      setActivate),
                                 );
                               } else {
                                 return Container();
@@ -301,7 +306,9 @@ class ActivatedOutlets extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
                                   child: Text(
-                                    "${(tempBeat as Beat).outlet.length} Outlets",
+                                    isDeactivated
+                                        ? "${(tempBeat as Beat).outlet.length} Outlets"
+                                        : "${(tempBeat as Beat).outlet.where((element) => !element.deactivated).length} Outlets",
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,

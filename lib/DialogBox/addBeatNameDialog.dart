@@ -220,6 +220,7 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
                               });
 
                               if (validate == false) {
+                                print(widget.redPositions.length);
                                 isDisabled = true;
                                 setState(() {});
                                 await toBeatList(
