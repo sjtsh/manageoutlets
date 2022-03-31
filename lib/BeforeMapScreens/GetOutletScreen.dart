@@ -36,27 +36,9 @@ class _GetOutletScreenState extends State<GetOutletScreen> {
           GeolocatorPlatform.instance.getCurrentPosition().then((value) async {
         List<Category> categories = await CategoryService().getCatagory(context);
         List<User> users  = await UserService().getUsers();
-        //35000
         List<Outlet> outlets = await OutletService().getNearbyOutlets(context);
-        Map<String, List<Outlet>> a = {};
-        for (int i = 0; i < outlets.length; i++) {
-          if (outlets[i].beatID != null) {
-            if (a.keys.contains((outlets[i].beatID).toString())) {
-              a[(outlets[i].beatID).toString()]?.add(outlets[i]);
-            } else {
-              a[(outlets[i].beatID).toString()] = [outlets[i]];
-            }
-          }
-        }
-
-        //75*200
         List<Distributor> distributors =
             await DistributorService().getDistributor(context);
-        for (Distributor z in distributors) {
-          for (Beat element in z.beats) {
-            element.outlet = a[(element.id).toString()] ?? [];
-          }
-        }
         return [outlets, distributors, categories, value, users];
       }),
       builder: (context, AsyncSnapshot snapshot) {

@@ -22,15 +22,7 @@ class BeatService {
             return Beat(
               a["name"],
               outletsMap
-                  .map((e) => Outlet(
-                      id: e["id"],
-                      categoryID: int.parse(e["category"]),
-                      categoryName: e["categoryName"],
-                      outletName: e["name"],
-                      lat: double.parse(e["lat"]),
-                      lng: double.parse(e["lng"]),
-                      imageURL: e["imageURL"],
-                      deactivated: e["deactivated"] != "False"))
+                  .map((e) => Outlet.fromJson(e))
                   .toList(),
               id: a["id"],
               status: a["status"],

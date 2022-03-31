@@ -146,7 +146,7 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
                                 color: Colors.white,
                                 child: InkWell(
                                   onTap: () async {
-                                    if (widget.distributor.id != -1) {
+                                    if (widget.distributor.id == -1) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text(

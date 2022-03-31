@@ -121,7 +121,7 @@ class _MapScreenState extends State<MapScreen> {
   Future<void> addBeat(
     Beat newBeat,
     int distributorID,
-  ) async{
+  ) async {
     await UserService().assignOutlets(
         [newBeat], distributorID, context, setNewBeats).then((value) {
       if (value) {
@@ -438,21 +438,23 @@ class _MapScreenState extends State<MapScreen> {
                                       .asMap()
                                       .entries
                                       .forEach((element) {
-                                    if (element.value.deactivated &&
-                                        widget.isDeactivated) {
-                                      markerWidgets.addAll([
-                                        LatLng(element.value.lat,
-                                            element.value.lng)
-                                      ]
-                                          .map(transformer.fromLatLngToXYCoords)
-                                          .toList()
-                                          .map((pos) =>
-                                              // _buildMarkerWidget(
-                                              // pos, Colors.brown, false),
-                                              _buildMarkerWidgetAddedDisabled(
-                                                  pos,
-                                                  "assets/disabled_marker.png",
-                                                  false)));
+                                    if (element.value.deactivated) {
+                                      if (widget.isDeactivated) {
+                                        markerWidgets.addAll([
+                                          LatLng(element.value.lat,
+                                              element.value.lng)
+                                        ]
+                                            .map(transformer
+                                                .fromLatLngToXYCoords)
+                                            .toList()
+                                            .map((pos) =>
+                                                // _buildMarkerWidget(
+                                                // pos, Colors.brown, false),
+                                                _buildMarkerWidgetAddedDisabled(
+                                                    pos,
+                                                    "assets/disabled_marker.png",
+                                                    false)));
+                                      }
                                     } else if (selectedOutlets
                                             .contains(element.value.id) ||
                                         widget.removePermPositions
