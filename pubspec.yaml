@@ -47,6 +47,11 @@ dependencies:
   super_tooltip: ^1.0.1
   shared_preferences:
   nepali_utils:
+  csv:
+  path_provider:
+  permission_handler:
+  excel:
+  filesystem_picker:
 
 
   # The following adds the Cupertino Icons font to your application.

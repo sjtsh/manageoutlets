@@ -416,6 +416,7 @@ class _MapScreenState extends State<MapScreen> {
                               controller: widget.controller,
                               builder: (context, transformer) {
                                 List<Widget> pathWidgets = [];
+                                List<Outlet> outletsDone = [];
                                 redPositions = widget.outletLatLng;
                                 final markerWidgets = [];
                                 if (widget.center != null) {
@@ -425,7 +426,14 @@ class _MapScreenState extends State<MapScreen> {
                                       selectedOutlets.add(element.id);
                                     }
                                   }
-
+                                  for (Distributor distributor
+                                      in widget.distributors) {
+                                    for (Beat beat in distributor.beats) {
+                                      for (Outlet outlet in beat.outlet) {
+                                        outletsDone.add(outlet);
+                                      }
+                                    }
+                                  }
                                   for (Beat beat
                                       in selectedDropDownItem.beats) {
                                     for (var element in beat.outlet) {
@@ -434,12 +442,20 @@ class _MapScreenState extends State<MapScreen> {
                                   }
                                   redPositions = [];
                                   rangeIndexes = [];
-                                  widget.outletLatLng
+                                  [...widget.outletLatLng, ...outletsDone]
                                       .asMap()
                                       .entries
                                       .forEach((element) {
                                     if (element.value.deactivated) {
-                                      if (widget.isDeactivated) {
+                                      if (widget.isDeactivated &&
+                                          GeolocatorPlatform.instance
+                                                  .distanceBetween(
+                                                      element.value.lat,
+                                                      element.value.lng,
+                                                      widget.center!.latitude,
+                                                      widget
+                                                          .center!.longitude) <
+                                              widget.redDistance) {
                                         markerWidgets.addAll([
                                           LatLng(element.value.lat,
                                               element.value.lng)

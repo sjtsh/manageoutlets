@@ -75,7 +75,8 @@ class ReviewBeat extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-                  Column(
+
+                  Expanded(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(beat.beatName.toString(),
@@ -93,8 +94,7 @@ class ReviewBeat extends StatelessWidget {
                         style: const TextStyle(color: Colors.white),
                       )
                     ],
-                  ),
-                  Expanded(child: Container()),
+                  ),),
                   PopupMenuButton(
                     itemBuilder: (context) {
                       return List.generate(

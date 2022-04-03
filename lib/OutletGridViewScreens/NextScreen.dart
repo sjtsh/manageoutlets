@@ -177,7 +177,7 @@ class _NextScreenState extends State<NextScreen> {
   doneFunction() {
     isValidate = false;
     for (var element in (tempBeat as Beat).outlet) {
-      if (element.outletName == "") {
+      if (element.outletName == "" ) {
         isValidate = true;
       }
     }

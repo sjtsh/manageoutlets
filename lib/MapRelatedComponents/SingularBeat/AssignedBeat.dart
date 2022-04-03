@@ -50,7 +50,8 @@ class AssignedBeat extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-                  Column(
+
+                  Expanded(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(beat.beatName.toString(),
@@ -66,8 +67,7 @@ class AssignedBeat extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       )
                     ],
-                  ),
-                  Expanded(child: Container()),
+                  ),),
                   PopupMenuButton(
                     itemBuilder: (context) {
                       return List.generate(
@@ -114,8 +114,8 @@ class AssignedBeat extends StatelessWidget {
                                 "Delete",
                                 "Cancel", () async {
                               await BeatService()
-                                  .deleteBeat(
-                                      beat.id, distributorID, setNewBeats, context)
+                                  .deleteBeat(beat.id, distributorID,
+                                      setNewBeats, context)
                                   .then((value) {
                                 if (value == true) {
                                   ScaffoldMessenger.of(context).showSnackBar(
