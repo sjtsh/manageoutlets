@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../BeforeMapScreens/GetOutletScreen.dart';
 import '../../DialogBox/backButtonAlert.dart';
 import '../../DialogBox/renameBeatNameDialog.dart';
 import '../../backend/Entities/Distributor.dart';
@@ -121,7 +122,9 @@ class AssignedBeat extends StatelessWidget {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                           content: Text(
-                                              "${beat.beatName} Beat deleted Successfully")));
+                                              "${beat.beatName} : Beat deleted Successfully")));
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (_)=>
+                                      GetOutletScreen(10000000000),));
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

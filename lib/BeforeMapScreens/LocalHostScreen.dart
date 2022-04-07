@@ -7,7 +7,7 @@ import 'GetOutletScreen.dart';
 class StartButtonIntent extends Intent{}
 class LocalHostScreen extends StatelessWidget {
   LocalHostScreen({Key? key}) : super(key: key);
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController controller = TextEditingController(text: localhost);
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class LocalHostScreen extends StatelessWidget {
                 width: 200,
                 child: TextField(
                   controller: controller,
-                  decoration: const InputDecoration(
+                  decoration:  InputDecoration(
                     contentPadding: EdgeInsets.fromLTRB(8, 0, 0, 8),
                     fillColor: Colors.white,
                     filled: true,
