@@ -5,6 +5,25 @@ import 'Entities/OutletsListEntity.dart';
 String localhost = "http://192.168.0.120:1000";
 
 List<Color> colorIndex = [
+Colors.transparent,
+  Color(0XFFB71C1C),
+  Color(0XFFF44336),
+  Color(0XFF4A148C),
+  Color(0XFFAED581),
+  Color(0XFFFF8A80),
+  Color(0XFFE040FB),
+  Color(0XFFAA00FF),
+  Color(0XFF9E9D24),
+  Color(0XFFFF1744),
+  Color(0XFF7986CB),
+  Color(0XFFB388FF),
+  Color(0XFFF06292),
+  Color(0XFF651FFF),
+  Color(0XFFE91E63),
+  Color(0XFF880E4F),
+  Color(0XFF304FFE),
+  Color(0XFFFF4081),
+
   Color(0XFF7B1FA2),
   Color(0XFF29B6F6),
   Color(0XFF1B5E20),
