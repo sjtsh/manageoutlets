@@ -35,9 +35,9 @@ class FilledShapePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
-      ..color = Colors.black.withOpacity(0.2)
-      ..strokeWidth = 2
-      ..style = PaintingStyle.fill
+      ..color = Colors.black.withOpacity(1)
+      ..strokeWidth = 6
+      ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
     var path = Path();

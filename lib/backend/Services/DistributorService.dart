@@ -20,7 +20,6 @@ class DistributorService {
         Response res = await http.get(
           Uri.parse("$localhost/distributor/"),
         );
-        print("distributors");
         if (res.statusCode == 200) {
           Map<String, dynamic> a = jsonDecode(res.body);
           List<Distributor> distributors = [];
@@ -52,15 +51,26 @@ class DistributorService {
     return [];
   }
 
-  Future<Distributor> createDistributor(String name) async {
-    Response res = await http
-        .post(Uri.parse("$localhost/distributor/create"), body: {"name": name});
+  Future<Distributor> createDistributor(
+      String name, List<LatLng> boundary) async {
+    Map<String, Map<String, String>> boundaries = {};
+    boundary.asMap().entries.forEach((element) {
+      boundaries[(element.key + 1).toString()] = {
+        "lat": element.value.latitude.toString(),
+        "lng": element.value.longitude.toString()
+      };
+    });
+    Response res = await http.post(
+      Uri.parse("$localhost/distributor/create"),
+      body: <String, dynamic>{"name": name, "boundary": boundaries.toString()},
+    );
+    print(boundaries);
     if (res.statusCode == 200) {
       String a = jsonDecode(res.body).toString();
       if (a == "false") {
         throw "Unsucessful";
       } else {
-        return Distributor(int.parse(a), name, [], []);
+        return Distributor(int.parse(a), name, [], boundary);
       }
     }
     throw "Unsucessful";
