@@ -26,7 +26,7 @@ class _CreateDistributorDialogBoxState
   TextEditingController newDistributorController = TextEditingController();
 
   List<LatLng> boundary = [];
-
+  bool isDisabled=false;
   String? path;
 
   @override
@@ -122,30 +122,41 @@ class _CreateDistributorDialogBoxState
                   color: Colors.green,
                   height: 60,
                   onPressed: () async {
-                    if (newDistributorController.text != "") {
-                      try {
-                        if (boundary.isNotEmpty) {
-                          Distributor dis = await DistributorService()
-                              .createDistributor(
-                                  newDistributorController.text, boundary);
-                          widget.addDistributor(dis);
-                          Navigator.pop(context);
-                        } else {
+                    if(!isDisabled){
+                      if (newDistributorController.text != "") {
+                        try {
+                          if (boundary.isNotEmpty) {
+                            setState(() {
+                              isDisabled = true;
+                            });
+                            Distributor dis = await DistributorService()
+                                .createDistributor(
+                                    newDistributorController.text, boundary);
+                            widget.addDistributor(dis);
+                            setState(() {
+                              isDisabled = false;
+                            });
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("Choose a gpx file")));
+                          }
+                        } catch (e) {
+                          print(e);
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Choose a gpx file")));
+                              SnackBar(content: Text("Unsuccessful")));
                         }
-                      } catch (e) {
-                      print(e);
+                      } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Unsuccessful")));
+                            SnackBar(content: Text("Fill in the field")));
                       }
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Fill in the field")));
                     }
+                    setState(() {
+                      isDisabled = false;
+                    });
                   },
                   child: Center(
-                    child: Text(
+                    child: isDisabled ?CircularProgressIndicator():Text(
                       "Confirm",
                       style: TextStyle(color: Colors.white),
                     ),

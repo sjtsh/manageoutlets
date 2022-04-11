@@ -55,10 +55,10 @@ class _AddBeatDialogBoxState extends State<AddBeatDialogBox> {
           await widget.addBeat(
             // Beat(textController.text, shortestPath(redPositions),
             //     color: colorIndex[widget.blueIndexes.length]),
-            Beat(textController.text, redPositions,
+            Beat(textController.text, redPositions,widget.selectedDropdownItem.distributorName,
                 color: colorIndex[widget.blueIndexes.length],
                 userID: selected!.id,
-                status: 1),
+                status: 1, ),
             widget.selectedDropdownItem.id,
           );
           // setTempRedRadius(0.0);

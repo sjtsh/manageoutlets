@@ -35,10 +35,10 @@ import 'SingularBeat/SyncButton.dart';
 
 class MapScreen extends StatefulWidget {
   final List<Outlet>
-      outletLatLng; //this is the all of the outlets that is visible
+  outletLatLng; //this is the all of the outlets that is visible
   final double redRadius; //this radius is the max point of the slider
   final LatLng?
-      center; // this the point from which the latlng will be calculated
+  center; // this the point from which the latlng will be calculated
   final Function setTempRedRadius;
   final controller;
   final List<Outlet> bluegreyIndexes;
@@ -55,25 +55,23 @@ class MapScreen extends StatefulWidget {
 
   final List<User> users;
 
-  MapScreen(
-    this.outletLatLng,
-    this.redRadius,
-    this.controller,
-    this.bluegreyIndexes,
-    this.redDistance,
-    this.setTempRedRadius,
-    this.center,
-    this.changeCenter,
-    this.distributors,
-    this.categories,
-    this.removePermPositions,
-    this.setRemovePermPositions,
-    this.isDeactivated,
-    this.changeDeactivated,
-    this.setDeactivated,
-    this.users,
-    this.addDistributor,
-  );
+  MapScreen(this.outletLatLng,
+      this.redRadius,
+      this.controller,
+      this.bluegreyIndexes,
+      this.redDistance,
+      this.setTempRedRadius,
+      this.center,
+      this.changeCenter,
+      this.distributors,
+      this.categories,
+      this.removePermPositions,
+      this.setRemovePermPositions,
+      this.isDeactivated,
+      this.changeDeactivated,
+      this.setDeactivated,
+      this.users,
+      this.addDistributor,);
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -91,13 +89,19 @@ class _MapScreenState extends State<MapScreen> {
   GlobalKey stackKey = GlobalKey();
   List<Outlet> redPositions = [];
   List<Outlet> rangeIndexes =
-      []; //temporary indexes, this one is according to the widget.center
+  []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
+  List<Outlet> nonDeactivatedOutlets = [];
 
   //ALL THESE ARE FOR GREEN SLIDERS
   List<LatLng> pathPoints = [];
-  bool isPathPointChoosing = false;
   List<Outlet> nearbyOutlets = []; // this is from the green slider
+
+  int isPathPointChoosing =
+  1; //false initially, 1 for populate, 2 for add, 3 for populate
+
+  List<Outlet> updatableOutlets = []; //for the blue slider
+
   double totalDistance = 0;
 
   int maxRedDistance = 2000;
@@ -107,111 +111,47 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  setNewBeats(
-    List<Beat> beats,
-    int distributorID,
-  ) {
-    Distributor distributor = widget.distributors
-        .firstWhere((element) => element.id == distributorID);
-    distributor.beats = beats;
-    selectedDropDownItem.beats = beats;
-    _changeDropDownValue(distributor);
-    setState(() {});
-  }
-
-  Future<void> addBeat(
-    Beat newBeat,
-    int distributorID,
-  ) async {
-    await UserService().assignOutlets(
-        [newBeat], distributorID, context, setNewBeats).then((value) {
-      if (value) {
-        setState(() {
-          isPathPointChoosing = !isPathPointChoosing;
-          pathPoints = [];
-          nearbyOutlets = [];
-        });
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Try Again")));
-      }
-    });
-  }
-
   Distributor selectedDropDownItem =
-      Distributor(-1, "Select Distributor", [], []);
-
-  void _changeDropDownValue(Distributor newValue) {
-    setState(() {
-      selectedDropDownItem = newValue;
-      for (int i = 0; i < selectedDropDownItem.beats.length; i++) {
-        selectedDropDownItem.beats[i].color = colorIndex[
-            (selectedDropDownItem.beats[i].id ?? 3) % (colorIndex.length - 1)];
-      }
-      if (localTransformer != null) {
-        if (selectedDropDownItem.boundary.isNotEmpty) {
-          widget.controller.center = selectedDropDownItem.boundary[0];
-        } else if (selectedDropDownItem.beats.isNotEmpty) {
-          Outlet outlet = selectedDropDownItem.beats
-              .firstWhere((element) => element.outlet.isNotEmpty)
-              .outlet[0];
-          widget.controller.center = LatLng(outlet.lat, outlet.lng);
-        }
-      }
-    });
-  }
-
-  Future<bool> renameBeat(Beat beat,
-      {Distributor? distributor, String? newBeatName}) async {
-    if (distributor == null) {
-      bool success = await DistributorService().updateDistributor(
-          beat, selectedDropDownItem, newBeatName ?? beat.beatName);
-      if (success) {
-        Beat name =
-            selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
-        setState(() => name.beatName = newBeatName ?? beat.beatName);
-        return success;
-      } else {
-        return success;
-      }
-    } else {
-      bool success = await DistributorService()
-          .updateDistributor(beat, distributor, newBeatName ?? beat.beatName);
-      if (success) {
-        Beat name =
-            selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
-        selectedDropDownItem.beats.removeWhere((element) => element == name);
-        name.beatName = newBeatName ?? beat.beatName;
-        widget.distributors
-            .firstWhere((element) => element.id == distributor.id)
-            .beats
-            .add(name);
-        setState(() {});
-        return success;
-      } else {
-        return success;
-      }
-    }
-  }
-
-  void _onDoubleTap() {
-    widget.controller.zoom += 0.5;
-    setState(() {});
-  }
-
-  void changeColor(
-    Color newColor,
-    Beat index,
-  ) {
-    setState(() {
-      selectedDropDownItem.beats
-          .firstWhere((element) => element == index)
-          .color = newColor;
-    });
-  }
+  Distributor(-1, "Select Distributor", [], []);
 
   Offset? _dragStart;
   double _scaleStart = 1.0;
+
+  void findOutletsInUpdatablePolygon() {
+    nonDeactivatedOutlets.addAll(updatableOutlets);
+    List<int> removables = [];
+    for (int z = 0; z < nonDeactivatedOutlets.length; z++) {
+      var x = nonDeactivatedOutlets[z].lat,
+          y = nonDeactivatedOutlets[z].lng;
+
+      var inside = false;
+      for (var i = 0, j = pathPoints.length - 1;
+      i < pathPoints.length;
+      j = i++) {
+        var xi = pathPoints[i].latitude,
+            yi = pathPoints[i].longitude;
+        var xj = pathPoints[j].latitude,
+            yj = pathPoints[j].longitude;
+
+        var intersect = ((yi > y) != (yj > y)) &&
+            (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+      }
+      if (inside) {
+        updatableOutlets.add(nonDeactivatedOutlets[z]);
+        removables.add(z);
+      }
+    }
+
+    for (var e in removables.reversed) {
+      nonDeactivatedOutlets.removeAt(e);
+    }
+    print(updatableOutlets.length);
+    List a = shortestPath(updatableOutlets);
+    updatableOutlets = a[0];
+    totalDistance = a[1] + 0.0;
+    setState(() {});
+  }
 
   void findOutletsInPolygon() {
     // if (pathPoints.isEmpty) setState(() => totalDistance = 0);
@@ -221,19 +161,23 @@ class _MapScreenState extends State<MapScreen> {
         selectedOutlets.add(element.id);
       }
     }
+
     redPositions.addAll(nearbyOutlets
         .where((element) => !selectedOutlets.contains(element.id)));
     nearbyOutlets = [];
     List<int> removables = [];
     for (int z = 0; z < redPositions.length; z++) {
-      var x = redPositions[z].lat, y = redPositions[z].lng;
+      var x = redPositions[z].lat,
+          y = redPositions[z].lng;
 
       var inside = false;
       for (var i = 0, j = pathPoints.length - 1;
-          i < pathPoints.length;
-          j = i++) {
-        var xi = pathPoints[i].latitude, yi = pathPoints[i].longitude;
-        var xj = pathPoints[j].latitude, yj = pathPoints[j].longitude;
+      i < pathPoints.length;
+      j = i++) {
+        var xi = pathPoints[i].latitude,
+            yi = pathPoints[i].longitude;
+        var xj = pathPoints[j].latitude,
+            yj = pathPoints[j].longitude;
 
         var intersect = ((yi > y) != (yj > y)) &&
             (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
@@ -254,46 +198,6 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  Widget _buildMarkerWidget(Offset pos, Color color, bool isLarge) {
-    return Positioned(
-      left: pos.dx - 16,
-      top: pos.dy - 16,
-      width: isLarge ? 50 : 24,
-      height: isLarge ? 50 : 24,
-      child: Icon(
-        Icons.location_on,
-        color: color,
-        size: 30,
-      ),
-    );
-  }
-
-  Widget _buildMarkerWidgetAddedDisabled(
-      Offset pos, String imgName, bool isLarge) {
-    return Positioned(
-      left: pos.dx - 16,
-      top: pos.dy - 16,
-      width: isLarge ? 50 : 24,
-      height: isLarge ? 50 : 24,
-      child: Image.asset(
-        imgName,
-        height: 24,
-        width: 24,
-      ),
-    );
-  }
-
-  Widget _buildDraggableMarkerWidget(transformer, LatLng element, int i) {
-    return DraggableMarker(transformer, true, Colors.green, element,
-        (LatLng? latLng) {
-      if (latLng != null) {
-        pathPoints[i] = latLng;
-        findOutletsInPolygon();
-        setState(() {});
-      }
-    }, stackKey);
-  }
-
   @override
   Widget build(BuildContext context) {
     return FocusableActionDetector(
@@ -302,14 +206,20 @@ class _MapScreenState extends State<MapScreen> {
         LogicalKeySet(LogicalKeyboardKey.numpadSubtract): MinusButtonIntent(),
         LogicalKeySet(LogicalKeyboardKey.numpadAdd): AddButtonIntent(),
         LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.f1):
-            AIntent(),
+        AIntent(),
         LogicalKeySet(LogicalKeyboardKey.shiftLeft): switchSelection(),
       },
       actions: {
         MinusButtonIntent: CallbackAction(
           onInvoke: (intent) {
             setState(() {
-              isPathPointChoosing = !isPathPointChoosing;
+              if (isPathPointChoosing == 3) {
+                isPathPointChoosing = 1;
+              } else if (isPathPointChoosing == 2) {
+                isPathPointChoosing = 3;
+              } else {
+                isPathPointChoosing = 2;
+              }
             });
           },
         ),
@@ -388,14 +298,24 @@ class _MapScreenState extends State<MapScreen> {
             // isPathPointChoosing = !isPathPointChoosing;
             // removeCenter = null;
             // setRemoveRedRadius(0.0);
-            isPathPointChoosing = !isPathPointChoosing;
+            setState(() {
+              if (isPathPointChoosing == 3) {
+                isPathPointChoosing = 1;
+              } else if (isPathPointChoosing == 2) {
+                isPathPointChoosing = 3;
+              } else {
+                isPathPointChoosing = 2;
+              }
+            });
           });
         })
       },
       child: Scaffold(
         backgroundColor: const Color(0xfff2f2f2),
         body: Builder(builder: (context) {
-          Size size = MediaQuery.of(context).size;
+          Size size = MediaQuery
+              .of(context)
+              .size;
           return Stack(
             children: [
               Row(
@@ -436,7 +356,7 @@ class _MapScreenState extends State<MapScreen> {
                                     }
                                   }
                                   for (Distributor distributor
-                                      in widget.distributors) {
+                                  in widget.distributors) {
                                     for (Beat beat in distributor.beats) {
                                       for (Outlet outlet in beat.outlet) {
                                         outletsDone.add(outlet);
@@ -444,13 +364,14 @@ class _MapScreenState extends State<MapScreen> {
                                     }
                                   }
                                   for (Beat beat
-                                      in selectedDropDownItem.beats) {
+                                  in selectedDropDownItem.beats) {
                                     for (var element in beat.outlet) {
                                       selectedOutlets.add(element.id);
                                     }
                                   }
                                   redPositions = [];
                                   rangeIndexes = [];
+                                  nonDeactivatedOutlets=[];
                                   [...widget.outletLatLng, ...outletsDone]
                                       .asMap()
                                       .entries
@@ -458,103 +379,135 @@ class _MapScreenState extends State<MapScreen> {
                                     if (element.value.deactivated) {
                                       if (widget.isDeactivated &&
                                           GeolocatorPlatform.instance
-                                                  .distanceBetween(
-                                                      element.value.lat,
-                                                      element.value.lng,
-                                                      widget.center!.latitude,
-                                                      widget
-                                                          .center!.longitude) <
+                                              .distanceBetween(
+                                              element.value.lat,
+                                              element.value.lng,
+                                              widget.center!.latitude,
+                                              widget
+                                                  .center!.longitude) <
                                               widget.redDistance) {
                                         markerWidgets.addAll([
                                           LatLng(element.value.lat,
                                               element.value.lng)
                                         ]
                                             .map(transformer
-                                                .fromLatLngToXYCoords)
+                                            .fromLatLngToXYCoords)
                                             .toList()
                                             .map((pos) =>
-                                                // _buildMarkerWidget(
-                                                // pos, Colors.brown, false),
-                                                _buildMarkerWidgetAddedDisabled(
-                                                    pos,
-                                                    "assets/disabled_marker.png",
-                                                    false)));
+                                        // _buildMarkerWidget(
+                                        // pos, Colors.brown, false),
+                                        _buildMarkerWidgetAddedDisabled(
+                                            pos,
+                                            "assets/disabled_marker.png",
+                                            false)));
                                       }
                                     } else if (selectedOutlets
-                                            .contains(element.value.id) ||
-                                        widget.removePermPositions
-                                            .contains(element.value)) {
-                                      // bluePositions.add(element.value
-                                    } else if (GeolocatorPlatform.instance
-                                            .distanceBetween(
-                                                element.value.lat,
-                                                element.value.lng,
-                                                widget.center!.latitude,
-                                                widget.center!.longitude) <
-                                        widget.redDistance) {
-                                      if (element.value.beatID != null) {
-                                        markerWidgets.addAll([
-                                          LatLng(element.value.lat,
-                                              element.value.lng)
-                                        ]
-                                            .map(transformer
+                                          .contains(element.value.id) ||
+                                          widget.removePermPositions
+                                              .contains(element.value)) {
+                                        // bluePositions.add(element.value
+                                      } else if (GeolocatorPlatform.instance
+                                          .distanceBetween(
+                                          element.value.lat,
+                                          element.value.lng,
+                                          widget.center!.latitude,
+                                          widget.center!.longitude) <
+                                          widget.redDistance) {
+                                        bool isAssigned = true;
+                                        if (updatableOutlets
+                                            .contains(element.value) &&
+                                            isPathPointChoosing == 3) {
+                                          markerWidgets.addAll(
+                                            [
+                                              LatLng(element.value.lat,
+                                                  element.value.lng)
+                                            ]
+                                                .map(transformer
                                                 .fromLatLngToXYCoords)
-                                            .toList()
-                                            .map(
-                                              (pos) =>
-                                                  _buildMarkerWidgetAddedDisabled(
-                                                      pos,
-                                                      "assets/done_marker_1.png",
-                                                      false),
-                                            ));
-                                      } else if (nearbyOutlets
-                                          .contains(element.value)) {
-                                        markerWidgets.addAll(
-                                          [
+                                                .toList()
+                                                .map(
+                                                  (pos) =>
+                                                  _buildMarkerWidget(
+                                                      pos, Colors.blue, false),
+                                            ),
+                                          );
+                                        }
+                                        else if (element.value.beatID != null) {
+                                          markerWidgets.addAll([
                                             LatLng(element.value.lat,
                                                 element.value.lng)
                                           ]
                                               .map(transformer
-                                                  .fromLatLngToXYCoords)
+                                              .fromLatLngToXYCoords)
                                               .toList()
                                               .map(
-                                                (pos) => _buildMarkerWidget(
-                                                    pos, Colors.blue, false),
-                                              ),
-                                        );
-                                      } else {
-                                        redPositions.add(element.value);
-                                        markerWidgets.addAll([
-                                          LatLng(element.value.lat,
-                                              element.value.lng)
-                                        ]
-                                            .map(transformer
+                                                (pos) =>
+                                                _buildMarkerWidgetAddedDisabled(
+                                                    pos,
+                                                    "assets/done_marker_1.png",
+                                                    false),
+                                          ));
+                                        } else if (nearbyOutlets
+                                            .contains(element.value) &&
+                                            isPathPointChoosing == 2) {
+                                          markerWidgets.addAll(
+                                            [
+                                              LatLng(element.value.lat,
+                                                  element.value.lng)
+                                            ]
+                                                .map(transformer
                                                 .fromLatLngToXYCoords)
-                                            .toList()
-                                            .map(
-                                              (pos) => _buildMarkerWidget(
-                                                  pos, Colors.red, false),
-                                            ));
+                                                .toList()
+                                                .map(
+                                                  (pos) =>
+                                                  _buildMarkerWidget(
+                                                      pos, Colors.blue, false),
+                                            ),
+                                          );
+                                        } else {
+                                          isAssigned = false;
+                                          redPositions.add(element.value);
+                                          markerWidgets.addAll([
+                                            LatLng(element.value.lat,
+                                                element.value.lng)
+                                          ]
+                                              .map(transformer
+                                              .fromLatLngToXYCoords)
+                                              .toList()
+                                              .map(
+                                                (pos) =>
+                                                _buildMarkerWidget(
+                                                    pos, Colors.red, false),
+                                          ));
+                                        }
+                                        if (isAssigned) {
+                                          nonDeactivatedOutlets
+                                              .add(element.value);
+                                        }
+
                                       }
-                                    }
+
                                   });
                                 }
+                                print("non dactivated" + nonDeactivatedOutlets.length.toString());
                                 for (int i = 0; i < blueIndexes.length; i++) {
                                   markerWidgets.addAll(
                                     List.generate(
-                                            blueIndexes[i].outlet.length,
-                                            (e) => LatLng(
+                                        blueIndexes[i].outlet.length,
+                                            (e) =>
+                                            LatLng(
                                                 blueIndexes[i].outlet[e].lat,
                                                 blueIndexes[i].outlet[e].lng))
                                         .map(transformer.fromLatLngToXYCoords)
                                         .toList()
                                         .map(
-                                          (pos) => _buildMarkerWidget(
+                                          (pos) =>
+                                          _buildMarkerWidget(
                                               pos,
                                               blueIndexes[i].color ??
                                                   Colors.blueGrey,
                                               false),
-                                        ),
+                                    ),
                                   );
                                 }
 
@@ -569,13 +522,14 @@ class _MapScreenState extends State<MapScreen> {
                                 }
 
                                 for (int i = 0;
-                                    i < selectedDropDownItem.beats.length;
-                                    i++) {
+                                i < selectedDropDownItem.beats.length;
+                                i++) {
                                   markerWidgets.addAll(
                                     List.generate(
-                                            selectedDropDownItem
-                                                .beats[i].outlet.length,
-                                            (e) => LatLng(
+                                        selectedDropDownItem
+                                            .beats[i].outlet.where((element) => nonDeactivatedOutlets.contains(element)).length,
+                                            (e) =>
+                                            LatLng(
                                                 selectedDropDownItem
                                                     .beats[i].outlet[e].lat,
                                                 selectedDropDownItem
@@ -583,13 +537,14 @@ class _MapScreenState extends State<MapScreen> {
                                         .map(transformer.fromLatLngToXYCoords)
                                         .toList()
                                         .map(
-                                          (pos) => _buildMarkerWidget(
+                                          (pos) =>
+                                          _buildMarkerWidget(
                                               pos,
                                               selectedDropDownItem
-                                                      .beats[i].color ??
+                                                  .beats[i].color ??
                                                   Colors.blueGrey,
                                               false),
-                                        ),
+                                    ),
                                   );
                                 }
 
@@ -599,6 +554,7 @@ class _MapScreenState extends State<MapScreen> {
                                         transformer, pathPoints[i], i),
                                   );
                                 }
+
                                 return GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onDoubleTap: _onDoubleTap,
@@ -626,24 +582,25 @@ class _MapScreenState extends State<MapScreen> {
                                     }
                                   },
                                   onTapUp: (details) {
-                                    if (!isPathPointChoosing) {
+                                    if (isPathPointChoosing == 1) {
                                       LatLng location =
-                                          transformer.fromXYCoordsToLatLng(
-                                              details.localPosition);
-
-                                      Offset clicked = transformer
-                                          .fromLatLngToXYCoords(location);
-                                      if (!isPathPointChoosing) {
+                                      transformer.fromXYCoordsToLatLng(
+                                          details.localPosition);
+                                      if (isPathPointChoosing == 1) {
                                         widget.changeCenter(location);
                                       }
                                     } else {
                                       LatLng location = transformer
                                           .fromXYCoordsToLatLng(Offset(
-                                              details.localPosition.dx,
-                                              details.localPosition.dy));
+                                          details.localPosition.dx,
+                                          details.localPosition.dy));
                                       if (widget.outletLatLng.isNotEmpty) {
                                         pathPoints.add(location);
-                                        findOutletsInPolygon();
+                                        if (isPathPointChoosing == 2) {
+                                          findOutletsInPolygon();
+                                        } else {
+                                          findOutletsInUpdatablePolygon();
+                                        }
                                         setState(() {});
                                       } else {}
                                     }
@@ -665,19 +622,21 @@ class _MapScreenState extends State<MapScreen> {
                                           controller: widget.controller,
                                           builder: (context, x, y, z) {
                                             final url =
-                                                'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sRoadmap!4e0!5m1!1e0!23i4111425';
+                                                'https://www.google.com/maps/vt/pb=!1m4!1m3!1i$z!2i$x!3i$y!2m3!1e0!2sm!3i420120488!3m7!2sen!5e1105!12m4!1e68!2m2!1sset!2sTerrain!4e0!5m1!1e0!23i4111425';
+                                            // final url = 'https://www.google.com/maps/vt/pb=!1m5!1m4!1i$z!2i$x!3i$y!4i128!2m2!1e0!3i597327680!3m7!2sen!3snp!5e1105!12m1!1e47!12m1!1e3!4e0!5m1!1e0!23i10204745';
+                                            // "https://www.google.com/maps/vt/staticmap?size=330x230&markers=size:tiny|color:green|31.80501,35.233979999999974&markers=size:tiny|color:red|31.80452,35.23406&visible=31.80501,35.233979999999974,31.80452,35.23406&path=color:0x0000ff|weight:3|31.805010000000003,35.23398|31.80487,35.23378|31.804790000000004,35.233740000000004|31.804740000000002,35.233740000000004|31.804690000000004,35.233760000000004|31.804630000000003,35.2338|31.804570000000002,35.233920000000005|31.804520000000004,35.23406&sensor=false";
                                             return CachedNetworkImage(
                                               imageUrl: url,
                                               fit: BoxFit.cover,
                                             );
+                                            return Image.network(url);
                                           },
                                         ),
                                         CustomPaint(
                                           painter: FilledShapePainter(
-                                              selectedDropDownItem
-                                                  .boundary
+                                              selectedDropDownItem.boundary
                                                   .map(transformer
-                                                      .fromLatLngToXYCoords)
+                                                  .fromLatLngToXYCoords)
                                                   .toList()),
                                         ),
                                         DragTarget(
@@ -685,10 +644,9 @@ class _MapScreenState extends State<MapScreen> {
                                               List<Object?> candidateData,
                                               List<dynamic> rejectedData) {
                                             return CustomPaint(
-
                                               painter: ShapePainter(pathPoints
                                                   .map(transformer
-                                                      .fromLatLngToXYCoords)
+                                                  .fromLatLngToXYCoords)
                                                   .toList()),
                                             );
                                           },
@@ -704,53 +662,41 @@ class _MapScreenState extends State<MapScreen> {
                                         Positioned(
                                           bottom: 20,
                                           left: 20,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                // isPathPointChoosing = !isPathPointChoosing;
-                                                // removeCenter = null;
-                                                // setRemoveRedRadius(0.0);
-                                                isPathPointChoosing =
-                                                    !isPathPointChoosing;
-                                              });
-                                            },
-                                            child: Focus(
-                                              autofocus: true,
-                                              child: Container(
-                                                height: 60,
-                                                width: 60,
-                                                decoration: BoxDecoration(
-                                                    color: isPathPointChoosing
-                                                        ? Colors.green
-                                                        : Colors.red,
-                                                    shape: BoxShape.circle),
-                                                child: const Icon(
-                                                  Icons.pattern_sharp,
-                                                  color: Colors.white,
-                                                ),
+                                          child: Container(
+                                            height: 50,
+                                            width: 200,
+                                            decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                border: Border.all(
+                                                    color: Colors.black)),
+                                            child: Center(
+                                              child: DropdownButton(
+                                                value: isPathPointChoosing,
+                                                items: const [1, 2, 3]
+                                                    .map((e) =>
+                                                    DropdownMenuItem(
+                                                      child: Text(
+                                                          itemAsString(e)
+                                                              .toString()),
+                                                      value: e,
+                                                    ))
+                                                    .toList(),
+                                                onChanged: (int? i) {
+                                                  if (i != null) {
+                                                    setState(() {
+                                                      isPathPointChoosing = i;
+                                                    });
+                                                  }
+                                                },
+                                                underline: Container(),
+                                                iconEnabledColor: Colors.white,
+                                                dropdownColor: Colors.green,
+                                                style: TextStyle(
+                                                    color: Colors.white),
                                               ),
                                             ),
                                           ),
                                         ),
-                                        // Positioned(
-                                        //     top: 20,
-                                        //     left: 20,
-                                        //     child: Container(
-                                        //       height: 50,
-                                        //       width:300,
-                                        //       color: Colors.white,
-                                        //       child: TextField(
-                                        //         decoration: InputDecoration(
-                                        //           prefixIcon: Icon(Icons.search),
-                                        //           hintText: " Outlet Name",
-                                        //           border: OutlineInputBorder(),
-                                        //
-                                        //         ),
-                                        //         onChanged: (text){
-                                        //           SearchOutlets(widget.bluegreyIndexes);
-                                        //         },
-                                        //       ),
-                                        //     ),),
                                       ],
                                     ),
                                   ),
@@ -759,47 +705,80 @@ class _MapScreenState extends State<MapScreen> {
                             ),
                           ),
                         ),
-                        isPathPointChoosing
+                        isPathPointChoosing == 1
                             ? Builder(builder: (context) {
-                                if (pathPoints.isEmpty) totalDistance = 0;
-                                return GreenSlider(
-                                    () {
-                                      setState(() {
-                                        pathPoints = [];
-                                        nearbyOutlets = [];
-                                      });
-                                    },
-                                    nearbyOutlets,
-                                    redPositions,
-                                    rangeIndexes,
-                                    blueIndexes,
-                                    widget.setTempRedRadius,
-                                    refresh,
-                                    () {
-                                      setState(() {
-                                        totalDistance = 0.0;
-                                        pathPoints = [];
-                                        nearbyOutlets = [];
-                                      });
-                                    },
-                                    addBeat,
-                                    totalDistance,
-                                    widget.users,
-                                    selectedDropDownItem);
-                              })
+                          return RedSlider(
+                              redPositions,
+                              widget.redDistance,
+                              widget.setTempRedRadius, () {
+                            setState(() {
+                              rangeIndexes = [];
+                              pathPoints = [];
+                              widget.setTempRedRadius(0.0);
+                              nearbyOutlets = [];
+                            });
+                          }, maxRedDistance);
+                        })
+                            : isPathPointChoosing == 2
+                            ? Builder(builder: (context) {
+                          if (pathPoints.isEmpty) totalDistance = 0;
+                          return GreenSlider(
+                                  () {
+                                setState(() {
+                                  pathPoints = [];
+                                  nearbyOutlets = [];
+                                });
+                              },
+                              nearbyOutlets,
+                              redPositions,
+                              rangeIndexes,
+                              blueIndexes,
+                              widget.setTempRedRadius,
+                              refresh,
+                                  () {
+                                setState(() {
+                                  totalDistance = 0.0;
+                                  pathPoints = [];
+                                  nearbyOutlets = [];
+                                });
+                              },
+                              addBeat,
+                              totalDistance,
+                              widget.users,
+                              selectedDropDownItem);
+                        })
                             : Builder(builder: (context) {
-                                return RedSlider(
-                                    redPositions,
-                                    widget.redDistance,
-                                    widget.setTempRedRadius, () {
-                                  setState(() {
-                                    rangeIndexes = [];
-                                    pathPoints = [];
-                                    widget.setTempRedRadius(0.0);
-                                    nearbyOutlets = [];
-                                  });
-                                }, maxRedDistance);
-                              }),
+                          if (pathPoints.isEmpty) totalDistance = 0;
+                          List<Beat> beats = [];
+                          for (var element in widget.distributors) {
+                            beats.addAll(element.beats);
+                          }
+                          return BlueSlider(
+                                  () {
+                                setState(() {
+                                  pathPoints = [];
+                                  updatableOutlets = [];
+                                });
+                              },
+                              updatableOutlets,
+                              redPositions,
+                              rangeIndexes,
+                              blueIndexes,
+                              widget.setTempRedRadius,
+                              refresh,
+                                  () {
+                                setState(() {
+                                  totalDistance = 0.0;
+                                  pathPoints = [];
+                                  updatableOutlets = [];
+                                });
+                              },
+                              addBeat,
+                              totalDistance,
+                              widget.users,
+                              selectedDropDownItem,
+                              beats);
+                        }),
                         const SizedBox(
                           height: 12,
                         ),
@@ -828,7 +807,7 @@ class _MapScreenState extends State<MapScreen> {
                       List<Widget> listOfBeatWidgets = [
                         ...List.generate(
                           beats.length,
-                          (int index) {
+                              (int index) {
                             return ReviewBeat(
                                 beats[index],
                                 changeColor,
@@ -846,7 +825,7 @@ class _MapScreenState extends State<MapScreen> {
                       List<Widget> listOfBeatWidgets2 = [
                         ...List.generate(
                           beats2.length,
-                          (int index) {
+                              (int index) {
                             return AssignedBeat(
                                 beats2[index],
                                 changeColor,
@@ -854,13 +833,13 @@ class _MapScreenState extends State<MapScreen> {
                                 renameBeat,
                                 widget.users,
                                 widget.distributors,
-                                selectedDropDownItem.id,
+                                selectedDropDownItem,
                                 setNewBeats);
                           },
                         ),
                         ...List.generate(
                           beats.length,
-                          (int index) {
+                              (int index) {
                             return ReviewBeat(
                                 beats[index],
                                 changeColor,
@@ -993,5 +972,139 @@ class _MapScreenState extends State<MapScreen> {
         }),
       ),
     );
+  }
+
+  void _changeDropDownValue(Distributor newValue) {
+    setState(() {
+      selectedDropDownItem = newValue;
+      for (int i = 0; i < selectedDropDownItem.beats.length; i++) {
+        selectedDropDownItem.beats[i].color = colorIndex[
+        (selectedDropDownItem.beats[i].id ?? 3) % (colorIndex.length - 1)];
+      }
+      if (localTransformer != null) {
+        if (selectedDropDownItem.boundary.isNotEmpty) {
+          widget.controller.center = selectedDropDownItem.boundary[0];
+        } else if (selectedDropDownItem.beats.isNotEmpty) {
+          Outlet outlet = selectedDropDownItem.beats
+              .firstWhere((element) => element.outlet.isNotEmpty)
+              .outlet[0];
+          widget.controller.center = LatLng(outlet.lat, outlet.lng);
+        }
+      }
+    });
+  }
+
+  Future<bool> renameBeat(Beat beat,
+      {Distributor? distributor, String? newBeatName}) async {
+    if (distributor == null) {
+      bool success = await DistributorService().updateDistributor(
+          beat, selectedDropDownItem, newBeatName ?? beat.beatName);
+      if (success) {
+        Beat name =
+        selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
+        setState(() => name.beatName = newBeatName ?? beat.beatName);
+        return success;
+      } else {
+        return success;
+      }
+    } else {
+      bool success = await DistributorService()
+          .updateDistributor(beat, distributor, newBeatName ?? beat.beatName);
+      if (success) {
+        Beat name =
+        selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
+        selectedDropDownItem.beats.removeWhere((element) => element == name);
+        name.beatName = newBeatName ?? beat.beatName;
+        widget.distributors
+            .firstWhere((element) => element.id == distributor.id)
+            .beats
+            .add(name);
+        setState(() {});
+        return success;
+      } else {
+        return success;
+      }
+    }
+  }
+
+  void _onDoubleTap() {
+    widget.controller.zoom += 0.5;
+    setState(() {});
+  }
+
+  void changeColor(Color newColor,
+      Beat index,) {
+    setState(() {
+      selectedDropDownItem.beats
+          .firstWhere((element) => element == index)
+          .color = newColor;
+    });
+  }
+
+  setNewBeats(List<Beat> beats,
+      int distributorID,) {
+    Distributor distributor = widget.distributors
+        .firstWhere((element) => element.id == distributorID);
+    distributor.beats = beats;
+    selectedDropDownItem.beats = beats;
+    _changeDropDownValue(distributor);
+    setState(() {});
+  }
+
+  Future<void> addBeat(Beat newBeat,
+      Distributor distributor,) async {
+    await UserService().assignOutlets(
+        [newBeat], distributor, context, setNewBeats).then((value) {
+      if (value) {
+        setState(() {
+          isPathPointChoosing = 1;
+          pathPoints = [];
+          nearbyOutlets = [];
+        });
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Try Again")));
+      }
+    });
+  }
+
+  Widget _buildMarkerWidget(Offset pos, Color color, bool isLarge) {
+    return Positioned(
+      left: pos.dx - 16,
+      top: pos.dy - 16,
+      width: isLarge ? 50 : 24,
+      height: isLarge ? 50 : 24,
+      child: Icon(
+        Icons.location_on,
+        color: color,
+        size: 30,
+      ),
+    );
+  }
+
+  Widget _buildMarkerWidgetAddedDisabled(Offset pos, String imgName,
+      bool isLarge) {
+    return Positioned(
+      left: pos.dx - 16,
+      top: pos.dy - 16,
+      width: isLarge ? 50 : 24,
+      height: isLarge ? 50 : 24,
+      child: Image.asset(
+        imgName,
+        height: 24,
+        width: 24,
+      ),
+    );
+  }
+
+  Widget _buildDraggableMarkerWidget(transformer, LatLng element, int i) {
+    return DraggableMarker(transformer, true, Colors.green, element,
+            (LatLng? latLng) {
+          if (latLng != null) {
+            pathPoints[i] = latLng;
+            findOutletsInPolygon();
+            setState(() {});
+          }
+        }, stackKey);
   }
 }

@@ -166,7 +166,7 @@ class _SyncButtonState extends State<SyncButton> with TickerProviderStateMixin {
                                               .substring(0, 19));
                                       try {
                                         List<Beat> beats = await BeatService()
-                                            .getBeat(widget.distributor.id, context);
+                                            .getBeat(widget.distributor, context);
                                         widget.setNewBeats(
                                             beats, widget.distributor.id);
                                       } catch (e) {

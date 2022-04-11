@@ -1,24 +1,42 @@
 import 'package:flutter/material.dart';
 
-class BlueSlider extends StatefulWidget {
-  final removePositions;
-  final redRemoveDistance;
-  final removePermPositions;
-  final Function setRemoveRedRadius;
-  final Function setRemovePermPositions;
+import '../DialogBox/UpdateBeatDialogBox.dart';
+import '../DialogBox/addBeatNameDialog.dart';
+import '../backend/Entities/Distributor.dart';
+import '../backend/Entities/Outlet.dart';
+import '../backend/Entities/OutletsListEntity.dart';
+import '../backend/Entities/User.dart';
+
+class BlueSlider extends StatelessWidget {
+  final List<Outlet> focusedOutlets;
+  final List<Outlet> visibleOutlets;
+  final Function clearFunction;
+  final List<Outlet> rangeIndexes;
+  final List<Beat> blueIndexes;
+  final Function setTempRedRadius;
+  final Function refresh;
+  final Function emptyNearbyOutlets;
+  final Function addBeat;
+  final double totalDistance;
+  final List<User> users;
+  final Distributor selectedDropdownItem;
+  final List<Beat> beats;
 
   BlueSlider(
-      this.removePositions,
-      this.redRemoveDistance,
-      this.removePermPositions,
-      this.setRemoveRedRadius,
-      this.setRemovePermPositions);
+      this.clearFunction,
+      this.focusedOutlets,
+      this.visibleOutlets,
+      this.rangeIndexes,
+      this.blueIndexes,
+      this.setTempRedRadius,
+      this.refresh,
+      this.emptyNearbyOutlets,
+      this.addBeat,
+      this.totalDistance,
+      this.users,
+      this.selectedDropdownItem,
+      this.beats);
 
-  @override
-  State<BlueSlider> createState() => _BlueSliderState();
-}
-
-class _BlueSliderState extends State<BlueSlider> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -38,43 +56,70 @@ class _BlueSliderState extends State<BlueSlider> {
       child: Column(
         children: [
           Text(
-            "${widget.removePositions.length.toString()} outlets found in ${widget.redRemoveDistance.toStringAsFixed(2)}m",
+            "${focusedOutlets.length.toString()} outlets with around ${totalDistance < 1000 ? "${totalDistance.toStringAsFixed(0)}m" : "${(totalDistance / 1000).toStringAsFixed(2)}km"} travel distance",
             style: const TextStyle(fontSize: 20),
+          ),
+          SizedBox(
+            height: 12,
           ),
           Row(
             children: [
+              Expanded(
+                child: Focus(
+                  autofocus: true,
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    height: 50,
+                    width: 100,
+                    decoration: BoxDecoration(
+                        color: Colors.blue,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                              offset: const Offset(0, 2),
+                              spreadRadius: 2,
+                              blurRadius: 2,
+                              color: Colors.black.withOpacity(0.1))
+                        ]),
+                    child: RawMaterialButton(
+                      onPressed: () {
+                        emptyNearbyOutlets();
+                        if (focusedOutlets.isNotEmpty) {
+                          showDialog(
+                              context: context,
+                              builder: (_) {
+                                return UpdateBeatDialogBox(
+                                    rangeIndexes,
+                                    blueIndexes,
+                                    focusedOutlets,
+                                    refresh,
+                                    addBeat,
+                                    beats,
+                                    selectedDropdownItem);
+                              });
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  duration: Duration(milliseconds: 500),
+                                  content: Text("Please select outlet")));
+                        }
+                      },
+                      child: const Center(
+                        child: Text(
+                          "UPDATE",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(
                 width: 12,
               ),
-              const Text("0 m"),
               Expanded(
-                child: Slider(
-                    activeColor: Colors.green,
-                    inactiveColor: Colors.green.withOpacity(0.5),
-                    thumbColor: Colors.green,
-                    value: widget.redRemoveDistance,
-                    max: 1000,
-                    min: 0,
-                    label: "${widget.redRemoveDistance.toStringAsFixed(2)}",
-                    onChanged: (double a) {
-                      widget.setRemoveRedRadius(a);
-                    }),
-              ),
-              const Text("1000 m"),
-              const SizedBox(
-                width: 12,
-              ),
-              const SizedBox(
-                width: 12,
-              ),
-              GestureDetector(
-                onTap: () {
-                  widget.setRemovePermPositions([
-                    ...widget.removePermPositions,
-                    ...widget.removePositions
-                  ]);
-                },
                 child: Container(
+                  clipBehavior: Clip.hardEdge,
                   height: 50,
                   width: 100,
                   decoration: BoxDecoration(
@@ -87,10 +132,15 @@ class _BlueSliderState extends State<BlueSlider> {
                             blurRadius: 2,
                             color: Colors.black.withOpacity(0.1))
                       ]),
-                  child: const Center(
-                    child: Text(
-                      "Remove",
-                      style: TextStyle(color: Colors.white),
+                  child: RawMaterialButton(
+                    onPressed: () {
+                      clearFunction();
+                    },
+                    child: const Center(
+                      child: Text(
+                        "CLEAR",
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ),

@@ -16,11 +16,11 @@ class AssignedBeat extends StatelessWidget {
   final Function renameBeat;
   final List<User> users;
   final List<Distributor> distributors;
-  final int distributorID;
+  final Distributor distributor;
   final Function setNewBeats;
 
   AssignedBeat(this.beat, this.changeColor, this.index, this.renameBeat,
-      this.users, this.distributors, this.distributorID, this.setNewBeats);
+      this.users, this.distributors, this.distributor, this.setNewBeats);
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class AssignedBeat extends StatelessWidget {
                                 "Delete",
                                 "Cancel", () async {
                               await BeatService()
-                                  .deleteBeat(beat.id, distributorID,
+                                  .deleteBeat(beat.id, distributor,
                                       setNewBeats, context)
                                   .then((value) {
                                 if (value == true) {

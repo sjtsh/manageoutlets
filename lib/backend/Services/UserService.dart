@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
 import 'package:http/http.dart' as http;
 
+import '../Entities/Distributor.dart';
 import '../Entities/Outlet.dart';
 import '../Entities/OutletsListEntity.dart';
 import '../Entities/User.dart';
@@ -14,11 +15,11 @@ import 'BeatService.dart';
 class UserService {
 
   Future<bool> assignOutlets(
-      List<Beat> beat, int distributorID, BuildContext context, Function setNewBeats) async { //only makes sense for one since a user id is there
+      List<Beat> beat, Distributor distributor, BuildContext context, Function setNewBeats) async { //only makes sense for one since a user id is there
     int statusCode = 200;
     for (var element in beat) {
       Map<String, dynamic> aJson = {};
-      aJson["distributor"] = distributorID.toString();
+      aJson["distributor"] = distributor.id.toString();
       aJson["beat"] = element.id.toString();
       aJson["user"] = element.userID.toString();
       aJson["beatName"] = element.beatName.toString();
@@ -37,8 +38,8 @@ class UserService {
     }
 
     if (statusCode == 200) {
-      List<Beat> beats = await BeatService().getBeat(distributorID, context);
-      setNewBeats(beats, distributorID);
+      List<Beat> beats = await BeatService().getBeat(distributor, context);
+      setNewBeats(beats, distributor);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("SUCCESSFUL"),
       ));

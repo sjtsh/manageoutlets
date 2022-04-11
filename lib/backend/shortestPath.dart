@@ -7,8 +7,18 @@ import 'package:latlng/latlng.dart';
 
 import 'Entities/Outlet.dart';
 
+String itemAsString(int? i) {
+  if (i == 1) {
+    return "Populate outlet";
+  } else if (i == 2) {
+    return "Create Beat";
+  } else {
+    return "Edit Beat";
+  }
+}
+
 List shortestPath(List<Outlet> outlets1) {
-  if(outlets1.isEmpty) return [<Outlet>[],0];
+  if (outlets1.isEmpty) return [<Outlet>[], 0];
 
   List<Outlet> outlets = outlets1;
   int head = 0;

@@ -102,6 +102,7 @@ class _NextScreenState extends State<NextScreen> {
       outlets.add(outlet);
     }
     tempBeat = Beat(widget.beat.beatName, outlets,
+        widget.dropdownSelectedItem.distributorName,
         id: widget.beat.id,
         color: widget.beat.color,
         userID: widget.beat.userID,
@@ -192,7 +193,7 @@ class _NextScreenState extends State<NextScreen> {
             });
             BeatService().updateOutlets(
                 [tempBeat!],
-                widget.dropdownSelectedItem.id,
+                widget.dropdownSelectedItem,
                 context,
                 widget.setNewBeats).then((value) {
               setState(() {

@@ -221,7 +221,7 @@ class _DetailedMapScreenRightPanelState
                               widget.changeColor,
                               index,
                               widget.renameBeat,
-                              widget.users, widget.distributors, widget.selectedDropDownItem.id,widget.setNewBeats);
+                              widget.users, widget.distributors, widget.selectedDropDownItem,widget.setNewBeats);
                         },
                       ),
                     ],

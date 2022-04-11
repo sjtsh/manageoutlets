@@ -35,7 +35,13 @@ class FilledShapePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
-      ..color = Colors.black.withOpacity(1)
+      ..color = Colors.black.withOpacity(0.2)
+      ..strokeWidth = 6
+      ..style = PaintingStyle.fill
+      ..strokeCap = StrokeCap.round;
+
+    var paint2 = Paint()
+      ..color = Colors.black.withOpacity(0.5)
       ..strokeWidth = 6
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -44,6 +50,7 @@ class FilledShapePainter extends CustomPainter {
     path.addPolygon(pathOffsets, true);
     // canvas.drawPath(path, paint);
     canvas.drawPath(path, paint);
+    canvas.drawPath(path, paint2);
   }
 
   @override
