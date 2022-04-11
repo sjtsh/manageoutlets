@@ -371,7 +371,6 @@ class _MapScreenState extends State<MapScreen> {
                                   }
                                   redPositions = [];
                                   rangeIndexes = [];
-                                  nonDeactivatedOutlets=[];
                                   [...widget.outletLatLng, ...outletsDone]
                                       .asMap()
                                       .entries
@@ -402,38 +401,36 @@ class _MapScreenState extends State<MapScreen> {
                                             false)));
                                       }
                                     } else if (selectedOutlets
-                                          .contains(element.value.id) ||
-                                          widget.removePermPositions
-                                              .contains(element.value)) {
-                                        // bluePositions.add(element.value
-                                      } else if (GeolocatorPlatform.instance
-                                          .distanceBetween(
-                                          element.value.lat,
-                                          element.value.lng,
-                                          widget.center!.latitude,
-                                          widget.center!.longitude) <
-                                          widget.redDistance) {
-                                        bool isAssigned = true;
-                                        if (updatableOutlets
-                                            .contains(element.value) &&
-                                            isPathPointChoosing == 3) {
-                                          markerWidgets.addAll(
-                                            [
-                                              LatLng(element.value.lat,
-                                                  element.value.lng)
-                                            ]
-                                                .map(transformer
-                                                .fromLatLngToXYCoords)
-                                                .toList()
-                                                .map(
-                                                  (pos) =>
-                                                  _buildMarkerWidget(
-                                                      pos, Colors.blue, false),
-                                            ),
-                                          );
-                                        }
-                                        else if (element.value.beatID != null) {
-                                          markerWidgets.addAll([
+                                        .contains(element.value.id) ||
+                                        widget.removePermPositions
+                                            .contains(element.value)) {
+                                      // bluePositions.add(element.value
+                                    } else if (GeolocatorPlatform.instance
+                                        .distanceBetween(
+                                        element.value.lat,
+                                        element.value.lng,
+                                        widget.center!.latitude,
+                                        widget.center!.longitude) <
+                                        widget.redDistance) {
+                                      if (element.value.beatID != null) {
+                                        markerWidgets.addAll([
+                                          LatLng(element.value.lat,
+                                              element.value.lng)
+                                        ]
+                                            .map(transformer
+                                            .fromLatLngToXYCoords)
+                                            .toList()
+                                            .map(
+                                              (pos) =>
+                                              _buildMarkerWidgetAddedDisabled(
+                                                  pos,
+                                                  "assets/done_marker_1.png",
+                                                  false),
+                                        ));
+                                      } else if (nearbyOutlets
+                                          .contains(element.value)) {
+                                        markerWidgets.addAll(
+                                          [
                                             LatLng(element.value.lat,
                                                 element.value.lng)
                                           ]
@@ -441,72 +438,42 @@ class _MapScreenState extends State<MapScreen> {
                                               .fromLatLngToXYCoords)
                                               .toList()
                                               .map(
-                                                (pos) =>
-                                                _buildMarkerWidgetAddedDisabled(
-                                                    pos,
-                                                    "assets/done_marker_1.png",
-                                                    false),
-                                          ));
-                                        } else if (nearbyOutlets
-                                            .contains(element.value) &&
-                                            isPathPointChoosing == 2) {
-                                          markerWidgets.addAll(
-                                            [
-                                              LatLng(element.value.lat,
-                                                  element.value.lng)
-                                            ]
-                                                .map(transformer
-                                                .fromLatLngToXYCoords)
-                                                .toList()
-                                                .map(
-                                                  (pos) =>
-                                                  _buildMarkerWidget(
-                                                      pos, Colors.blue, false),
-                                            ),
-                                          );
-                                        } else {
-                                          isAssigned = false;
-                                          redPositions.add(element.value);
-                                          markerWidgets.addAll([
-                                            LatLng(element.value.lat,
-                                                element.value.lng)
-                                          ]
-                                              .map(transformer
-                                              .fromLatLngToXYCoords)
-                                              .toList()
-                                              .map(
-                                                (pos) =>
-                                                _buildMarkerWidget(
-                                                    pos, Colors.red, false),
-                                          ));
-                                        }
-                                        if (isAssigned) {
-                                          nonDeactivatedOutlets
-                                              .add(element.value);
-                                        }
-
+                                                (pos) => _buildMarkerWidget(
+                                                pos, Colors.blue, false),
+                                          ),
+                                        );
+                                      } else {
+                                        redPositions.add(element.value);
+                                        markerWidgets.addAll([
+                                          LatLng(element.value.lat,
+                                              element.value.lng)
+                                        ]
+                                            .map(transformer
+                                            .fromLatLngToXYCoords)
+                                            .toList()
+                                            .map(
+                                              (pos) => _buildMarkerWidget(
+                                              pos, Colors.red, false),
+                                        ));
                                       }
-
+                                    }
                                   });
                                 }
-                                print("non dactivated" + nonDeactivatedOutlets.length.toString());
                                 for (int i = 0; i < blueIndexes.length; i++) {
                                   markerWidgets.addAll(
                                     List.generate(
                                         blueIndexes[i].outlet.length,
-                                            (e) =>
-                                            LatLng(
-                                                blueIndexes[i].outlet[e].lat,
-                                                blueIndexes[i].outlet[e].lng))
+                                            (e) => LatLng(
+                                            blueIndexes[i].outlet[e].lat,
+                                            blueIndexes[i].outlet[e].lng))
                                         .map(transformer.fromLatLngToXYCoords)
                                         .toList()
                                         .map(
-                                          (pos) =>
-                                          _buildMarkerWidget(
-                                              pos,
-                                              blueIndexes[i].color ??
-                                                  Colors.blueGrey,
-                                              false),
+                                          (pos) => _buildMarkerWidget(
+                                          pos,
+                                          blueIndexes[i].color ??
+                                              Colors.blueGrey,
+                                          false),
                                     ),
                                   );
                                 }
@@ -527,23 +494,21 @@ class _MapScreenState extends State<MapScreen> {
                                   markerWidgets.addAll(
                                     List.generate(
                                         selectedDropDownItem
-                                            .beats[i].outlet.where((element) => nonDeactivatedOutlets.contains(element)).length,
-                                            (e) =>
-                                            LatLng(
-                                                selectedDropDownItem
-                                                    .beats[i].outlet[e].lat,
-                                                selectedDropDownItem
-                                                    .beats[i].outlet[e].lng))
+                                            .beats[i].outlet.length,
+                                            (e) => LatLng(
+                                            selectedDropDownItem
+                                                .beats[i].outlet[e].lat,
+                                            selectedDropDownItem
+                                                .beats[i].outlet[e].lng))
                                         .map(transformer.fromLatLngToXYCoords)
                                         .toList()
                                         .map(
-                                          (pos) =>
-                                          _buildMarkerWidget(
-                                              pos,
-                                              selectedDropDownItem
-                                                  .beats[i].color ??
-                                                  Colors.blueGrey,
-                                              false),
+                                          (pos) => _buildMarkerWidget(
+                                          pos,
+                                          selectedDropDownItem
+                                              .beats[i].color ??
+                                              Colors.blueGrey,
+                                          false),
                                     ),
                                   );
                                 }
