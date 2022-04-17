@@ -101,6 +101,7 @@ class _MapScreenState extends State<MapScreen> {
   double totalDistance = 0;
 
   int maxRedDistance = 2000;
+  MapTransformer? localTransformer;
 
   void refresh() {
     setState(() {});
@@ -137,11 +138,8 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  Distributor selectedDropDownItem = Distributor(
-    -1,
-    "Select Distributor",
-    [],
-  );
+  Distributor selectedDropDownItem =
+      Distributor(-1, "Select Distributor", [], []);
 
   void _changeDropDownValue(Distributor newValue) {
     setState(() {
@@ -149,6 +147,16 @@ class _MapScreenState extends State<MapScreen> {
       for (int i = 0; i < selectedDropDownItem.beats.length; i++) {
         selectedDropDownItem.beats[i].color = colorIndex[
             (selectedDropDownItem.beats[i].id ?? 3) % (colorIndex.length - 1)];
+      }
+      if (localTransformer != null) {
+        if (selectedDropDownItem.boundary.isNotEmpty) {
+          widget.controller.center = selectedDropDownItem.boundary[0];
+        } else if (selectedDropDownItem.beats.isNotEmpty) {
+          Outlet outlet = selectedDropDownItem.beats
+              .firstWhere((element) => element.outlet.isNotEmpty)
+              .outlet[0];
+          widget.controller.center = LatLng(outlet.lat, outlet.lng);
+        }
       }
     });
   }
@@ -414,7 +422,8 @@ class _MapScreenState extends State<MapScreen> {
                             ),
                             child: MapLayoutBuilder(
                               controller: widget.controller,
-                              builder: (context, transformer) {
+                              builder: (context, MapTransformer transformer) {
+                                localTransformer = transformer;
                                 List<Widget> pathWidgets = [];
                                 List<Outlet> outletsDone = [];
                                 redPositions = widget.outletLatLng;
@@ -663,11 +672,20 @@ class _MapScreenState extends State<MapScreen> {
                                             );
                                           },
                                         ),
+                                        CustomPaint(
+                                          painter: FilledShapePainter(
+                                              selectedDropDownItem
+                                                  .boundary
+                                                  .map(transformer
+                                                      .fromLatLngToXYCoords)
+                                                  .toList()),
+                                        ),
                                         DragTarget(
                                           builder: (BuildContext context,
                                               List<Object?> candidateData,
                                               List<dynamic> rejectedData) {
                                             return CustomPaint(
+
                                               painter: ShapePainter(pathPoints
                                                   .map(transformer
                                                       .fromLatLngToXYCoords)

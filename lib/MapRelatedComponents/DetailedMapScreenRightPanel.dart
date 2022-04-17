@@ -1,6 +1,7 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart' as hi;
+import 'package:manage_outlets/DialogBox/CreateDistributorDialogBox.dart';
 import 'package:manage_outlets/DialogBox/renameBeatNameDialog.dart';
 import 'package:manage_outlets/MapRelatedComponents/SingularBeat/AssignedBeat.dart';
 import 'package:manage_outlets/MapRelatedComponents/SingularBeat/BeatWidgets.dart';
@@ -21,6 +22,7 @@ import '../backend/Entities/User.dart';
 import '../backend/Services/BeatService.dart';
 import '../backend/database.dart';
 import 'PopUpColors.dart';
+import 'package:latlng/latlng.dart';
 
 class DetailedMapScreenRightPanel extends StatefulWidget {
   final List<Category> categories;
@@ -61,7 +63,6 @@ class DetailedMapScreenRightPanel extends StatefulWidget {
 
 class _DetailedMapScreenRightPanelState
     extends State<DetailedMapScreenRightPanel> {
-  TextEditingController newDistributorController = TextEditingController();
   bool isDisabled = false;
 
   @override
@@ -173,72 +174,7 @@ class _DetailedMapScreenRightPanelState
                     showDialog(
                       context: context,
                       builder: (_) {
-                        return Center(
-                          child: Material(
-                            child: Container(
-                              height: 180,
-                              width: 300,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12.0),
-                                child: Column(
-                                  children: [
-                                    Text("CREATE DISTRIBUTOR", style: TextStyle(fontWeight: FontWeight.bold),),
-                                    SizedBox(height: 12,),
-                                    TextField(
-                                      controller: newDistributorController,
-                                      decoration: InputDecoration(
-                                        labelText: "Distributor's Name",
-                                          border: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                  color: Colors.black))),
-                                    ),
-                                    SizedBox(
-                                      height: 12,
-                                    ),
-                                    MaterialButton(
-                                      color: Colors.green,
-                                      height: 60,
-                                      onPressed: () async {
-                                        if (newDistributorController.text !=
-                                            "") {
-                                          try {
-                                            Distributor dis =
-                                                await DistributorService()
-                                                    .createDistributor(
-                                                        newDistributorController
-                                                            .text);
-                                            widget.addDistributor(dis);
-                                            Navigator.pop(context);
-                                          } catch (e) {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                                    content:
-                                                        Text("Unsuccessful")));
-                                          }
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                                  content: Text(
-                                                      "Fill in the field")));
-                                        }
-                                      },
-                                      child: Center(
-                                        child: Text(
-                                          "Confirm",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
+                        return CreateDistributorDialogBox(widget.addDistributor);
                       },
                     );
                   },

@@ -52,6 +52,7 @@ dependencies:
   permission_handler:
   excel:
   filesystem_picker:
+  gpx:
 
 
   # The following adds the Cupertino Icons font to your application.
