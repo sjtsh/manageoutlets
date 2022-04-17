@@ -115,13 +115,14 @@ class ConfirmedBeat extends StatelessWidget {
                   ),
                   IconButton(
                       onPressed: () async {
+                        print(index);
                         String distributorName = distributors
                             .firstWhere(
                                 (element) => element.beats[index].id == beat.id)
                             .toString();
                         List<String> disname = [distributorName + beat.beatName];
                         String fileName =
-                            "${distributorName} ${beat.beatName}.csv";
+                            "${distributorName}--- ${beat.beatName}.csv";
                         List<List<dynamic>> outletTocsv =
                             List.empty(growable: true);
                         outletTocsv.add(disname);
