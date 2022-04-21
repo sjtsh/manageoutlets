@@ -10,6 +10,8 @@ import 'package:file_picker/file_picker.dart';
 
 List<String> OutletColumnList = [
   "S.No.",//0
+ "Distributor Name",
+ "Beat Name"
   "Beat ID",//1
  " Outlet ID",//1
   "Outlet Name",//2
