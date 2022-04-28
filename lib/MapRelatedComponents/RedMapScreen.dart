@@ -148,6 +148,6 @@ class _RedMapScreenState extends State<RedMapScreen> {
         changeDeactivated,
         setDeactivated,
         widget.users,
-        addDistributor);
+        addDistributor,);
   }
 }

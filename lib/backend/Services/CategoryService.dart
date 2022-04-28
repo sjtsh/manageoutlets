@@ -17,7 +17,6 @@ class CategoryService{
         Response res = await http.get(
           Uri.parse("$localhost/category"),
         );
-        print("category");
         if (res.statusCode == 200) {
           Map<String, dynamic> a = jsonDecode(res.body);
 

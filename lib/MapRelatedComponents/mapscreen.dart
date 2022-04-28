@@ -16,9 +16,11 @@ import 'package:manage_outlets/Sliders/BlueSlider.dart';
 import 'package:manage_outlets/Sliders/GreenSlider.dart';
 import 'package:manage_outlets/Sliders/RedSlider.dart';
 import 'package:manage_outlets/backend/Entities/Category.dart';
+import 'package:manage_outlets/backend/Services/BeatService.dart';
 import 'package:manage_outlets/backend/database.dart';
 import 'package:manage_outlets/DialogBox/addBeatNameDialog.dart';
 import 'package:map/map.dart';
+import '../BeforeMapScreens/LocalHostScreen.dart';
 import '../backend/Entities/OutletsListEntity.dart';
 import '../backend/Entities/PathPoint.dart';
 import '../backend/Entities/User.dart';
@@ -35,10 +37,10 @@ import 'SingularBeat/SyncButton.dart';
 
 class MapScreen extends StatefulWidget {
   final List<Outlet>
-  outletLatLng; //this is the all of the outlets that is visible
+      outletLatLng; //this is the all of the outlets that is visible
   final double redRadius; //this radius is the max point of the slider
   final LatLng?
-  center; // this the point from which the latlng will be calculated
+      center; // this the point from which the latlng will be calculated
   final Function setTempRedRadius;
   final controller;
   final List<Outlet> bluegreyIndexes;
@@ -54,24 +56,25 @@ class MapScreen extends StatefulWidget {
   final Function addDistributor;
 
   final List<User> users;
-
-  MapScreen(this.outletLatLng,
-      this.redRadius,
-      this.controller,
-      this.bluegreyIndexes,
-      this.redDistance,
-      this.setTempRedRadius,
-      this.center,
-      this.changeCenter,
-      this.distributors,
-      this.categories,
-      this.removePermPositions,
-      this.setRemovePermPositions,
-      this.isDeactivated,
-      this.changeDeactivated,
-      this.setDeactivated,
-      this.users,
-      this.addDistributor,);
+  MapScreen(
+    this.outletLatLng,
+    this.redRadius,
+    this.controller,
+    this.bluegreyIndexes,
+    this.redDistance,
+    this.setTempRedRadius,
+    this.center,
+    this.changeCenter,
+    this.distributors,
+    this.categories,
+    this.removePermPositions,
+    this.setRemovePermPositions,
+    this.isDeactivated,
+    this.changeDeactivated,
+    this.setDeactivated,
+    this.users,
+    this.addDistributor,
+  );
 
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -89,7 +92,7 @@ class _MapScreenState extends State<MapScreen> {
   GlobalKey stackKey = GlobalKey();
   List<Outlet> redPositions = [];
   List<Outlet> rangeIndexes =
-  []; //temporary indexes, this one is according to the widget.center
+      []; //temporary indexes, this one is according to the widget.center
   List<Beat> blueIndexes = [];
   List<Outlet> nonDeactivatedOutlets = [];
 
@@ -98,7 +101,7 @@ class _MapScreenState extends State<MapScreen> {
   List<Outlet> nearbyOutlets = []; // this is from the green slider
 
   int isPathPointChoosing =
-  1; //false initially, 1 for populate, 2 for add, 3 for populate
+      1; //false initially, 1 for populate, 2 for add, 3 for populate
 
   List<Outlet> updatableOutlets = []; //for the blue slider
 
@@ -112,26 +115,23 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   Distributor selectedDropDownItem =
-  Distributor(-1, "Select Distributor", [], []);
+      Distributor(-1, "Select Distributor", [], []);
 
   Offset? _dragStart;
   double _scaleStart = 1.0;
 
   void findOutletsInUpdatablePolygon() {
-    nonDeactivatedOutlets.addAll(updatableOutlets);
+    updatableOutlets = [];
     List<int> removables = [];
     for (int z = 0; z < nonDeactivatedOutlets.length; z++) {
-      var x = nonDeactivatedOutlets[z].lat,
-          y = nonDeactivatedOutlets[z].lng;
+      var x = nonDeactivatedOutlets[z].lat, y = nonDeactivatedOutlets[z].lng;
 
       var inside = false;
       for (var i = 0, j = pathPoints.length - 1;
-      i < pathPoints.length;
-      j = i++) {
-        var xi = pathPoints[i].latitude,
-            yi = pathPoints[i].longitude;
-        var xj = pathPoints[j].latitude,
-            yj = pathPoints[j].longitude;
+          i < pathPoints.length;
+          j = i++) {
+        var xi = pathPoints[i].latitude, yi = pathPoints[i].longitude;
+        var xj = pathPoints[j].latitude, yj = pathPoints[j].longitude;
 
         var intersect = ((yi > y) != (yj > y)) &&
             (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
@@ -142,11 +142,9 @@ class _MapScreenState extends State<MapScreen> {
         removables.add(z);
       }
     }
-
     for (var e in removables.reversed) {
       nonDeactivatedOutlets.removeAt(e);
     }
-    print(updatableOutlets.length);
     List a = shortestPath(updatableOutlets);
     updatableOutlets = a[0];
     totalDistance = a[1] + 0.0;
@@ -167,17 +165,14 @@ class _MapScreenState extends State<MapScreen> {
     nearbyOutlets = [];
     List<int> removables = [];
     for (int z = 0; z < redPositions.length; z++) {
-      var x = redPositions[z].lat,
-          y = redPositions[z].lng;
+      var x = redPositions[z].lat, y = redPositions[z].lng;
 
       var inside = false;
       for (var i = 0, j = pathPoints.length - 1;
-      i < pathPoints.length;
-      j = i++) {
-        var xi = pathPoints[i].latitude,
-            yi = pathPoints[i].longitude;
-        var xj = pathPoints[j].latitude,
-            yj = pathPoints[j].longitude;
+          i < pathPoints.length;
+          j = i++) {
+        var xi = pathPoints[i].latitude, yi = pathPoints[i].longitude;
+        var xj = pathPoints[j].latitude, yj = pathPoints[j].longitude;
 
         var intersect = ((yi > y) != (yj > y)) &&
             (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
@@ -206,7 +201,7 @@ class _MapScreenState extends State<MapScreen> {
         LogicalKeySet(LogicalKeyboardKey.numpadSubtract): MinusButtonIntent(),
         LogicalKeySet(LogicalKeyboardKey.numpadAdd): AddButtonIntent(),
         LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.f1):
-        AIntent(),
+            AIntent(),
         LogicalKeySet(LogicalKeyboardKey.shiftLeft): switchSelection(),
       },
       actions: {
@@ -313,9 +308,7 @@ class _MapScreenState extends State<MapScreen> {
       child: Scaffold(
         backgroundColor: const Color(0xfff2f2f2),
         body: Builder(builder: (context) {
-          Size size = MediaQuery
-              .of(context)
-              .size;
+          Size size = MediaQuery.of(context).size;
           return Stack(
             children: [
               Row(
@@ -348,6 +341,7 @@ class _MapScreenState extends State<MapScreen> {
                                 List<Outlet> outletsDone = [];
                                 redPositions = widget.outletLatLng;
                                 final markerWidgets = [];
+                                List<Widget> toBeAdded = [];
                                 if (widget.center != null) {
                                   List<String> selectedOutlets = [];
                                   for (Beat beat in blueIndexes) {
@@ -356,7 +350,7 @@ class _MapScreenState extends State<MapScreen> {
                                     }
                                   }
                                   for (Distributor distributor
-                                  in widget.distributors) {
+                                      in widget.distributors) {
                                     for (Beat beat in distributor.beats) {
                                       for (Outlet outlet in beat.outlet) {
                                         outletsDone.add(outlet);
@@ -364,13 +358,14 @@ class _MapScreenState extends State<MapScreen> {
                                     }
                                   }
                                   for (Beat beat
-                                  in selectedDropDownItem.beats) {
+                                      in selectedDropDownItem.beats) {
                                     for (var element in beat.outlet) {
                                       selectedOutlets.add(element.id);
                                     }
                                   }
                                   redPositions = [];
                                   rangeIndexes = [];
+                                  nonDeactivatedOutlets = [];
                                   [...widget.outletLatLng, ...outletsDone]
                                       .asMap()
                                       .entries
@@ -378,83 +373,118 @@ class _MapScreenState extends State<MapScreen> {
                                     if (element.value.deactivated) {
                                       if (widget.isDeactivated &&
                                           GeolocatorPlatform.instance
-                                              .distanceBetween(
-                                              element.value.lat,
-                                              element.value.lng,
-                                              widget.center!.latitude,
-                                              widget
-                                                  .center!.longitude) <
+                                                  .distanceBetween(
+                                                      element.value.lat,
+                                                      element.value.lng,
+                                                      widget.center!.latitude,
+                                                      widget
+                                                          .center!.longitude) <
                                               widget.redDistance) {
                                         markerWidgets.addAll([
                                           LatLng(element.value.lat,
                                               element.value.lng)
                                         ]
                                             .map(transformer
-                                            .fromLatLngToXYCoords)
+                                                .fromLatLngToXYCoords)
                                             .toList()
                                             .map((pos) =>
-                                        // _buildMarkerWidget(
-                                        // pos, Colors.brown, false),
-                                        _buildMarkerWidgetAddedDisabled(
-                                            pos,
-                                            "assets/disabled_marker.png",
-                                            false)));
+                                                // _buildMarkerWidget(
+                                                // pos, Colors.brown, false),
+                                                _buildMarkerWidgetAddedDisabled(
+                                                    pos,
+                                                    "assets/disabled_marker.png",
+                                                    false)));
                                       }
-                                    } else if (selectedOutlets
-                                        .contains(element.value.id) ||
-                                        widget.removePermPositions
-                                            .contains(element.value)) {
-                                      // bluePositions.add(element.value
-                                    } else if (GeolocatorPlatform.instance
-                                        .distanceBetween(
-                                        element.value.lat,
-                                        element.value.lng,
-                                        widget.center!.latitude,
-                                        widget.center!.longitude) <
-                                        widget.redDistance) {
-                                      if (element.value.beatID != null) {
-                                        markerWidgets.addAll([
-                                          LatLng(element.value.lat,
-                                              element.value.lng)
-                                        ]
-                                            .map(transformer
-                                            .fromLatLngToXYCoords)
-                                            .toList()
-                                            .map(
-                                              (pos) =>
-                                              _buildMarkerWidgetAddedDisabled(
-                                                  pos,
-                                                  "assets/done_marker_1.png",
-                                                  false),
-                                        ));
-                                      } else if (nearbyOutlets
-                                          .contains(element.value)) {
-                                        markerWidgets.addAll(
+                                    } else {
+                                      if (GeolocatorPlatform.instance
+                                              .distanceBetween(
+                                                  element.value.lat,
+                                                  element.value.lng,
+                                                  widget.center!.latitude,
+                                                  widget.center!.longitude) <
+                                          widget.redDistance) {
+                                        nonDeactivatedOutlets
+                                            .add(element.value);
+                                      }
+                                      bool doesUpdatableOutletsContains = false;
+                                      for (var outlet in updatableOutlets) {
+                                        if (outlet.id == element.value.id) {
+                                          doesUpdatableOutletsContains = true;
+                                          break;
+                                        }
+                                      }
+                                      if (doesUpdatableOutletsContains &&
+                                          isPathPointChoosing == 3) {
+                                        toBeAdded.addAll(
                                           [
                                             LatLng(element.value.lat,
                                                 element.value.lng)
                                           ]
                                               .map(transformer
-                                              .fromLatLngToXYCoords)
+                                                  .fromLatLngToXYCoords)
                                               .toList()
                                               .map(
                                                 (pos) => _buildMarkerWidget(
-                                                pos, Colors.blue, false),
-                                          ),
+                                                    pos, Colors.blue, false),
+                                              ),
                                         );
-                                      } else {
-                                        redPositions.add(element.value);
-                                        markerWidgets.addAll([
-                                          LatLng(element.value.lat,
-                                              element.value.lng)
-                                        ]
-                                            .map(transformer
-                                            .fromLatLngToXYCoords)
-                                            .toList()
-                                            .map(
-                                              (pos) => _buildMarkerWidget(
-                                              pos, Colors.red, false),
-                                        ));
+                                      } else if (selectedOutlets
+                                              .contains(element.value.id) ||
+                                          widget.removePermPositions
+                                              .contains(element.value)) {
+                                        // bluePositions.add(element.value
+                                      } else if (GeolocatorPlatform.instance
+                                              .distanceBetween(
+                                                  element.value.lat,
+                                                  element.value.lng,
+                                                  widget.center!.latitude,
+                                                  widget.center!.longitude) <
+                                          widget.redDistance) {
+                                        if (element.value.beatID != null) {
+                                          markerWidgets.addAll([
+                                            LatLng(element.value.lat,
+                                                element.value.lng)
+                                          ]
+                                              .map(transformer
+                                                  .fromLatLngToXYCoords)
+                                              .toList()
+                                              .map(
+                                                (pos) =>
+                                                    _buildMarkerWidgetAddedDisabled(
+                                                        pos,
+                                                        "assets/done_marker_1.png",
+                                                        false),
+                                              ));
+                                        } else if (nearbyOutlets
+                                                .contains(element.value) &&
+                                            isPathPointChoosing == 2) {
+                                          toBeAdded.addAll(
+                                            [
+                                              LatLng(element.value.lat,
+                                                  element.value.lng)
+                                            ]
+                                                .map(transformer
+                                                    .fromLatLngToXYCoords)
+                                                .toList()
+                                                .map(
+                                                  (pos) => _buildMarkerWidget(
+                                                      pos, Colors.blue, false),
+                                                ),
+                                          );
+                                        } else {
+                                          redPositions.add(element.value);
+                                          markerWidgets.addAll([
+                                            LatLng(element.value.lat,
+                                                element.value.lng)
+                                          ]
+                                              .map(transformer
+                                                  .fromLatLngToXYCoords)
+                                              .toList()
+                                              .map(
+                                                (pos) => _buildMarkerWidget(
+                                                    pos, Colors.red, false),
+                                              ));
+                                        }
                                       }
                                     }
                                   });
@@ -462,19 +492,19 @@ class _MapScreenState extends State<MapScreen> {
                                 for (int i = 0; i < blueIndexes.length; i++) {
                                   markerWidgets.addAll(
                                     List.generate(
-                                        blueIndexes[i].outlet.length,
+                                            blueIndexes[i].outlet.length,
                                             (e) => LatLng(
-                                            blueIndexes[i].outlet[e].lat,
-                                            blueIndexes[i].outlet[e].lng))
+                                                blueIndexes[i].outlet[e].lat,
+                                                blueIndexes[i].outlet[e].lng))
                                         .map(transformer.fromLatLngToXYCoords)
                                         .toList()
                                         .map(
                                           (pos) => _buildMarkerWidget(
-                                          pos,
-                                          blueIndexes[i].color ??
-                                              Colors.blueGrey,
-                                          false),
-                                    ),
+                                              pos,
+                                              blueIndexes[i].color ??
+                                                  Colors.blueGrey,
+                                              false),
+                                        ),
                                   );
                                 }
 
@@ -487,29 +517,38 @@ class _MapScreenState extends State<MapScreen> {
                                   homeMarkerWidget = _buildMarkerWidget(
                                       homeLocation, Colors.black, true);
                                 }
-
                                 for (int i = 0;
-                                i < selectedDropDownItem.beats.length;
-                                i++) {
+                                    i < selectedDropDownItem.beats.length;
+                                    i++) {
+                                  List<Outlet> outlets = [];
+                                  for (var element
+                                      in selectedDropDownItem.beats[i].outlet) {
+                                    bool doesUpdatableOutletsContains = false;
+                                    for (var outlet in updatableOutlets) {
+                                      if (outlet.id == element.id) {
+                                        doesUpdatableOutletsContains = true;
+                                        break;
+                                      }
+                                    }
+                                    if (!doesUpdatableOutletsContains) {
+                                      outlets.add(element);
+                                    }
+                                  }
                                   markerWidgets.addAll(
                                     List.generate(
-                                        selectedDropDownItem
-                                            .beats[i].outlet.length,
+                                            outlets.length,
                                             (e) => LatLng(
-                                            selectedDropDownItem
-                                                .beats[i].outlet[e].lat,
-                                            selectedDropDownItem
-                                                .beats[i].outlet[e].lng))
+                                                outlets[e].lat, outlets[e].lng))
                                         .map(transformer.fromLatLngToXYCoords)
                                         .toList()
                                         .map(
                                           (pos) => _buildMarkerWidget(
-                                          pos,
-                                          selectedDropDownItem
-                                              .beats[i].color ??
-                                              Colors.blueGrey,
-                                          false),
-                                    ),
+                                              pos,
+                                              selectedDropDownItem
+                                                      .beats[i].color ??
+                                                  Colors.blueGrey,
+                                              false),
+                                        ),
                                   );
                                 }
 
@@ -519,7 +558,6 @@ class _MapScreenState extends State<MapScreen> {
                                         transformer, pathPoints[i], i),
                                   );
                                 }
-
                                 return GestureDetector(
                                   behavior: HitTestBehavior.opaque,
                                   onDoubleTap: _onDoubleTap,
@@ -549,25 +587,29 @@ class _MapScreenState extends State<MapScreen> {
                                   onTapUp: (details) {
                                     if (isPathPointChoosing == 1) {
                                       LatLng location =
-                                      transformer.fromXYCoordsToLatLng(
-                                          details.localPosition);
+                                          transformer.fromXYCoordsToLatLng(
+                                              details.localPosition);
                                       if (isPathPointChoosing == 1) {
                                         widget.changeCenter(location);
                                       }
                                     } else {
                                       LatLng location = transformer
                                           .fromXYCoordsToLatLng(Offset(
-                                          details.localPosition.dx,
-                                          details.localPosition.dy));
-                                      if (widget.outletLatLng.isNotEmpty) {
-                                        pathPoints.add(location);
-                                        if (isPathPointChoosing == 2) {
+                                              details.localPosition.dx,
+                                              details.localPosition.dy));
+                                      if (isPathPointChoosing == 2) {
+                                        if (widget.outletLatLng.isNotEmpty) {
+                                          pathPoints.add(location);
                                           findOutletsInPolygon();
-                                        } else {
-                                          findOutletsInUpdatablePolygon();
+                                          setState(() {});
                                         }
-                                        setState(() {});
-                                      } else {}
+                                      }
+
+                                      if (isPathPointChoosing == 3) {
+                                          pathPoints.add(location);
+                                          findOutletsInUpdatablePolygon();
+                                          setState(() {});
+                                        }
                                     }
                                   },
                                   child: Listener(
@@ -601,7 +643,7 @@ class _MapScreenState extends State<MapScreen> {
                                           painter: FilledShapePainter(
                                               selectedDropDownItem.boundary
                                                   .map(transformer
-                                                  .fromLatLngToXYCoords)
+                                                      .fromLatLngToXYCoords)
                                                   .toList()),
                                         ),
                                         DragTarget(
@@ -611,7 +653,7 @@ class _MapScreenState extends State<MapScreen> {
                                             return CustomPaint(
                                               painter: ShapePainter(pathPoints
                                                   .map(transformer
-                                                  .fromLatLngToXYCoords)
+                                                      .fromLatLngToXYCoords)
                                                   .toList()),
                                             );
                                           },
@@ -624,6 +666,7 @@ class _MapScreenState extends State<MapScreen> {
                                             : Container(),
                                         ...markerWidgets,
                                         ...pathWidgets,
+                                        ...toBeAdded,
                                         Positioned(
                                           bottom: 20,
                                           left: 20,
@@ -639,12 +682,12 @@ class _MapScreenState extends State<MapScreen> {
                                                 value: isPathPointChoosing,
                                                 items: const [1, 2, 3]
                                                     .map((e) =>
-                                                    DropdownMenuItem(
-                                                      child: Text(
-                                                          itemAsString(e)
-                                                              .toString()),
-                                                      value: e,
-                                                    ))
+                                                        DropdownMenuItem(
+                                                          child: Text(
+                                                              itemAsString(e)
+                                                                  .toString()),
+                                                          value: e,
+                                                        ))
                                                     .toList(),
                                                 onChanged: (int? i) {
                                                   if (i != null) {
@@ -672,78 +715,79 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                         isPathPointChoosing == 1
                             ? Builder(builder: (context) {
-                          return RedSlider(
-                              redPositions,
-                              widget.redDistance,
-                              widget.setTempRedRadius, () {
-                            setState(() {
-                              rangeIndexes = [];
-                              pathPoints = [];
-                              widget.setTempRedRadius(0.0);
-                              nearbyOutlets = [];
-                            });
-                          }, maxRedDistance);
-                        })
+                                return RedSlider(
+                                    redPositions,
+                                    widget.redDistance,
+                                    widget.setTempRedRadius, () {
+                                  setState(() {
+                                    rangeIndexes = [];
+                                    pathPoints = [];
+                                    widget.setTempRedRadius(0.0);
+                                    nearbyOutlets = [];
+                                  });
+                                }, maxRedDistance);
+                              })
                             : isPathPointChoosing == 2
-                            ? Builder(builder: (context) {
-                          if (pathPoints.isEmpty) totalDistance = 0;
-                          return GreenSlider(
-                                  () {
-                                setState(() {
-                                  pathPoints = [];
-                                  nearbyOutlets = [];
-                                });
-                              },
-                              nearbyOutlets,
-                              redPositions,
-                              rangeIndexes,
-                              blueIndexes,
-                              widget.setTempRedRadius,
-                              refresh,
-                                  () {
-                                setState(() {
-                                  totalDistance = 0.0;
-                                  pathPoints = [];
-                                  nearbyOutlets = [];
-                                });
-                              },
-                              addBeat,
-                              totalDistance,
-                              widget.users,
-                              selectedDropDownItem);
-                        })
-                            : Builder(builder: (context) {
-                          if (pathPoints.isEmpty) totalDistance = 0;
-                          List<Beat> beats = [];
-                          for (var element in widget.distributors) {
-                            beats.addAll(element.beats);
-                          }
-                          return BlueSlider(
-                                  () {
-                                setState(() {
-                                  pathPoints = [];
-                                  updatableOutlets = [];
-                                });
-                              },
-                              updatableOutlets,
-                              redPositions,
-                              rangeIndexes,
-                              blueIndexes,
-                              widget.setTempRedRadius,
-                              refresh,
-                                  () {
-                                setState(() {
-                                  totalDistance = 0.0;
-                                  pathPoints = [];
-                                  updatableOutlets = [];
-                                });
-                              },
-                              addBeat,
-                              totalDistance,
-                              widget.users,
-                              selectedDropDownItem,
-                              beats);
-                        }),
+                                ? Builder(builder: (context) {
+                                    if (pathPoints.isEmpty) totalDistance = 0;
+                                    return GreenSlider(
+                                        () {
+                                          setState(() {
+                                            pathPoints = [];
+                                            nearbyOutlets = [];
+                                          });
+                                        },
+                                        nearbyOutlets,
+                                        redPositions,
+                                        rangeIndexes,
+                                        blueIndexes,
+                                        widget.setTempRedRadius,
+                                        refresh,
+                                        () {
+                                          setState(() {
+                                            totalDistance = 0.0;
+                                            pathPoints = [];
+                                            nearbyOutlets = [];
+                                          });
+                                        },
+                                        addBeat,
+                                        totalDistance,
+                                        widget.users,
+                                        selectedDropDownItem);
+                                  })
+                                : Builder(builder: (context) {
+                                    if (pathPoints.isEmpty) totalDistance = 0;
+                                    List<Beat> beats = [];
+                                    for (var element in widget.distributors) {
+                                      beats.addAll(element.beats);
+                                    }
+                                    return BlueSlider(
+                                        () {
+                                          setState(() {
+                                            pathPoints = [];
+                                            updatableOutlets = [];
+                                          });
+                                        },
+                                        updatableOutlets,
+                                        redPositions,
+                                        rangeIndexes,
+                                        blueIndexes,
+                                        widget.setTempRedRadius,
+                                        refresh,
+                                        () {
+                                          setState(() {
+                                            totalDistance = 0.0;
+                                            pathPoints = [];
+                                            updatableOutlets = [];
+                                          });
+                                        },
+                                        addBeat,
+                                        totalDistance,
+                                        widget.users,
+                                        selectedDropDownItem,
+                                        beats,
+                                        updateOutletsToNewBeat);
+                                  }),
                         const SizedBox(
                           height: 12,
                         ),
@@ -772,7 +816,7 @@ class _MapScreenState extends State<MapScreen> {
                       List<Widget> listOfBeatWidgets = [
                         ...List.generate(
                           beats.length,
-                              (int index) {
+                          (int index) {
                             return ReviewBeat(
                                 beats[index],
                                 changeColor,
@@ -790,7 +834,7 @@ class _MapScreenState extends State<MapScreen> {
                       List<Widget> listOfBeatWidgets2 = [
                         ...List.generate(
                           beats2.length,
-                              (int index) {
+                          (int index) {
                             return AssignedBeat(
                                 beats2[index],
                                 changeColor,
@@ -804,7 +848,7 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                         ...List.generate(
                           beats.length,
-                              (int index) {
+                          (int index) {
                             return ReviewBeat(
                                 beats[index],
                                 changeColor,
@@ -944,7 +988,7 @@ class _MapScreenState extends State<MapScreen> {
       selectedDropDownItem = newValue;
       for (int i = 0; i < selectedDropDownItem.beats.length; i++) {
         selectedDropDownItem.beats[i].color = colorIndex[
-        (selectedDropDownItem.beats[i].id ?? 3) % (colorIndex.length - 1)];
+            (selectedDropDownItem.beats[i].id ?? 3) % (colorIndex.length - 1)];
       }
       if (localTransformer != null) {
         if (selectedDropDownItem.boundary.isNotEmpty) {
@@ -966,7 +1010,7 @@ class _MapScreenState extends State<MapScreen> {
           beat, selectedDropDownItem, newBeatName ?? beat.beatName);
       if (success) {
         Beat name =
-        selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
+            selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
         setState(() => name.beatName = newBeatName ?? beat.beatName);
         return success;
       } else {
@@ -977,7 +1021,7 @@ class _MapScreenState extends State<MapScreen> {
           .updateDistributor(beat, distributor, newBeatName ?? beat.beatName);
       if (success) {
         Beat name =
-        selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
+            selectedDropDownItem.beats.firstWhere((item) => item.id == beat.id);
         selectedDropDownItem.beats.removeWhere((element) => element == name);
         name.beatName = newBeatName ?? beat.beatName;
         widget.distributors
@@ -997,8 +1041,10 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  void changeColor(Color newColor,
-      Beat index,) {
+  void changeColor(
+    Color newColor,
+    Beat index,
+  ) {
     setState(() {
       selectedDropDownItem.beats
           .firstWhere((element) => element == index)
@@ -1006,8 +1052,10 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  setNewBeats(List<Beat> beats,
-      int distributorID,) {
+  setNewBeats(
+    List<Beat> beats,
+    int distributorID,
+  ) {
     Distributor distributor = widget.distributors
         .firstWhere((element) => element.id == distributorID);
     distributor.beats = beats;
@@ -1016,8 +1064,10 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {});
   }
 
-  Future<void> addBeat(Beat newBeat,
-      Distributor distributor,) async {
+  Future<void> addBeat(
+    Beat newBeat,
+    Distributor distributor,
+  ) async {
     await UserService().assignOutlets(
         [newBeat], distributor, context, setNewBeats).then((value) {
       if (value) {
@@ -1026,6 +1076,29 @@ class _MapScreenState extends State<MapScreen> {
           pathPoints = [];
           nearbyOutlets = [];
         });
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Try Again")));
+      }
+    });
+  }
+
+  Future<void> updateOutletsToNewBeat(
+    List<Outlet> outlets,
+    int beatID,
+  ) async {
+    await BeatService()
+        .updateOutletToStatus2(outlets, beatID, context)
+        .then((value) {
+      if (value) {
+        setState(() {
+          isPathPointChoosing = 1;
+          pathPoints = [];
+          nearbyOutlets = [];
+        });
+        Navigator.push(context, MaterialPageRoute(builder: (_){
+          return LocalHostScreen();
+        }));
       } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Try Again")));
@@ -1047,8 +1120,8 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  Widget _buildMarkerWidgetAddedDisabled(Offset pos, String imgName,
-      bool isLarge) {
+  Widget _buildMarkerWidgetAddedDisabled(
+      Offset pos, String imgName, bool isLarge) {
     return Positioned(
       left: pos.dx - 16,
       top: pos.dy - 16,
@@ -1064,12 +1137,18 @@ class _MapScreenState extends State<MapScreen> {
 
   Widget _buildDraggableMarkerWidget(transformer, LatLng element, int i) {
     return DraggableMarker(transformer, true, Colors.green, element,
-            (LatLng? latLng) {
-          if (latLng != null) {
-            pathPoints[i] = latLng;
-            findOutletsInPolygon();
-            setState(() {});
-          }
-        }, stackKey);
+        (LatLng? latLng) {
+      if (latLng != null) {
+        pathPoints[i] = latLng;
+        if (isPathPointChoosing == 2) {
+          findOutletsInPolygon();
+        }
+
+        if (isPathPointChoosing == 3) {
+          findOutletsInUpdatablePolygon();
+        }
+        setState(() {});
+      }
+    }, stackKey);
   }
 }

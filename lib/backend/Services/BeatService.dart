@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:manage_outlets/backend/Entities/OutletsListEntity.dart';
 import 'package:http/http.dart' as http;
 
+import '../../BeforeMapScreens/LocalHostScreen.dart';
 import '../Entities/Category.dart';
 import '../Entities/Distributor.dart';
 import '../Entities/Outlet.dart';
@@ -34,7 +35,6 @@ class BeatService {
       }
       throw "[]";
     } catch (e) {
-      print("Failed loading beats");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Unsuccessful"),
@@ -90,12 +90,59 @@ class BeatService {
     return false;
   }
 
-  Future<bool> deleteBeat(int? id, Distributor distributor, Function setNewBeats,
+  Future<bool> updateOutletToStatus2(
+      List<Outlet> outlets,
+      int beatID,
       BuildContext context) async {
+    int statusCode = 200;
+    Map<String, dynamic> aJson = {"outlets": {}};
+    aJson["beat"] = beatID.toString();
+    for (Outlet element in outlets) {
+      aJson["outlets"][element.id.toString()] = {};
+      aJson["outlets"][element.id.toString()]["videoID"] = element.videoID;
+      aJson["outlets"][element.id.toString()]["beatID"] = element.beatID;
+      aJson["outlets"][element.id.toString()]["categoryID"] =
+          element.newcategoryID;
+      aJson["outlets"][element.id.toString()]["dateTime"] =
+          DateTime.tryParse(element.dateTime ?? "");
+      aJson["outlets"][element.id.toString()]["outletName"] =
+          element.outletName;
+      aJson["outlets"][element.id.toString()]["lat"] = element.lat;
+      aJson["outlets"][element.id.toString()]["lng"] = element.lng;
+      aJson["outlets"][element.id.toString()]["md5"] = element.md5;
+      aJson["outlets"][element.id.toString()]["imageURL"] = element.imageURL;
+      aJson["outlets"][element.id.toString()]["deactivated"] =
+          element.deactivated ? "true" : "false";
+    }
+
+    aJson["outlets"] = aJson["outlets"].toString();
+
+    Response res = await http.put(
+      Uri.parse("$localhost/beat/changedistributor/"),
+      body: aJson,
+    );
+    if (res.statusCode != 200) {
+      statusCode = res.statusCode;
+    }
+
+    if (statusCode == 200) {
+    Navigator.pop(context);
+      Navigator.push(context, MaterialPageRoute(builder: (_){
+        return LocalHostScreen();
+      }));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("SUCCESSFUL"),
+      ));
+      return true;
+    }
+    return false;
+  }
+
+  Future<bool> deleteBeat(int? id, Distributor distributor,
+      Function setNewBeats, BuildContext context) async {
     Response res = await http.delete(
       Uri.parse("$localhost/beat/$id/delete/"),
     );
-    print(res.body);
     if (res.statusCode == 200) {
       if (res.body == "true") {
         List<Beat> beats = await BeatService().getBeat(distributor, context);

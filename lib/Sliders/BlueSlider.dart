@@ -21,6 +21,7 @@ class BlueSlider extends StatelessWidget {
   final List<User> users;
   final Distributor selectedDropdownItem;
   final List<Beat> beats;
+  final Function updateBeat;
 
   BlueSlider(
       this.clearFunction,
@@ -35,7 +36,7 @@ class BlueSlider extends StatelessWidget {
       this.totalDistance,
       this.users,
       this.selectedDropdownItem,
-      this.beats);
+      this.beats, this.updateBeat);
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +94,7 @@ class BlueSlider extends StatelessWidget {
                                     blueIndexes,
                                     focusedOutlets,
                                     refresh,
-                                    addBeat,
+                                    updateBeat,
                                     beats,
                                     selectedDropdownItem);
                               });

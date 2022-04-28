@@ -15,12 +15,12 @@ class UpdateBeatDialogBox extends StatefulWidget {
   final List<Beat> blueIndexes;
   final List<Outlet> redPositions;
   final Function refresh;
-  final Function addBeat;
+  final Function updateBeat;
   final List<Beat> beats;
   final Distributor selectedDropdownItem;
 
   UpdateBeatDialogBox(this.rangeIndexes, this.blueIndexes, this.redPositions,
-      this.refresh, this.addBeat, this.beats, this.selectedDropdownItem);
+      this.refresh, this.updateBeat, this.beats, this.selectedDropdownItem);
 
   @override
   State<UpdateBeatDialogBox> createState() => _UpdateBeatDialogBoxState();
@@ -45,16 +45,10 @@ class _UpdateBeatDialogBoxState extends State<UpdateBeatDialogBox> {
       if (validate == false) {
         if (redPositions.isNotEmpty) {
           rangeIndexes = [];
-          await widget.addBeat(
-            // Beat(textController.text, shortestPath(redPositions),
-            //     color: colorIndex[widget.blueIndexes.length]),
-            // Beat(textController.text, redPositions,
-            //     color: colorIndex[widget.blueIndexes.length],
-            //     userID: selected!.id,
-            //     status: 1),
-            // widget.selectedDropdownItem.id,
+          await widget.updateBeat(
+            redPositions,
+            selected!.id,
           );
-          // setTempRedRadius(0.0);
           refresh();
           Navigator.pop(context);
         }
@@ -134,7 +128,10 @@ class _UpdateBeatDialogBoxState extends State<UpdateBeatDialogBox> {
                             if (beat == null) {
                               return "Select Beat";
                             }
-                            return beat.beatName;
+                            return beat.beatName +
+                                " ( " +
+                                beat.distributorName +
+                                " )";
                           },
                           items: widget.beats,
                         ),
