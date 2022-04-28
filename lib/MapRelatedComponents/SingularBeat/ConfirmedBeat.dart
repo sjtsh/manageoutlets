@@ -24,9 +24,10 @@ class ConfirmedBeat extends StatelessWidget {
   final Function renameBeat;
   final List<User> users;
   final List<Distributor> distributors;
+  final Distributor selectedDistributor;
 
   ConfirmedBeat(this.beat, this.changeColor, this.index, this.renameBeat,
-      this.users, this.distributors);
+      this.users, this.distributors, this.selectedDistributor);
 
   @override
   Widget build(BuildContext context) {
@@ -57,26 +58,27 @@ class ConfirmedBeat extends StatelessWidget {
               padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
-
-                  Expanded(child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(beat.beatName.toString(),
-                          style: const TextStyle(
-                              fontSize: 16,
-                              overflow: TextOverflow.ellipsis,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        "${beat.outlet.where((element) => !element.deactivated).toList().length} Outlets, ${users.firstWhere((e) => beat.userID == e.id).name}",
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(color: Colors.white),
-                      )
-                    ],
-                  ),),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(beat.beatName.toString(),
+                            style: const TextStyle(
+                                fontSize: 16,
+                                overflow: TextOverflow.ellipsis,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          "${beat.outlet.where((element) => !element.deactivated).toList().length} Outlets, ${users.firstWhere((e) => beat.userID == e.id).name}",
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
                   PopupMenuButton(
                     itemBuilder: (context) {
                       return List.generate(
@@ -115,52 +117,8 @@ class ConfirmedBeat extends StatelessWidget {
                   ),
                   IconButton(
                       onPressed: () async {
-                        String distributorName = distributors
-                            .firstWhere(
-                                (element) => element.beats[index].id == beat.id)
-                            .toString();
-                        List<String> disname = [distributorName + beat.beatName];
-                        String fileName =
-                            "${distributorName} ${beat.beatName}.csv";
-                        List<List<dynamic>> outletTocsv =
-                            List.empty(growable: true);
-                        outletTocsv.add(disname);
-                        outletTocsv.add(OutletColumnList);
-                        for (int a = 0; a < beat.outlet.length; a++) {
-                          List<dynamic> row = List.empty(growable: true);
-                          row.add(a + 1);
-                          row.add("${beat.outlet[a].beatID}");
-                          row.add("${beat.outlet[a].id}");
-                          row.add("${beat.outlet[a].outletName}");
-                          row.add("${beat.outlet[a].categoryName}");
-                          row.add("${beat.outlet[a].categoryID}");
-                          row.add("${beat.outlet[a].newcategoryID}");
-                          row.add("${beat.outlet[a].lat}");
-                          row.add("${beat.outlet[a].lng}");
-                          row.add("${beat.outlet[a].videoID}");
-                          row.add("${beat.outlet[a].videoName}");
-                          row.add("${beat.outlet[a].dateTime}");
-                          row.add("${beat.outlet[a].imageURL}");
-                          row.add("${beat.outlet[a].marker}");
-                          row.add("${beat.outlet[a].md5}");
-                          row.add("${beat.outlet[a].deactivated}");
-                          outletTocsv.add(row);
-                        }
-
-                        String? outputFiles =
-                            await FilePicker.platform.saveFile(
-                          dialogTitle: 'Please select Directory:',
-                          fileName: fileName,
-                        );
-                        File csvFile = File(outputFiles!);
-                        String csv =
-                            const ListToCsvConverter().convert(outletTocsv);
-                        if (outputFiles != null) {
-                          csvFile.writeAsString(csv);
-
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text("File Downloaded: $outputFiles")));
-                        }
+                       // downloadCSVAll(distributors, context);
+                        downloadCSV(selectedDistributor, beat, context);
                       },
                       icon: Icon(Icons.download_outlined, color: Colors.white)),
                   const SizedBox(
@@ -175,3 +133,113 @@ class ConfirmedBeat extends StatelessWidget {
     );
   }
 }
+
+downloadCSV(
+    Distributor selectedDistributor, Beat beat, BuildContext context) async {
+  String distributorName = selectedDistributor.toString();
+  //List<String> disname = [distributorName + beat.beatName];
+  String fileName = "${distributorName}--- ${beat.beatName}.csv";
+  List<List<dynamic>> outletTocsv = List.empty(growable: true);
+  // outletTocsv.add(disname);
+  outletTocsv.add([
+    "S.No.", //0
+    "Distributor Name",
+    "Beat Name",
+    "Beat ID", //1
+    " Outlet ID", //1
+    "Outlet Name", //2
+    "Category Name", //3
+    "Category ID", //4
+    "New Category ID", //5
+    "latitude", //6
+    "Longitude", //7
+    "Image URL", //11
+    "Marker", //12
+    "Deactivated", //14
+  ]);
+  for (int a = 0; a < beat.outlet.length; a++) {
+    List<dynamic> row = List.empty(growable: true);
+    row.add(a + 1);
+    row.add("${distributorName}");
+    row.add("${beat.beatName}");
+    row.add("${beat.outlet[a].beatID}");
+    row.add("${beat.outlet[a].id}");
+    row.add("${beat.outlet[a].outletName}");
+    row.add("${beat.outlet[a].categoryName}");
+    row.add("${beat.outlet[a].categoryID}");
+    row.add("${beat.outlet[a].newcategoryID}");
+    row.add("${beat.outlet[a].lat}");
+    row.add("${beat.outlet[a].lng}");
+    row.add("${beat.outlet[a].imageURL}");
+    row.add("${beat.outlet[a].marker}");
+    row.add("${beat.outlet[a].deactivated}");
+    outletTocsv.add(row);
+  }
+
+  String? outputFiles = await FilePicker.platform.saveFile(
+    dialogTitle: 'Please select Directory:',
+    fileName: fileName,
+  );
+  File csvFile = File(outputFiles!);
+  String csv = const ListToCsvConverter().convert(outletTocsv);
+  if (outputFiles != null) {
+    csvFile.writeAsString(csv);
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("File Downloaded: $outputFiles")));
+  }
+}
+
+downloadCSVAll(List<Distributor> distributors, BuildContext context) async {
+  String outputFiles = r"D:\allofthedistributors\alldistributors.csv";
+  List<List<dynamic>> outletTocsv = List.empty(growable: true);
+  outletTocsv.add([
+    "S.No.", //0
+    "Distributor Name",
+    "Beat Name",
+    "Beat ID", //1
+    " Outlet ID", //1
+    "Outlet Name", //2
+    "Category Name", //3
+    "Category ID", //4
+    "New Category ID", //5
+    "latitude", //6
+    "Longitude", //7
+    "Image URL", //11
+    "Marker", //12
+    "Deactivated", //14
+  ]);
+  distributors.forEach((Distributor selectedDistributor) {
+    selectedDistributor.beats.forEach((beat) {
+      String distributorName = selectedDistributor.toString();
+      // outletTocsv.add(disname);
+      for (int a = 0; a < beat.outlet.length; a++) {
+        List<dynamic> row = List.empty(growable: true);
+        row.add(a + 1);
+        row.add("${distributorName}");
+        row.add("${beat.beatName}");
+        row.add("${beat.outlet[a].beatID}");
+        row.add("${beat.outlet[a].id}");
+        row.add("${beat.outlet[a].outletName}");
+        row.add("${beat.outlet[a].categoryName}");
+        row.add("${beat.outlet[a].categoryID}");
+        row.add("${beat.outlet[a].newcategoryID}");
+        row.add("${beat.outlet[a].lat}");
+        row.add("${beat.outlet[a].lng}");
+        row.add("${beat.outlet[a].imageURL}");
+        row.add("${beat.outlet[a].marker}");
+        row.add("${beat.outlet[a].deactivated}");
+        outletTocsv.add(row);
+      }
+    });
+  });
+  File csvFile = File(outputFiles);
+  String csv = const ListToCsvConverter().convert(outletTocsv);
+  csvFile.writeAsString(csv);
+}
+
+
+
+
+
+

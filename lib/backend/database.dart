@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'Entities/OutletsListEntity.dart';
 
-String localhost = "http://192.168.0.120:9000";
+String localhost = "http://192.168.0.120:8000";
+
+String customAppVersion = "1.0";
 
 List<Color> colorIndex = [
 Colors.transparent,

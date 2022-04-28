@@ -6,10 +6,12 @@ import 'package:manage_outlets/backend/Services/BeatService.dart';
 import 'package:manage_outlets/backend/Services/DistributorService.dart';
 import 'package:manage_outlets/backend/Services/OutletService.dart';
 import 'BeforeMapScreens/LocalHostScreen.dart';
+import 'backend/Services/versionCheckService.dart';
 import 'backend/shortestPath.dart';
 
 void main() {
   runApp(MyApp());
+  VersionCheck().getVersion().then((value) => print(value));
 }
 
 class MyApp extends StatefulWidget {

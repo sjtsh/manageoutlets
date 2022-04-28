@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:manage_outlets/backend/Services/versionCheckService.dart';
 import 'package:manage_outlets/backend/database.dart';
-
+import 'package:yaml/yaml.dart';
 import 'GetOutletScreen.dart';
 class StartButtonIntent extends Intent{}
 class LocalHostScreen extends StatelessWidget {
@@ -11,6 +12,7 @@ class LocalHostScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return FocusableActionDetector(
       autofocus: true,
       shortcuts: {LogicalKeySet(LogicalKeyboardKey.enter): StartButtonIntent()},
@@ -76,11 +78,42 @@ class LocalHostScreen extends StatelessWidget {
                       // Navigator.push(context, MaterialPageRoute(builder: (_) {
                       //   return GetOutletScreen(1000000);
                       // }));
-                      Navigator.push(context,
-                      PageRouteBuilder(
-                          pageBuilder: (c, a1, a2) => GetOutletScreen(10000000000),
-                      transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
-                      transitionDuration: Duration(milliseconds: 500)));
+                      // FutureBuilder(
+                      //     future: ,
+                      //     builder: (context, snapshot) {
+                      //       String version = "Unknown";
+                      //       if (snapshot.hasData) {
+                      //         var yaml = loadYaml(snapshot.data);
+                      //         version = yaml["version"];
+                      //       }
+                      //
+                      //       return Container(
+                      //         child: Text(
+                      //             'Version: $version'
+                      //         ),
+                      //       );
+                      //     }),
+
+                      VersionCheck().getVersion().then((value) {
+                      rootBundle.loadString("pubspec.yaml").then((a){
+                        var yaml = loadYaml(a);
+                        print((yaml["version"]).toString());
+
+                        if(yaml["version"].toString() == value){
+
+
+                          Navigator.push(context,
+                              PageRouteBuilder(
+                                  pageBuilder: (c, a1, a2) => GetOutletScreen(10000000000),
+                                  transitionsBuilder: (c, anim, a2, child) => FadeTransition(opacity: anim, child: child),
+                                  transitionDuration: Duration(milliseconds: 500)));
+                        }else{
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please update application to Version ${yaml["version"]} from $value ")));
+                        }
+                      });
+                      });
+
+
                     },
                     child: Center(
                       child: Text(
@@ -93,6 +126,7 @@ class LocalHostScreen extends StatelessWidget {
               ),
               Expanded(child: Container()),
               Expanded(child: Container()),
+              SizedBox(height: 32,)
             ],
           ),
         ),
